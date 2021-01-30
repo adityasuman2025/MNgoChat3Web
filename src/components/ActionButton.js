@@ -12,7 +12,7 @@ export default function ActionButton({
     onClick,
 }) {
     return (
-        <div
+        <button
             className={cx(
                 "actionBtnContainer",
                 { ["darkActionBtnContainer"]: dark },
@@ -34,6 +34,6 @@ export default function ActionButton({
                         {buttonText}
                     </div>
             }
-        </div>
+        </button>
     );
 }

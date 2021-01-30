@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import SnackBar from "./SnackBar";
 
 function SnackBarWrapper({
+    loginUserError,
     checkLoginStatusError,
 
     children,
@@ -11,6 +12,12 @@ function SnackBarWrapper({
     const [snackBarVisible, setSnackBarVisible] = useState(false);
     const [snackBarMsg, setSnackBarMsg] = useState("");
     const [snackBarType, setSnackBarType] = useState("success")
+
+    useEffect(() => {
+        if (loginUserError) {
+            makeSnackBar(loginUserError);
+        }
+    }, [loginUserError]);
 
     useEffect(() => {
         if (checkLoginStatusError) {
@@ -21,7 +28,6 @@ function SnackBarWrapper({
     function makeSnackBar(msg, type) {
         setSnackBarMsg(msg);
         setSnackBarType(type);
-
         setSnackBarVisible(true);
     }
 
@@ -45,6 +51,7 @@ function SnackBarWrapper({
 
 const mapStateToProps = (state) => {
     return {
+        loginUserError: state.loginUserError,
         checkLoginStatusError: state.checkLoginStatusError,
     }
 }

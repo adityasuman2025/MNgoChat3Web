@@ -23,7 +23,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'CHECK_LOGIN_STATUS_SUCCESS': {
-            const userDetails = payload.user_details;
+            const userDetails = payload.userDetails;
             let isSomeoneLoggedIn = false;
             if (userDetails) {
                 isSomeoneLoggedIn = true;
@@ -47,23 +47,34 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'LOGIN_USER': {
+            console.log("LOGIN_USER");
             return {
                 ...state,
                 isLoggingUser: true,
+                isSomeoneLoggedIn: false,
                 loginUserError: null,
                 userDetails: {},
             }
         }
 
         case 'LOGIN_USER_SUCCESS': {
+            const userDetails = payload.userDetails;
+            let isSomeoneLoggedIn = false;
+            if (userDetails) {
+                isSomeoneLoggedIn = true;
+            }
+
+            console.log("LOGIN_USER_SUCCESS");
             return {
                 ...state,
                 isLoggingUser: false,
-                userDetails: {},
+                isSomeoneLoggedIn,
+                userDetails: userDetails || {},
             }
         }
 
         case 'LOGIN_USER_FAILURE': {
+            console.log("LOGIN_USER_FAILURE");
             return {
                 ...state,
                 isLoggingUser: false,

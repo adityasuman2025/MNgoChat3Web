@@ -80,6 +80,11 @@ code {
     filter: invert(13%) sepia(44%) saturate(3773%) hue-rotate(250deg) brightness(75%) contrast(120%);
 }
 
+.formContainer {
+    display: flex;
+    flex-direction: column;
+}
+
 .formInputField {
     width: 400px;
     height: 45px;
@@ -99,6 +104,7 @@ code {
     justify-content: center;
     width: 400px;
     height: 48px;
+    border: none;
     border-radius: 25px;
     padding: 0 16px;
     margin: 10px 0;
