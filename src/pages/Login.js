@@ -36,7 +36,7 @@ function Login({
             if (username !== "" && password !== "") {
                 dispatch(loginUserAction(username, password));
             } else {
-                dispatch(showSnackBarAction("Please enter all input fields"));
+                dispatch(showSnackBarAction("Please fill all the input fields"));
             }
         }
     }

@@ -5,7 +5,7 @@ import {
 import { getCookieValue, makeCookie } from "../../utils";
 import {
     getUserDetails,
-    VerifyLogin,
+    verifyLogin,
     registerNewUser,
 } from "../../apis";
 
@@ -36,7 +36,7 @@ export const checkLoginStatusAction = () => async (dispatch) => {
 export const loginUserAction = (username, password) => async (dispatch) => {
     dispatch({ type: 'LOGIN_USER' });
     try {
-        const response = await VerifyLogin(username, password);
+        const response = await verifyLogin(username, password);
         if (response.statusCode === 200) {
             const userDetails = response.data;
             const token = response.token;

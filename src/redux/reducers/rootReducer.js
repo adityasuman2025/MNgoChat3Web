@@ -3,7 +3,6 @@ const defaultState = {
     snackBarMsg: null,
     snackBarType: "error",
 
-
     isCheckingLoginStatus: true,
     isSomeoneLoggedIn: false,
     userDetails: {},
@@ -16,7 +15,6 @@ const defaultState = {
     isUserRegistered: false,
     registerUserError: null,
 
-    registerInfo: {},
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {

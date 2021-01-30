@@ -18,7 +18,7 @@ export async function getUserDetails(logged_user_token) {
     }
 }
 
-export async function VerifyLogin(username, password) {
+export async function verifyLogin(username, password) {
     try {
         const requestAddress = AUTH_API_URL_ADDRESS + "verify_user.php";
         const response = await axios.post(requestAddress, {
@@ -50,7 +50,7 @@ export async function registerNewUser(username, name, email, password, passcode)
     }
 }
 
-export async function VerifyPassCode(logged_user_token, passcode) {
+export async function verifyPassCode(logged_user_token, passcode) {
     try {
         const requestAddress = AUTH_API_URL_ADDRESS + "verify_passcode.php";
         const response = await axios.post(requestAddress, {
