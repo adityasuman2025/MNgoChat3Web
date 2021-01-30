@@ -1,4 +1,5 @@
 import React from "react";
+import loaderImg from '../img/loader.gif';
 
 export default function LoadingAnimation({
     loading
@@ -8,7 +9,7 @@ export default function LoadingAnimation({
             <img
                 alt="loading"
                 className="loadingAnimation"
-                src={require("../images/loader.gif")}
+                src={loaderImg}
             />
         </center>
     ) : null;
