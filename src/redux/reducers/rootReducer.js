@@ -37,7 +37,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             return {
                 ...state,
                 isCheckingLoginStatus: false,
-                checkLoginStatusError: payload.msg || "",
+                checkLoginStatusError: payload.msg,
             }
         }
 

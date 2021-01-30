@@ -21,7 +21,7 @@ export const checkLoginStatusAction = () => async (dispatch) => {
                 dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: response });
             }
         } else {
-            dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: { msg: "No authentication cookie found" } });
+            dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: { msg: null } });
         }
     } catch {
         dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: SOMETHING_WENT_WRONG_ERROR });

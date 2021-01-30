@@ -12,11 +12,8 @@ import { checkLoginStatusAction } from "../redux/actions/index";
 function Landing({
     isCheckingLoginStatus,
     isSomeoneLoggedIn,
-    checkLoginStatusError,
     dispatch,
 }) {
-    console.log("isSomeoneLoggedIn", isSomeoneLoggedIn);
-
     useEffect(() => {
         dispatch(checkLoginStatusAction());
     }, []);
@@ -24,7 +21,7 @@ function Landing({
     return (
         <>
             {
-                // isSomeoneLoggedIn ? <Redirect to="/home" /> : <Redirect to="/login" />
+                !isCheckingLoginStatus && isSomeoneLoggedIn ? <Redirect to="/home" /> : <Redirect to="/login" />
             }
 
             <PurpleGradientContainer childrenClassName="flexCenter">
@@ -62,7 +59,6 @@ const mapStateToProps = (state) => {
         isCheckingLoginStatus: state.isCheckingLoginStatus,
         isSomeoneLoggedIn: state.isSomeoneLoggedIn,
         userDetails: state.userDetails,
-        checkLoginStatusError: state.checkLoginStatusError,
     }
 }
 
