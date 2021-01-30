@@ -12,6 +12,10 @@ const defaultState = {
     isLoggingUser: false,
     loginUserError: null,
 
+    isRegisteringUser: false,
+    isUserRegistered: false,
+    registerUserError: null,
+
     registerInfo: {},
 }
 
@@ -71,7 +75,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 userDetails: {},
             }
         }
-
         case 'LOGIN_USER_SUCCESS': {
             const userDetails = payload.userDetails;
             let isSomeoneLoggedIn = false;
@@ -87,7 +90,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 userDetails: userDetails || {},
             }
         }
-
         case 'LOGIN_USER_FAILURE': {
             console.log("LOGIN_USER_FAILURE");
             return {
@@ -97,7 +99,31 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
 
-        case 'REGISTER_USER': return { ...state, registerInfo: payload }
+        case 'REGISTER_USER': {
+            console.log("REGISTER_USER");
+            return {
+                ...state,
+                isRegisteringUser: true,
+                isUserRegistered: false,
+                registerUserError: null,
+            }
+        }
+        case 'REGISTER_USER_SUCCESS': {
+            console.log("REGISTER_USER_SUCCESS");
+            return {
+                ...state,
+                isRegisteringUser: false,
+                isUserRegistered: true,
+            }
+        }
+        case 'REGISTER_USER_FAILURE': {
+            console.log("REGISTER_USER_FAILURE");
+            return {
+                ...state,
+                isRegisteringUser: false,
+                registerUserError: payload.msg,
+            }
+        }
 
         default: return state
     }

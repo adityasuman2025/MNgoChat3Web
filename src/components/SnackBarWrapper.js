@@ -8,10 +8,12 @@ function SnackBarWrapper({
     snackBarMsg,
     snackBarType,
 
-    loginUserError,
-
     checkLoginStatusError,
 
+    loginUserError,
+
+    isUserRegistered,
+    registerUserError,
 
 
     children,
@@ -27,16 +29,28 @@ function SnackBarWrapper({
     }, [snackBarCount]);
 
     useEffect(() => {
+        if (checkLoginStatusError) {
+            makeSnackBar(checkLoginStatusError);
+        }
+    }, [checkLoginStatusError]);
+
+    useEffect(() => {
         if (loginUserError) {
             makeSnackBar(loginUserError);
         }
     }, [loginUserError]);
 
     useEffect(() => {
-        if (checkLoginStatusError) {
-            makeSnackBar(checkLoginStatusError);
+        if (registerUserError) {
+            makeSnackBar(registerUserError);
         }
-    }, [checkLoginStatusError]);
+    }, [registerUserError]);
+
+    useEffect(() => {
+        if (isUserRegistered) {
+            makeSnackBar("Successfully registered. Please login to continue", "success");
+        }
+    }, [isUserRegistered]);
 
     function makeSnackBar(msg, type) {
         setSnackBarMsgState(msg);
@@ -68,9 +82,12 @@ const mapStateToProps = (state) => {
         snackBarMsg: state.snackBarMsg,
         snackBarType: state.snackBarType,
 
+        checkLoginStatusError: state.checkLoginStatusError,
+
         loginUserError: state.loginUserError,
 
-        checkLoginStatusError: state.checkLoginStatusError,
+        isUserRegistered: state.isUserRegistered,
+        registerUserError: state.registerUserError,
     }
 }
 

@@ -60,10 +60,15 @@ export const loginUserAction = (username, password) => async (dispatch) => {
 }
 
 export const registerUserAction = (username, name, email, password, passcode) => async (dispatch) => {
+    dispatch({ type: 'REGISTER_USER' });
     try {
         const response = await registerNewUser(username, name, email, password, passcode);
-        dispatch({ type: 'REGISTER_USER', payload: response });
+        if (response.statusCode === 200) {
+            dispatch({ type: 'REGISTER_USER_SUCCESS', payload: response });
+        } else {
+            dispatch({ type: 'REGISTER_USER_FAILURE', payload: response });
+        }
     } catch {
-        dispatch({ type: 'REGISTER_USER', payload: SOMETHING_WENT_WRONG_ERROR });
+        dispatch({ type: 'REGISTER_USER_FAILURE', payload: SOMETHING_WENT_WRONG_ERROR });
     }
 }

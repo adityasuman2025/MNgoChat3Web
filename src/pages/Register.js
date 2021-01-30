@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
 
@@ -19,6 +19,8 @@ import {
 } from "../redux/actions/index";
 
 function Register({
+    isRegisteringUser,
+    isUserRegistered,
     dispatch,
 }) {
     const [username, setUsername] = useState("");
@@ -28,6 +30,15 @@ function Register({
     const [confPassword, setConfPassword] = useState("");
     const [passcode, setPasscode] = useState("");
     const [confPasscode, setConfPasscode] = useState("");
+
+    const [redirectToLoginPage, setRedirectToLoginPage] = useState(false);
+    const [btnClicked, setBtnClicked] = useState(false);
+
+    useEffect(() => {
+        if (isUserRegistered && btnClicked) {
+            setRedirectToLoginPage(true);
+        }
+    }, [isUserRegistered]);
 
     function handleRegisterBtnClick(e) {
         e.preventDefault();
@@ -62,25 +73,16 @@ function Register({
                 return;
             }
 
+            setBtnClicked(true);
             dispatch(registerUserAction(username, name, email, password, passcode));
         } else {
             dispatch(showSnackBarAction("Please fill all the input fields"));
         }
     }
 
-    function redirectToHomeOrLoginPage() {
-        // if (!isCheckingLoginStatus) {
-        //     if (isSomeoneLoggedIn) {
-        //         return <Redirect to="/home" />;
-        //     } else {
-        //         return <Redirect to="/login" />;
-        //     }
-        // }
-    }
-
     return (
         <>
-            {redirectToHomeOrLoginPage()}
+            {redirectToLoginPage ? <Redirect to="/login" /> : null}
 
             <PurpleGradientContainer childrenClassName="flexCenter">
                 <img
@@ -152,7 +154,7 @@ function Register({
 
                     <ActionButton
                         dark={false}
-                        // showLoader={isLoggingUser}
+                        showLoader={isRegisteringUser}
                         buttonText="Register"
                         onClick={handleRegisterBtnClick}
                     />
@@ -164,7 +166,8 @@ function Register({
 
 const mapStateToProps = (state) => {
     return {
-
+        isRegisteringUser: state.isRegisteringUser,
+        isUserRegistered: state.isUserRegistered,
     }
 }
 
