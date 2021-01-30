@@ -57,6 +57,7 @@ code {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    overflow-y: scroll;
 }
 
 .logoImg {
@@ -83,12 +84,13 @@ code {
 .formContainer {
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .formInputField {
     width: 400px;
-    height: 45px;
-    border: none;
+    min-height: 45px;
+    max-height: 45px;
     border: 1px solid #24133f;
     border-radius: 25px;
     padding: 0 16px;
@@ -102,8 +104,9 @@ code {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 400px;
-    height: 48px;
+    width: 420px;
+    min-height: 48px;
+    max-height: 48px;
     border: none;
     border-radius: 25px;
     padding: 0 16px;
@@ -185,11 +188,16 @@ code {
     }
 
     .formInputField {
-        width: 300px;
+        width: 280px;
     }
     
     .actionBtnContainer {
         width: 300px;
+    }
+
+    .logoImg {
+        width: 150px;
+        height: 150px;
     }
 }
 
