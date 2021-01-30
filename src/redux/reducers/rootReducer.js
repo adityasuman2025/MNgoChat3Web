@@ -4,19 +4,22 @@ const defaultState = {
     userDetails: {},
     checkLoginStatusError: null,
 
-    loginInfo: {},
+    isLoggingUser: false,
+    loginUserError: null,
+
     registerInfo: {},
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
     switch (type) {
         case 'CHECK_LOGIN_STATUS': {
+            console.log("CHECK_LOGIN_STATUS");
             return {
                 ...state,
                 isCheckingLoginStatus: true,
                 isSomeoneLoggedIn: false,
-                userDetails: {},
                 checkLoginStatusError: null,
+                userDetails: {},
             }
         }
         case 'CHECK_LOGIN_STATUS_SUCCESS': {
@@ -26,6 +29,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 isSomeoneLoggedIn = true;
             }
 
+            console.log("CHECK_LOGIN_STATUS_SUCCESS");
             return {
                 ...state,
                 isCheckingLoginStatus: false,
@@ -34,6 +38,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'CHECK_LOGIN_STATUS_FAILURE': {
+            console.log("CHECK_LOGIN_STATUS_FAILURE");
             return {
                 ...state,
                 isCheckingLoginStatus: false,
@@ -44,7 +49,25 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         case 'LOGIN_USER': {
             return {
                 ...state,
-                loginInfo: payload,
+                isLoggingUser: true,
+                loginUserError: null,
+                userDetails: {},
+            }
+        }
+
+        case 'LOGIN_USER_SUCCESS': {
+            return {
+                ...state,
+                isLoggingUser: false,
+                userDetails: {},
+            }
+        }
+
+        case 'LOGIN_USER_FAILURE': {
+            return {
+                ...state,
+                isLoggingUser: false,
+                loginUserError: payload.msg,
             }
         }
 

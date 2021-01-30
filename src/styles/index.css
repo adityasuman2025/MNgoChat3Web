@@ -5,7 +5,7 @@ body {
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #f1f1f1;
+    /* background-color: #35176d; */
 }
 
 code {
@@ -64,6 +64,13 @@ code {
     height: 200px;
 }
 
+.logoTitle {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 0.1;
+    color: #d8d8d8;
+}
+
 .loadingAnimation {
     width: 50px;
     height: 50px;
@@ -71,6 +78,66 @@ code {
 
 .darkLoader {
     filter: invert(13%) sepia(44%) saturate(3773%) hue-rotate(250deg) brightness(75%) contrast(120%);
+}
+
+.formInputField {
+    width: 400px;
+    height: 45px;
+    border: none;
+    border: 1px solid #24133f;
+    border-radius: 25px;
+    padding: 0 16px;
+    margin: 10px 0;
+    font-size: 16px;
+    color: #d8d8d8;
+    background-color: #35176d;
+}
+
+.actionBtnContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 48px;
+    border-radius: 25px;
+    padding: 0 16px;
+    margin: 10px 0;
+    font-size: 16px;
+    color: #f1f1f1;
+    background-color: #d8d8d8;
+    cursor: pointer;
+}
+
+.darkActionBtnContainer {
+    background-color: #24133f;
+}
+
+.actionBtnText {
+    font-size: 16;
+    font-weight: 700;
+    color: #24133f;
+}
+
+.darkActionBtnText {
+    color: #d8d8d8;
+}
+
+.signInUpBtnContainer {
+    margin-top: 70px;
+    margin-bottom: 20px;
+}
+
+.signInUpText {
+    margin-right: 5px;
+    font-size: 16px;
+    color: rgba(255,255,255,0.6);
+}
+
+.signInUpBtn {
+    font-size: 16px;
+    font-weight: 500;
+    color: #d8d8d8;
+    cursor: pointer;
 }
 
 /*----input fields placeholder color-------*/
@@ -109,6 +176,14 @@ code {
     .loadingAnimation {
         width: 40px;
         height: 40px;
+    }
+
+    .formInputField {
+        width: 300px;
+    }
+    
+    .actionBtnContainer {
+        width: 300px;
     }
 }
 
