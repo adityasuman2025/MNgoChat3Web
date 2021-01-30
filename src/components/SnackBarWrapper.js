@@ -4,14 +4,27 @@ import { connect } from 'react-redux';
 import SnackBar from "./SnackBar";
 
 function SnackBarWrapper({
+    snackBarCount,
+    snackBarMsg,
+    snackBarType,
+
     loginUserError,
+
     checkLoginStatusError,
+
+
 
     children,
 }) {
     const [snackBarVisible, setSnackBarVisible] = useState(false);
-    const [snackBarMsg, setSnackBarMsg] = useState("");
-    const [snackBarType, setSnackBarType] = useState("success")
+    const [snackBarMsgState, setSnackBarMsgState] = useState("");
+    const [snackBarTypeState, setSnackBarTypeState] = useState("success")
+
+    useEffect(() => {
+        if (snackBarMsg) {
+            makeSnackBar(snackBarMsg, snackBarType);
+        }
+    }, [snackBarCount]);
 
     useEffect(() => {
         if (loginUserError) {
@@ -26,8 +39,8 @@ function SnackBarWrapper({
     }, [checkLoginStatusError]);
 
     function makeSnackBar(msg, type) {
-        setSnackBarMsg(msg);
-        setSnackBarType(type);
+        setSnackBarMsgState(msg);
+        setSnackBarTypeState(type);
         setSnackBarVisible(true);
     }
 
@@ -40,8 +53,8 @@ function SnackBarWrapper({
             {children}
             <SnackBar
                 open={snackBarVisible}
-                msg={snackBarMsg}
-                type={snackBarType}
+                msg={snackBarMsgState}
+                type={snackBarTypeState}
                 handleClose={handleSnackBarClose}
             />
         </>
@@ -51,7 +64,12 @@ function SnackBarWrapper({
 
 const mapStateToProps = (state) => {
     return {
+        snackBarCount: state.snackBarCount,
+        snackBarMsg: state.snackBarMsg,
+        snackBarType: state.snackBarType,
+
         loginUserError: state.loginUserError,
+
         checkLoginStatusError: state.checkLoginStatusError,
     }
 }

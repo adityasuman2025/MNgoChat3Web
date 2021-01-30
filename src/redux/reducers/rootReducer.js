@@ -1,4 +1,9 @@
 const defaultState = {
+    snackBarCount: 0,
+    snackBarMsg: null,
+    snackBarType: "error",
+
+
     isCheckingLoginStatus: true,
     isSomeoneLoggedIn: false,
     userDetails: {},
@@ -12,6 +17,16 @@ const defaultState = {
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
     switch (type) {
+        case 'SHOW_SNACKBAR': {
+            console.log("SHOW_SNACKBAR");
+            return {
+                ...state,
+                snackBarCount: state.snackBarCount + 1,
+                snackBarMsg: payload.msg || null,
+                snackBarType: payload.type || "error",
+            }
+        }
+
         case 'CHECK_LOGIN_STATUS': {
             console.log("CHECK_LOGIN_STATUS");
             return {

@@ -9,6 +9,10 @@ import {
     registerNewUser,
 } from "../../apis";
 
+export const showSnackBarAction = (msg, type) => async (dispatch) => {
+    dispatch({ type: 'SHOW_SNACKBAR', payload: { msg, type } });
+}
+
 export const checkLoginStatusAction = () => async (dispatch) => {
     dispatch({ type: 'CHECK_LOGIN_STATUS' });
     try {

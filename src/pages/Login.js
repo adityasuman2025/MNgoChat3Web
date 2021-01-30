@@ -9,7 +9,11 @@ import ActionButton from "../components/ActionButton";
 import SignInUpButton from "../components/SignInUpButton";
 
 import { PROJECT_NAME } from "../constants";
-import { checkLoginStatusAction, loginUserAction } from "../redux/actions/index";
+import {
+    showSnackBarAction,
+    checkLoginStatusAction,
+    loginUserAction
+} from "../redux/actions/index";
 
 function Login({
     isLoggingUser,
@@ -29,7 +33,11 @@ function Login({
         e.preventDefault();
 
         if (!isLoggingUser) {
-            dispatch(loginUserAction(username, password));
+            if (username !== "" && password !== "") {
+                dispatch(loginUserAction(username, password));
+            } else {
+                dispatch(showSnackBarAction("Please enter all input fields"));
+            }
         }
     }
 
