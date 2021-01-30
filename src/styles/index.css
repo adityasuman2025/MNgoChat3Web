@@ -1,13 +1,525 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #455a64;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  monospace;
+}
+
+/*----input fields placeholder color-------*/
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #d8d8d8;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #d8d8d8;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #d8d8d8;
+}
+
+.center {
+  text-align: center;
+}
+
+.floatRight {
+  float: right;
+}
+
+.redColored {
+  color: red;
+}
+
+.noPadding {
+  padding: 0;
+}
+
+.checked {
+  text-decoration: line-through;
+  background-color: red;
+  /* text-decoration-style: solid; */
+}
+
+/*----login/register page-----*/
+.loginPageContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* background-color: grey; */
+  width: 60%;
+  margin: auto;
+
+  margin-top: 50px;
+}
+
+.smallTopMargin {
+  margin-top: 20px;
+}
+
+.logoIcon {
+  width: 200px;
+}
+
+.logoTitle {
+  font-size: 21px;
+  font-weight: 600;
+  color: white;
+}
+
+.inputBox {
+  width: 350px;
+  height: 45px;
+  background-color: rgba(255, 255,255,0.2);
+  border: none;
+  border-radius: 25px;
+  padding: 0px 16px; /*vertical horizontal */
+  font-size: 16px;
+  color: #ffffff;
+  margin: 10px 0px;
+}
+
+.buttonText {
+  font-size: 16px;
+  font-weight: 500;
+  color: #d8d8d8;
+  text-align: center;
+}
+
+.signupText {
+  /* position: fixed; */
+  /* bottom: 15px; */
+  width: 100%;
+  text-align: center;
+
+  color: rgba(255,255,255,0.6);
+  font-size: 16px;
+}
+
+.signupButton {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.successRegistrationText {
+  padding: 20px;
+  color: rgba(255,255,255,0.6);
+  font-size: 16px;
+}
+
+.androidAppContainer, .androidAppContainer:hover {
+  cursor: pointer;
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #1c313a;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.androidLogoImg {
+  width: 30px;
+  margin-right: 5px;
+}
+/*----login/register page-----*/
+
+
+/*-----navbar--------*/
+.navBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right:0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #3d4e56;
+  padding: 5px 10px;
+  background-color: #455a64;
+}
+
+.navBarBrand {
+  display: flex;
+  align-items: center;
+}
+
+.navLogoImg {
+  width: 40px;
+  margin-right: 7px;
+}
+
+.navTitle {
+  font-weight: bold;
+  font-size: 20px;
+  color: #fff;
+}
+
+.logOutImg {
+  width: 30px;
+  cursor: pointer;
+
+  /* tintColor: #181915; */
+  filter: invert(6%) sepia(16%) saturate(592%) hue-rotate(34deg) brightness(96%) contrast(91%);
+}
+/*-----navbar--------*/
+
+
+/*----notes list-----*/
+.notesListContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 60%;
+  margin: auto;
+  margin-top: 25px;
+  margin-bottom: 20px;
+
+  /* background-color: rebeccapurple; */
+}
+
+.notesListItem {
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+
+  border-bottom: .5px solid #1c313a;
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px #3d4e56;
+  padding: 15px;
+  margin: 5px 5px;
+  cursor: pointer;
+}
+
+.notesListImg {
+  height: 100px;
+  margin-right: 15px;
+
+  /* this filter will give = tintColor: '#fff' */
+  /* used from https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(95%) sepia(43%) saturate(0%) hue-rotate(191deg) brightness(114%) contrast(100%);
+}
+
+.notesListText {
+  width: 100%;
+}
+
+.notesListTitleText {
+  color: #d8d8d8;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.notesListType {
+  color: #1c313a;
+  text-align: left;
+  padding: 0px;
+  margin: 0px;
+  font-size: 15px;
+}
+/*----notes list-----*/
+
+
+/*-----notes list data------*/
+.notesHeaderContainer {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 1;
+  padding-top: 6px;
+
+  background-color: #455a64;
+}
+
+.notesHeader {
+  width: 60%;
+  display: flex;
+  align-items: center; /*vertical align*/
+  justify-content: space-between; /*horizontal align*/
+  margin: auto;
+  padding: 0 5px;
+}
+
+.notesTitleContainer {
+  display: flex;
+  align-items: center; /*vertical align*/
+  flex: 1;
+}
+
+.saveNoteImg {
+  height: 30px;
+  margin-right: 10px;
+  cursor: pointer;
+
+  /* tintColor: '#d8d8d8', */
+  filter: invert(100%) sepia(0%) saturate(4848%) hue-rotate(33deg) brightness(115%) contrast(69%);
+}
+
+.notesInputBox {
+  width: 95%;
+  height: 40px;
+
+  margin: 0px;
+  padding: 0px 5px;
+  color: #fff;
+  font-size: 25px;
+  font-weight: bold;
+
+  background: none;
+  border: none;
+}
+
+.deleteNotesImg {
+  width: 25px;
+  cursor: pointer;
+
+  /* tintColor: '#1c313a', */
+  filter: invert(17%) sepia(50%) saturate(347%) hue-rotate(152deg) brightness(94%) contrast(99%);
+}
+
+.notesFormContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 97%;
+  margin: auto;
+}
+
+.addNotesListDataItemBtn {
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  align-self: flex-start;
+}
+
+.addNotesListDataItemBtnIcon {
+  height: 21px;
+  margin-right: 2px;
+
+  /* tintColor:'#d8d8d8', */
+  filter: invert(100%) sepia(0%) saturate(4848%) hue-rotate(33deg) brightness(115%) contrast(69%);
+}
+
+.addNotesListDataItemBtnText {
+  color: #d8d8d8;
+  font-weight: 500;
+}
+
+.notesListDataFields {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 7px;
+  width: 100%;
+}
+
+.notesListDataFieldCheckedIcon{
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+
+  /* tintColor: '#d8d8d8', */
+  filter: invert(100%) sepia(0%) saturate(4848%) hue-rotate(33deg) brightness(115%) contrast(69%);
+}
+
+.notesListDataFieldRemoveIcon {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+
+  /* tintColor: '#1c313a', */
+  filter: invert(15%) sepia(38%) saturate(576%) hue-rotate(152deg) brightness(94%) contrast(92%);
+}
+
+.notesListDataFieldInput {
+  width: 97%;
+  padding: 0px;
+  margin: 0px 5px;
+  padding: 0px 7px;
+  color: #d8d8d8;
+  font-size: 16px;
+
+  background: none;
+  border: none;
+}
+
+.notesListDataFieldTextArea {
+  background: none;
+  border: none;
+  resize: none;
+
+  width: 100%;
+  height: 700px;
+  padding: 0px;
+  margin: 0px 5px;
+  padding: 0px 7px;
+  color: #d8d8d8;
+  font-size: 16.5px;
+}
+/*-----notes list data------*/
+
+
+/*------create note page-----*/
+.pickerBox {
+  width: 50%;
+  height: 25px;
+
+  padding: 0px;
+  margin: 0px;
+  color:#d8d8d8;
+  padding: 0px 15px;
+  margin-top: 5px;
+
+  background: none;
+  border: none;
+}
+
+
+/*----others-----*/
+.circularBtnContainer {
+  width: 350px;
+  height: 50px;
+  background-color: #1c313a;
+  border: none;
+  border-radius: 25px;
+  margin: 10px 0px;
+  padding: 13px 0px;
+  text-align: center;
+}
+
+.loadingAnimation {
+  width: 50px;
+}
+
+.createNewNoteBtn {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  height: 70px;
+  width: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  border-radius: 100px;
+  background-color: #181915;
+
+  z-index: 1000;
+}
+
+.createNewNoteImg {
+  height: 50%;
+  width: 50%;
+  /* tintColor: '#455a64', */
+  filter: invert(31%) sepia(43%) saturate(259%) hue-rotate(154deg) brightness(94%) contrast(87%);
+}
+
+.whiteLink {
+  color: white;
+  text-decoration: none
+}
+
+.whiteLink:hover {
+  color: white;
+  text-decoration: none
+}
+
+
+/*media screens*/
+@media screen and (max-width: 800px) {
+  .loginPageContent {
+      width: 90%;
+      margin-top: 100px;
+  }
+
+  .smallTopMargin {
+      margin-top: 20px;
+  }
+
+  .logoIcon {
+      width: 120px;
+  }
+
+  .inputBox, .circularBtnContainer {
+      width: 280px;
+  }
+
+  .notesHeader {
+      width: 95%;
+  }
+
+  .notesFormContainer {
+      width: 87%;
+  }
+
+  .notesListContainer {
+      width: 99%;
+  }
+
+  .notesListImg {
+      height: 75px;
+      margin-right: 10px;
+  }
+
+  .notesListTitleText {
+      font-size: 16px;
+  }
+
+  .notesListType {
+      font-size: 13px;
+  }
+
+  .notesInputBox {
+      width: 400px;
+  }
+
+  .createNewNoteBtn {
+      bottom: 10px;
+      right: 10px;
+      height: 55px;
+      width: 55px;
+  }
+
+  .navBar {
+      padding: 9px 12px;
+  }
+
+  .navLogoImg {
+      width: 32px;
+  }
+
+  .logOutImg {
+      width: 27px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .notesInputBox {
+      width: 260px;
+      font-size: 24px;
+  }
+
+  .saveNoteImg {
+      height: 26px;
+  }
+
+  .deleteNotesImg {
+      width: 22px;
+  }
 }
