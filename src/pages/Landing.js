@@ -1,58 +1,68 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
 
+import logoImg from "../images/logo.png";
 import LoadingAnimation from "../components/LoadingAnimation";
+import PurpleGradientContainer from "../components/PurpleGradientContainer";
+import GreyGradientContainer from "../components/GreyGradientContainer";
 
-import { getCookieValue } from '../utils';
+import { checkLoginStatusAction } from "../redux/actions/index";
 
-function Landing() {
-    //hooks variables
-    const [redirectToLoginPage, setRedirectToLoginPage] = useState(false);
-    const [redirectToUsersHome, setRedirectToUsersHome] = useState(false);
+function Landing({
+    isCheckingLoginStatus,
+    isSomeoneLoggedIn,
+    checkLoginStatusError,
+    dispatch,
+}) {
+    console.log("isSomeoneLoggedIn", isSomeoneLoggedIn);
 
-    //componentDidMount
     useEffect(() => {
-        // //checking if someone is logged or not
-        // const mngoNotesLoggedUserToken = getCookieValue("mngoNotesLoggedUserToken");
-        // if (mngoNotesLoggedUserToken) {
-        //     //redirect to user's home page
-        //     setRedirectToUsersHome(true);
-        //     return;
-        // } else {
-        //     //redirect to login page
-        //     setRedirectToLoginPage(true);
-        //     return;
-        // }
+        dispatch(checkLoginStatusAction());
     }, []);
 
-    //component rendering
     return (
         <>
             {
-                //redirecting to admin login page
-                redirectToLoginPage ? <Redirect to="/login" /> : null
+                // isSomeoneLoggedIn ? <Redirect to="/home" /> : <Redirect to="/login" />
             }
 
-            {
-                //redirecting to admin login page
-                redirectToUsersHome ? <Redirect to="/home" /> : null
-            }
-
-            <br /><br />
-            <center>
-                Welcome to MNgo Chat! Please wait...
-            </center>
-            <br />
-            <LoadingAnimation loading={true} />
+            <PurpleGradientContainer childrenClassName="flexCenter">
+                <GreyGradientContainer width="350px" height="350px">
+                    <img
+                        className="logoImg"
+                        alt="logoImg"
+                        src={logoImg}
+                    />
+                </GreyGradientContainer>
+                <GreyGradientContainer
+                    className="greyGradientContainer2"
+                    width="220px"
+                    height="220px"
+                />
+                <GreyGradientContainer
+                    className="greyGradientContainer3"
+                    width="150px"
+                    height="150px"
+                />
+                <GreyGradientContainer
+                    className="greyGradientContainer4"
+                    width="100px"
+                    height="100px"
+                >
+                    <LoadingAnimation dark={true} loading={true} />
+                </GreyGradientContainer>
+            </PurpleGradientContainer>
         </>
     )
 }
 
-
 const mapStateToProps = (state) => {
     return {
-        loginInfo: state.loginInfo,
+        isCheckingLoginStatus: state.isCheckingLoginStatus,
+        isSomeoneLoggedIn: state.isSomeoneLoggedIn,
+        userDetails: state.userDetails,
+        checkLoginStatusError: state.checkLoginStatusError,
     }
 }
 

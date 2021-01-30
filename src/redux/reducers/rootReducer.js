@@ -1,5 +1,5 @@
 const defaultState = {
-    isCheckingLoginStatus: false,
+    isCheckingLoginStatus: true,
     isSomeoneLoggedIn: false,
     userDetails: {},
     checkLoginStatusError: null,

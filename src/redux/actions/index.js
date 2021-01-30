@@ -1,13 +1,13 @@
 import {
     LOGGED_USER_TOKEN_COOKIE_NAME,
     SOMETHING_WENT_WRONG_ERROR,
-} from "../../utils";
-import { getCookieValue } from "../../constants";
+} from "../../constants";
+import { getCookieValue } from "../../utils";
 import {
     getUserDetails,
-    verifyUser,
-    registerUser,
-} from "../apis";
+    VerifyLogin,
+    registerNewUser,
+} from "../../apis";
 
 export const checkLoginStatusAction = () => async (dispatch) => {
     dispatch({ type: 'CHECK_LOGIN_STATUS' });
@@ -30,7 +30,7 @@ export const checkLoginStatusAction = () => async (dispatch) => {
 
 export const loginUserAction = (username, password) => async (dispatch) => {
     try {
-        const response = await verifyUser(username, password);
+        const response = await VerifyLogin(username, password);
         dispatch({ type: 'LOGIN_USER', payload: response });
     } catch {
         dispatch({ type: 'LOGIN_USER', payload: SOMETHING_WENT_WRONG_ERROR });
@@ -39,7 +39,7 @@ export const loginUserAction = (username, password) => async (dispatch) => {
 
 export const registerUserAction = (username, name, email, password, passcode) => async (dispatch) => {
     try {
-        const response = await registerUser(username, name, email, password, passcode);
+        const response = await registerNewUser(username, name, email, password, passcode);
         dispatch({ type: 'REGISTER_USER', payload: response });
     } catch {
         dispatch({ type: 'REGISTER_USER', payload: SOMETHING_WENT_WRONG_ERROR });
