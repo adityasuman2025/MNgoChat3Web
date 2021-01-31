@@ -107,3 +107,19 @@ export async function getAllUsers(dispatch) {
                 dispatch(getAllUsersFailureAction({ msg: error.message }));
             });
 }
+
+export async function setUserActiveStatus(activeStatus) {
+    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    if (!loggedUserToken) {
+        return
+    }
+
+    const usersDbRef = firebase.app().database().ref('users/');
+    usersDbRef
+        .child(loggedUserToken)
+        .update({
+            "isActive": activeStatus,
+            "lastActive": (new Date()).toString(),
+        });
+
+}

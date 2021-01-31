@@ -212,17 +212,18 @@ code {
     overflow-y: scroll;
 }
 
-.listUserContainer {
-    padding: 10px;
-}
-
 .listUserItem {
     display: flex;
-    padding: 5px 0;
+    padding: 5px 10px;
     align-items: center;
     border-bottom: 1px solid grey;
     border-radius: 3px;
     cursor: pointer;
+}
+
+.unSeenMsgUser {
+    /* border-radius: 25px; */
+    background-color: rgb(173, 172, 172);
 }
 
 .listUserItem img {

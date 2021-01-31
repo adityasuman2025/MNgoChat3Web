@@ -13,6 +13,7 @@ import {
 } from "../constants";
 
 import {
+    setUserActiveStatus,
     getUserChatRooms,
     getAllUsers,
 } from "../firebaseQueries";
@@ -33,8 +34,18 @@ function HomePageContent({
     const [title, setTitle] = useState(CHATS_TITLE);
 
     useEffect(() => {
+        setUserActiveStatus(true);
         getUserChatRooms(dispatch);
         getAllUsers(dispatch);
+
+        setInterval(function name() {
+            // setUserActiveStatus(true);
+        }, 10000); //setting user lastActive time every 10 seconds
+        //other users need to compare their local time with that user lastActiveTime to get his active status
+
+        //componentDidUnmount
+        return () => {
+        }
     }, []);
 
     function hanldeNavBtnClick(type) {
@@ -43,6 +54,10 @@ function HomePageContent({
         } else {
             setTitle(USERS_TITLE)
         }
+    }
+
+    function handleUserItemClick() {
+        console.log(title)
     }
 
     return (
@@ -62,16 +77,22 @@ function HomePageContent({
                         isGettingUserAllChats || isGettingAllUsers ?
                             <LoadingAnimation dark loading />
                             :
-                            <div className="listUserContainer">
+                            <div>
                                 {
                                     title === CHATS_TITLE ?
                                         Object.keys(userAllChats).map(function(key) {
                                             const user = userAllChats[key];
-                                            const displayName = user.displayName
+                                            const unSeenMsgCount = user.unSeenMsgCount || 0;
+                                            const isUnSeen = (unSeenMsgCount > 0);
+
                                             return (
-                                                <div className="listUserItem">
+                                                <div
+                                                    key={key}
+                                                    className={cx("listUserItem", { ["unSeenMsgUser"]: isUnSeen })}
+                                                    onClick={handleUserItemClick}
+                                                >
                                                     <img alt="userIcon" src={userIcon} />
-                                                    {displayName}
+                                                    {user.displayName}
                                                 </div>
                                             )
                                         })
@@ -79,9 +100,14 @@ function HomePageContent({
                                         Object.keys(allUsers).map(function(userToken) {
                                             const user = allUsers[userToken];
                                             const displayName = user.username;
-                                            if (displayName != loggedUsername) {
+
+                                            if (displayName !== loggedUsername) {
                                                 return (
-                                                    <div className="listUserItem">
+                                                    <div
+                                                        key={userToken}
+                                                        className="listUserItem"
+                                                        onClick={handleUserItemClick}
+                                                    >
                                                         <img alt="userIcon" src={userIcon} />
                                                         {displayName}
                                                     </div>

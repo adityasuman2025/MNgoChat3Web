@@ -12,7 +12,6 @@ import {
 import {
     checkUserExistsInFirebase,
     createUserInFirebase,
-    getUserChatRooms,
 } from "../../firebaseQueries";
 
 export const showSnackBarAction = (msg, type) => async (dispatch) => {
