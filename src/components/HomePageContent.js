@@ -34,18 +34,17 @@ function HomePageContent({
     const [title, setTitle] = useState(CHATS_TITLE);
 
     useEffect(() => {
-        setUserActiveStatus(true);
         getUserChatRooms(dispatch);
         getAllUsers(dispatch);
+    }, []);
 
-        setInterval(function name() {
-            // setUserActiveStatus(true);
+    useEffect(() => {
+        setUserActiveStatus(true);
+
+        setInterval(function() {
+            setUserActiveStatus(true);
         }, 10000); //setting user lastActive time every 10 seconds
         //other users need to compare their local time with that user lastActiveTime to get his active status
-
-        //componentDidUnmount
-        return () => {
-        }
     }, []);
 
     function hanldeNavBtnClick(type) {

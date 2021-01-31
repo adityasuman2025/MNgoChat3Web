@@ -5,6 +5,7 @@ import Landing from './pages/Landing';
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import Chat from "./pages/Chat";
 
 import NotFound from './pages/NotFound';
 
@@ -15,6 +16,7 @@ const Routes = () => (
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/home" component={Home} />
+            <Route exact path="/chat/:chatRoomId" component={Chat} />
 
             <Route path="*" component={NotFound} />
         </Switch>
