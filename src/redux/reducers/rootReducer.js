@@ -136,7 +136,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'VERIFY_PASSCODE_SUCCESS': {
-            console.log("VERIFY_PASSCODE_SUCCESS", payload);
+            console.log("VERIFY_PASSCODE_SUCCESS");
             return {
                 ...state,
                 isVerifyingPasscode: false,
@@ -144,7 +144,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'VERIFY_PASSCODE_FAILURE': {
-            console.log("VERIFY_PASSCODE_FAILURE", payload);
+            console.log("VERIFY_PASSCODE_FAILURE");
             return {
                 ...state,
                 isVerifyingPasscode: false,
