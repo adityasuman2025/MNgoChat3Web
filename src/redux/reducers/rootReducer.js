@@ -22,6 +22,10 @@ const defaultState = {
     isGettingUserAllChats: false,
     getUserAllChatsError: null,
     userAllChats: {},
+
+    isGettingAllUsers: false,
+    getAllUsersError: null,
+    allUsers: {},
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -166,7 +170,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_USER_ALL_CHATS_SUCCESS': {
-            console.log("GET_USER_ALL_CHATS_SUCCESS", payload);
+            console.log("GET_USER_ALL_CHATS_SUCCESS");
             return {
                 ...state,
                 isGettingUserAllChats: false,
@@ -174,11 +178,37 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_USER_ALL_CHATS_FAILURE': {
-            console.log("GET_USER_ALL_CHATS_FAILURE", payload);
+            console.log("GET_USER_ALL_CHATS_FAILURE");
             return {
                 ...state,
                 isGettingUserAllChats: false,
                 getUserAllChatsError: payload.msg,
+            }
+        }
+
+        case 'GET_ALL_USERS': {
+            console.log("GET_ALL_USERS");
+            return {
+                ...state,
+                isGettingAllUsers: true,
+                getAllUsersError: null,
+                allUsers: {},
+            }
+        }
+        case 'GET_ALL_USERS_SUCCESS': {
+            console.log("GET_ALL_USERS_SUCCESS");
+            return {
+                ...state,
+                isGettingAllUsers: false,
+                allUsers: payload.data || {},
+            }
+        }
+        case 'GET_ALL_USERS_FAILURE': {
+            console.log("GET_ALL_USERS_FAILURE");
+            return {
+                ...state,
+                isGettingAllUsers: false,
+                getAllUsersError: payload.msg,
             }
         }
 

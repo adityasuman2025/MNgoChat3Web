@@ -127,3 +127,19 @@ export const getUserAllChatsFailureAction = (payload) => async (dispatch) => {
         dispatch({ type: 'GET_USER_ALL_CHATS_FAILURE', payload });
     }
 }
+
+export const getAllUsersAction = () => async (dispatch) => {
+    dispatch({ type: 'GET_ALL_USERS' });
+}
+
+export const getAllUsersSuccessAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_ALL_USERS_SUCCESS', payload });
+    }
+}
+
+export const getAllUsersFailureAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_ALL_USERS_FAILURE', payload });
+    }
+}

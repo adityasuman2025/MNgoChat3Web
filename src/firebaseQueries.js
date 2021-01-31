@@ -1,9 +1,14 @@
 import firebase from './FirebaseConfig';
 
+import { LOGGED_USER_TOKEN_COOKIE_NAME } from "./constants";
+import { getCookieValue } from "./utils";
 import {
     getUserAllChatsAction,
     getUserAllChatsSuccessAction,
-    getUserAllChatsFailureAction
+    getUserAllChatsFailureAction,
+    getAllUsersAction,
+    getAllUsersSuccessAction,
+    getAllUsersFailureAction,
 } from "./redux/actions/index";
 
 export async function checkUserExistsInFirebase(loggedUserToken) {
@@ -56,8 +61,14 @@ export async function createUserInFirebase(loggedUserToken, username) {
     return toReturn;
 }
 
-export async function getUserChatRooms(dispatch, loggedUserToken) {
+export async function getUserChatRooms(dispatch) {
+    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    if (!loggedUserToken) {
+        return
+    }
+
     dispatch(getUserAllChatsAction());
+
     const usersDbRef = firebase.app().database().ref('users/');
     usersDbRef
         .child(loggedUserToken)
@@ -72,5 +83,27 @@ export async function getUserChatRooms(dispatch, loggedUserToken) {
             },
             error => {
                 dispatch(getUserAllChatsFailureAction({ msg: error.message }));
+            });
+}
+
+export async function getAllUsers(dispatch) {
+    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    if (!loggedUserToken) {
+        return
+    }
+
+    dispatch(getAllUsersAction());
+
+    const usersDbRef = firebase.app().database().ref('users/');
+    usersDbRef
+        .on('value',
+            function(snap) {
+                const response = snap.val();
+                if (response) {
+                    dispatch(getAllUsersSuccessAction({ data: response }));
+                }
+            },
+            error => {
+                dispatch(getAllUsersFailureAction({ msg: error.message }));
             });
 }

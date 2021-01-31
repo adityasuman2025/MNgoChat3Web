@@ -171,17 +171,15 @@ code {
 }
 
 .homeContentContainer {
-    background: #c9c9c9;
-    /* background: #f1f1f1; */
-    border-radius: 0px 0px 10px 10px;
     height: calc(100% - var(--bottomNavHeight) - var(--bottomNavMarginBottom));
+    background: #c9c9c9;
+    border-radius: 0px 0px 10px 10px;
 }
 
 .homeBottomNavContainer {
     height: var(--bottomNavHeight);
     margin-bottom: var(--bottomNavMarginBottom);
     box-shadow: 1px 1px 10px 1px #24133f;
-    /* background: rgba(36, 19, 63, 1); */
     background: #d8d8d8;
     border-radius: 10px 10px 0px 0px;
     display: flex;
@@ -190,14 +188,47 @@ code {
 }
 
 .bottomTabIcons {
-    height: 80%;
+    height: 75%;
     margin: 0 10px;
-    /* filter: invert(8%) sepia(16%) saturate(6916%) hue-rotate(245deg) brightness(98%) contrast(99%); */
     /* filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%); */
     cursor: pointer;
 }
 
+.selectedBottomTabIcon {
+    filter: invert(8%) sepia(16%) saturate(6916%) hue-rotate(245deg) brightness(98%) contrast(99%);
+}
 
+.homeTitle {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    border-bottom: 2px solid #24133f;
+    background: #d8d8d8;
+}
+
+.homeContent {
+    height: calc(100% - 50px);
+    overflow-y: scroll;
+}
+
+.listUserContainer {
+    padding: 10px;
+}
+
+.listUserItem {
+    display: flex;
+    padding: 5px 0;
+    align-items: center;
+    border-bottom: 1px solid grey;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.listUserItem img {
+    height: 35px;
+    margin-right: 5px;
+}
 
 /*----input fields placeholder color-------*/
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
