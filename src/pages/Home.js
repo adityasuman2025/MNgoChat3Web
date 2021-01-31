@@ -16,6 +16,7 @@ function Home({
     history,
     dispatch,
 }) {
+    isPasscodeVerified = true;
     useEffect(() => {
         dispatch(checkLoginStatusAction());
     }, []);
@@ -38,7 +39,7 @@ function Home({
                     :
                     <PurpleGradientContainer childrenClassName="flexCenter">
                         {
-                            true ?
+                            isPasscodeVerified ?
                                 <HomePageContent history={history} />
                                 :
                                 <VerifyPasscode />

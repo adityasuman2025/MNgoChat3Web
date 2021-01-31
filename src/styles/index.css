@@ -168,6 +168,7 @@ code {
 .homeContainer {
     height: 100%;
     width: 60%;
+    margin: auto;
 }
 
 .homeContentContainer {
@@ -222,14 +223,100 @@ code {
 }
 
 .unSeenMsgUser {
-    /* border-radius: 25px; */
-    background-color: rgb(173, 172, 172);
+    background-color: rgb(190, 190, 190);
 }
 
 .listUserItem img {
     height: 35px;
     margin-right: 5px;
 }
+
+.chatWindow {
+    height: calc(100% - var(--actionBoxHeight));
+    box-shadow: 1px 1px 5px 1px #24133f;
+}
+
+.chatTitle {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    border-bottom: 2px solid rgb(119, 119, 119);
+    background: #24133f;
+}
+
+.lightTitle {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 0.1;
+    color: #d8d8d8;
+}
+
+.chatContent {
+    /* display: flex; */
+    /* justify-content: center; */
+    min-height: calc(100% - 50px);
+    max-height: calc(100% - 50px);
+    overflow-y: scroll;
+}
+
+.message {
+    display: flex;
+    width: 100%;
+}
+
+.myMessageAlignment {
+    justify-content: flex-end;
+}
+
+.myMessage {
+    width: 60%;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 20px 20px 0px 20px;
+    word-break: break-all;
+    color: #d8d8d8;
+    background: linear-gradient(45deg, var(--first), var(--second));
+    border: 1px solid var(--first);
+}
+
+.theirMessage {
+    width: 60%;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 0px 20px 20px 20px;
+    word-break: break-all;
+    color: #d8d8d8;
+    background: #24133f;
+    border: 1px solid var(--first);
+}
+
+.chatActionBox {
+    height: var(--actionBoxHeight);
+    background: #24133f;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.chatActionBox img {
+    width: 35px;
+    cursor: pointer;
+    filter: invert(91%) sepia(6%) saturate(0%) hue-rotate(244deg) brightness(93%) contrast(96%);
+}
+
+.sendMsgTextInput {
+    height: 80%;
+    width: calc(100% - 150px);
+    border: 1px solid #24133f;
+    border-radius: 25px;
+    padding: 0 16px;
+    font-size: 16px;
+    color: #d8d8d8;
+    background-color: #35176d;
+}
+
+
 
 /*----input fields placeholder color-------*/
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -298,12 +385,15 @@ code {
         width: 100%;
     }
 
-
     .homeContentContainer {
         height: calc(100% - var(--bottomNavHeight) - var(--bottomNavMarginBottom) + 10px);
     }
 
     .homeBottomNavContainer {
         height: calc(var(--bottomNavHeight) - 10px);
+    }
+
+    .sendMsgTextInput {
+        width: calc(100% - 120px);
     }
 }

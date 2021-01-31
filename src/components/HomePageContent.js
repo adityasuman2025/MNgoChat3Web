@@ -11,7 +11,6 @@ import {
     BOTTOM_NAV_HEIGHT,
     BOTTOM_NAV_BOTTOM_MARGIN,
 } from "../constants";
-
 import {
     setUserActiveStatus,
     getUserChatRooms,
@@ -60,9 +59,8 @@ function HomePageContent({
         }
     }
 
-    function handleUserItemClick() {
-        history.push("chat/" + title);
-        console.log(title)
+    function handleUserItemClick(chatRoomId) {
+        history.push("chat/" + chatRoomId);
     }
 
     return (
@@ -94,7 +92,7 @@ function HomePageContent({
                                                 <div
                                                     key={key}
                                                     className={cx("listUserItem", { ["unSeenMsgUser"]: isUnSeen })}
-                                                    onClick={handleUserItemClick}
+                                                    onClick={() => handleUserItemClick(key)}
                                                 >
                                                     <img alt="userIcon" src={userIcon} />
                                                     {user.displayName}

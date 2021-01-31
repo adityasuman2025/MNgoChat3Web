@@ -36,3 +36,4 @@ export const GRADIENT_GREY_DARK = LIGHT_GREY; //"#3f2177";
 //style variables
 export const BOTTOM_NAV_HEIGHT = "60px";
 export const BOTTOM_NAV_BOTTOM_MARGIN = "0px";
+export const CHAT_ACTION_BOX_HEIGHT = "50px";
