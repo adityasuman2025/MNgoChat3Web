@@ -78,7 +78,7 @@ function Chat({
 
                                 <div className={cx("message")}>
                                     <div className="theirMessage">
-                                        yobiroyobiroyobiroyobi
+                                        yobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biro
                                     </div>
                                 </div>
                             </div>
