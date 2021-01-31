@@ -29,6 +29,7 @@ function HomePageContent({
     userDetails: {
         username: loggedUsername
     } = {},
+    history,
     dispatch,
 }) {
     const [title, setTitle] = useState(CHATS_TITLE);
@@ -41,10 +42,14 @@ function HomePageContent({
     useEffect(() => {
         setUserActiveStatus(true);
 
-        setInterval(function() {
+        const setActiveStatusInterval = setInterval(function() {
             setUserActiveStatus(true);
         }, 10000); //setting user lastActive time every 10 seconds
         //other users need to compare their local time with that user lastActiveTime to get his active status
+
+        return () => {
+            clearInterval(setActiveStatusInterval);
+        }
     }, []);
 
     function hanldeNavBtnClick(type) {
@@ -56,6 +61,7 @@ function HomePageContent({
     }
 
     function handleUserItemClick() {
+        history.push("chat/" + title);
         console.log(title)
     }
 

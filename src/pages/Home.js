@@ -39,7 +39,7 @@ function Home({
                     <PurpleGradientContainer childrenClassName="flexCenter">
                         {
                             true ?
-                                <HomePageContent />
+                                <HomePageContent history={history} />
                                 :
                                 <VerifyPasscode />
                         }
