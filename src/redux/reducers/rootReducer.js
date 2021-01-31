@@ -15,6 +15,9 @@ const defaultState = {
     isUserRegistered: false,
     registerUserError: null,
 
+    isVerifyingPasscode: false,
+    isPasscodeVerified: false,
+    verifyPasscodeError: null,
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -120,6 +123,32 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 ...state,
                 isRegisteringUser: false,
                 registerUserError: payload.msg,
+            }
+        }
+
+        case 'VERIFY_PASSCODE': {
+            console.log("VERIFY_PASSCODE");
+            return {
+                ...state,
+                isVerifyingPasscode: true,
+                isPasscodeVerified: false,
+                verifyPasscodeError: null,
+            }
+        }
+        case 'VERIFY_PASSCODE_SUCCESS': {
+            console.log("VERIFY_PASSCODE_SUCCESS", payload);
+            return {
+                ...state,
+                isVerifyingPasscode: false,
+                isPasscodeVerified: true,
+            }
+        }
+        case 'VERIFY_PASSCODE_FAILURE': {
+            console.log("VERIFY_PASSCODE_FAILURE", payload);
+            return {
+                ...state,
+                isVerifyingPasscode: false,
+                verifyPasscodeError: payload.msg,
             }
         }
 

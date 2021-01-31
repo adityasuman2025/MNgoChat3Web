@@ -7,6 +7,7 @@ import {
     getUserDetails,
     verifyLogin,
     registerNewUser,
+    verifyPassCode,
 } from "../../apis";
 
 export const showSnackBarAction = (msg, type) => async (dispatch) => {
@@ -70,5 +71,19 @@ export const registerUserAction = (username, name, email, password, passcode) =>
         }
     } catch {
         dispatch({ type: 'REGISTER_USER_FAILURE', payload: SOMETHING_WENT_WRONG_ERROR });
+    }
+}
+
+export const verifyPasscodeAction = (loggedUserToken, passcode) => async (dispatch) => {
+    dispatch({ type: 'VERIFY_PASSCODE' });
+    try {
+        const response = await verifyPassCode(loggedUserToken, passcode);
+        if (response.statusCode === 200) {
+            dispatch({ type: 'VERIFY_PASSCODE_SUCCESS', payload: response });
+        } else {
+            dispatch({ type: 'VERIFY_PASSCODE_FAILURE', payload: response });
+        }
+    } catch {
+        dispatch({ type: 'VERIFY_PASSCODE_FAILURE', payload: SOMETHING_WENT_WRONG_ERROR });
     }
 }

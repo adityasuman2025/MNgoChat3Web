@@ -32,12 +32,14 @@ function Login({
     function handleLoginBtnClick(e) {
         e.preventDefault();
 
-        if (!isLoggingUser) {
-            if (username !== "" && password !== "") {
-                dispatch(loginUserAction(username, password));
-            } else {
-                dispatch(showSnackBarAction("Please fill all the input fields"));
-            }
+        if (isLoggingUser) {
+            return;
+        }
+
+        if (username !== "" && password !== "") {
+            dispatch(loginUserAction(username, password));
+        } else {
+            dispatch(showSnackBarAction("Please fill all the input fields"));
         }
     }
 

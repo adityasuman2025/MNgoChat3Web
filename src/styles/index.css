@@ -149,6 +149,22 @@ code {
     cursor: pointer;
 }
 
+.verifyPasscodeContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #d8d8d8;
+    padding: 30px 10px;
+    border-radius: 25px;
+}
+
+.darkTitle {
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 0.1;
+    color: #35176d;
+}
+
 /*----input fields placeholder color-------*/
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: #d8d8d8;

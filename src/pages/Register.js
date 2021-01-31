@@ -43,6 +43,10 @@ function Register({
     function handleRegisterBtnClick(e) {
         e.preventDefault();
 
+        if (isRegisteringUser) {
+            return;
+        }
+
         if (username !== "" && name !== "" && email !== "" && password !== "" && confPassword !== "" && passcode !== "" && confPasscode !== "") {
             if (!validateUsername(username)) {
                 dispatch(showSnackBarAction("Username cannot contain symbol and spaces"));

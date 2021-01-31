@@ -15,6 +15,8 @@ function SnackBarWrapper({
     isUserRegistered,
     registerUserError,
 
+    verifyPasscodeError,
+
 
     children,
 }) {
@@ -52,6 +54,12 @@ function SnackBarWrapper({
         }
     }, [isUserRegistered]);
 
+    useEffect(() => {
+        if (verifyPasscodeError) {
+            makeSnackBar(verifyPasscodeError);
+        }
+    }, [verifyPasscodeError]);
+
     function makeSnackBar(msg, type) {
         setSnackBarMsgState(msg);
         setSnackBarTypeState(type);
@@ -88,6 +96,8 @@ const mapStateToProps = (state) => {
 
         isUserRegistered: state.isUserRegistered,
         registerUserError: state.registerUserError,
+
+        verifyPasscodeError: state.verifyPasscodeError,
     }
 }
 
