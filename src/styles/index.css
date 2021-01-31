@@ -172,6 +172,7 @@ code {
 
 .homeContentContainer {
     background: #c9c9c9;
+    /* background: #f1f1f1; */
     border-radius: 0px 0px 10px 10px;
     height: calc(100% - var(--bottomNavHeight) - var(--bottomNavMarginBottom));
 }
@@ -182,7 +183,6 @@ code {
     box-shadow: 1px 1px 10px 1px #24133f;
     /* background: rgba(36, 19, 63, 1); */
     background: #d8d8d8;
-    /* background: #f1f1f1; */
     border-radius: 10px 10px 0px 0px;
     display: flex;
     align-items: center;
@@ -190,7 +190,7 @@ code {
 }
 
 .bottomTabIcons {
-    height: 90%;
+    height: 80%;
     margin: 0 10px;
     /* filter: invert(8%) sepia(16%) saturate(6916%) hue-rotate(245deg) brightness(98%) contrast(99%); */
     /* filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%); */
