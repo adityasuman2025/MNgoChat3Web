@@ -9,6 +9,10 @@ import {
     registerNewUser,
     verifyPassCode,
 } from "../../apis";
+import {
+    checkUserExistsInFirebase,
+    createUserInFirebase,
+} from "../../firebaseQueries";
 
 export const showSnackBarAction = (msg, type) => async (dispatch) => {
     dispatch({ type: 'SHOW_SNACKBAR', payload: { msg, type } });
@@ -17,12 +21,31 @@ export const showSnackBarAction = (msg, type) => async (dispatch) => {
 export const checkLoginStatusAction = () => async (dispatch) => {
     dispatch({ type: 'CHECK_LOGIN_STATUS' });
     try {
-        const cookieValue = await getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
-        if (cookieValue) {
-            const response = await getUserDetails(cookieValue);
+        const loggedUserToken = await getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+        if (loggedUserToken) {
+            const response = await getUserDetails(loggedUserToken);
             if (response.statusCode === 200) {
                 const userDetails = response.data;
-                dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
+                const username = userDetails.username;
+
+                const firebaseResponse = await checkUserExistsInFirebase(loggedUserToken);
+                if (firebaseResponse.statusCode === 200) {
+                    console.log("user exists in firebase");
+                    dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
+                } else {
+                    const error = firebaseResponse.msg
+                    if (error) {
+                        dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse });
+                    } else {
+                        const firebaseResponse2 = await createUserInFirebase(loggedUserToken, username);
+                        console.log("user created in firebase");
+                        if (firebaseResponse2.statusCode === 200) {
+                            dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
+                        } else {
+                            dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse2 });
+                        }
+                    }
+                }
             } else {
                 dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: response });
             }
