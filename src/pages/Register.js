@@ -13,10 +13,7 @@ import {
     validateEmail,
     validateNumber,
 } from "../utils";
-import {
-    showSnackBarAction,
-    registerUserAction
-} from "../redux/actions/index";
+import { showSnackBarAction, registerUserAction } from "../redux/actions/index";
 
 function Register({
     isRegisteringUser,

@@ -32,3 +32,7 @@ export const GRADIENT_PURPLE_DARK = DARK_PURPLE;
 
 export const GRADIENT_GREY_LIGHT = DARK_GREY; //"#6c519c";
 export const GRADIENT_GREY_DARK = LIGHT_GREY; //"#3f2177";
+
+//style variables
+export const BOTTOM_NAV_HEIGHT = "60px";
+export const BOTTOM_NAV_BOTTOM_MARGIN = "0px";
