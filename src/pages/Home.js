@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
 
@@ -38,7 +38,7 @@ function Home({
                     :
                     <PurpleGradientContainer childrenClassName="flexCenter">
                         {
-                            isPasscodeVerified ?
+                            true ?
                                 <HomePageContent />
                                 :
                                 <VerifyPasscode />

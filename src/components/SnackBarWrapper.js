@@ -17,6 +17,7 @@ function SnackBarWrapper({
 
     verifyPasscodeError,
 
+    getUserAllChatsError,
 
     children,
 }) {
@@ -60,6 +61,15 @@ function SnackBarWrapper({
         }
     }, [verifyPasscodeError]);
 
+    useEffect(() => {
+        if (getUserAllChatsError) {
+            makeSnackBar(getUserAllChatsError);
+        }
+    }, [getUserAllChatsError]);
+
+
+
+
     function makeSnackBar(msg, type) {
         setSnackBarMsgState(msg);
         setSnackBarTypeState(type);
@@ -98,6 +108,8 @@ const mapStateToProps = (state) => {
         registerUserError: state.registerUserError,
 
         verifyPasscodeError: state.verifyPasscodeError,
+
+        getUserAllChatsError: state.getUserAllChatsError,
     }
 }
 

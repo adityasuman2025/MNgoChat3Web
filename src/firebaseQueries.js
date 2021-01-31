@@ -1,5 +1,11 @@
 import firebase from './FirebaseConfig';
 
+import {
+    getUserAllChatsAction,
+    getUserAllChatsSuccessAction,
+    getUserAllChatsFailureAction
+} from "./redux/actions/index";
+
 export async function checkUserExistsInFirebase(loggedUserToken) {
     let toReturn = { statusCode: 500, data: false, msg: "" };
 
@@ -48,4 +54,23 @@ export async function createUserInFirebase(loggedUserToken, username) {
             });
 
     return toReturn;
+}
+
+export async function getUserChatRooms(dispatch, loggedUserToken) {
+    dispatch(getUserAllChatsAction());
+    const usersDbRef = firebase.app().database().ref('users/');
+    usersDbRef
+        .child(loggedUserToken)
+        .on('value',
+            function(snap) {
+                const response = snap.val();
+                if (response) {
+                    const data = response.userChatRooms;
+
+                    dispatch(getUserAllChatsSuccessAction({ data }));
+                }
+            },
+            error => {
+                dispatch(getUserAllChatsFailureAction({ msg: error.message }));
+            });
 }

@@ -12,6 +12,7 @@ import {
 import {
     checkUserExistsInFirebase,
     createUserInFirebase,
+    getUserChatRooms,
 } from "../../firebaseQueries";
 
 export const showSnackBarAction = (msg, type) => async (dispatch) => {
@@ -108,5 +109,21 @@ export const verifyPasscodeAction = (loggedUserToken, passcode) => async (dispat
         }
     } catch {
         dispatch({ type: 'VERIFY_PASSCODE_FAILURE', payload: SOMETHING_WENT_WRONG_ERROR });
+    }
+}
+
+export const getUserAllChatsAction = () => async (dispatch) => {
+    dispatch({ type: 'GET_USER_ALL_CHATS' });
+}
+
+export const getUserAllChatsSuccessAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_USER_ALL_CHATS_SUCCESS', payload });
+    }
+}
+
+export const getUserAllChatsFailureAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_USER_ALL_CHATS_FAILURE', payload });
     }
 }

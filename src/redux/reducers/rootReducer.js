@@ -5,8 +5,8 @@ const defaultState = {
 
     isCheckingLoginStatus: true,
     isSomeoneLoggedIn: false,
-    userDetails: {},
     checkLoginStatusError: null,
+    userDetails: {},
 
     isLoggingUser: false,
     loginUserError: null,
@@ -18,6 +18,10 @@ const defaultState = {
     isVerifyingPasscode: false,
     isPasscodeVerified: false,
     verifyPasscodeError: null,
+
+    isGettingUserAllChats: false,
+    getUserAllChatsError: null,
+    userAllChats: {},
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -149,6 +153,32 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 ...state,
                 isVerifyingPasscode: false,
                 verifyPasscodeError: payload.msg,
+            }
+        }
+
+        case 'GET_USER_ALL_CHATS': {
+            console.log("GET_USER_ALL_CHATS");
+            return {
+                ...state,
+                isGettingUserAllChats: true,
+                getUserAllChatsError: null,
+                userAllChats: {},
+            }
+        }
+        case 'GET_USER_ALL_CHATS_SUCCESS': {
+            console.log("GET_USER_ALL_CHATS_SUCCESS", payload);
+            return {
+                ...state,
+                isGettingUserAllChats: false,
+                userAllChats: payload.data || {},
+            }
+        }
+        case 'GET_USER_ALL_CHATS_FAILURE': {
+            console.log("GET_USER_ALL_CHATS_FAILURE", payload);
+            return {
+                ...state,
+                isGettingUserAllChats: false,
+                getUserAllChatsError: payload.msg,
             }
         }
 
