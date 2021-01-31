@@ -36,6 +36,7 @@ function VerifyPassCode({
                 type="password"
                 className="formInputField"
                 placeholder="Enter Passcode"
+                autoFocus
                 maxLength={4}
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
