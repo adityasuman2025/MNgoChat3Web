@@ -6,12 +6,13 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/en';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 
+import userIcon from "../images/user.png";
 import sendIcon from "../images/send2.png";
 import uploadImgIcon from "../images/uploadImg.png";
 import LandingPageDesign from "../components/LandingPageDesign";
 import PurpleGradientContainer from "../components/PurpleGradientContainer";
 
-import { CHAT_ACTION_BOX_HEIGHT, LOGGED_USER_TOKEN_COOKIE_NAME } from "../constants";
+import { CHAT_ACTION_BOX_HEIGHT, LOGGED_USER_TOKEN_COOKIE_NAME, MSG_TYPE_IMAGE } from "../constants";
 import { getCookieValue } from "../utils";
 import {
     checkLoginStatusAction,
@@ -102,22 +103,41 @@ function Chat({
     // }, []);
 
     function renderMessages() {
+        console.log("messages", messages)
         if (typeof messages === "object") {
             const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
 
-            const toRender = Object.keys(messages).map((key, index) => {
+            const toRender = Object.keys(messages).map(function(key, index) {
                 const msg = messages[key];
-                return (
-                    <div
-                        key={msg.messageId + index}
-                        className={cx(
-                            "message",
-                            { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken }
-                        )}
-                    >
-                        <div className="myMessage">{msg.message}</div>
-                    </div>
-                )
+                const time = msg.time;
+                const type = msg.type;
+                const formattedTime = dayjs(time).format("LT");
+
+                if (type === MSG_TYPE_IMAGE) {
+
+                } else {
+                    return (
+                        <div key={msg.messageId + index} className={"messageContainer"} >
+                            <div
+                                className={cx(
+                                    "message",
+                                    { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken }
+                                )}
+                            >
+                                <div
+                                    className={cx(
+                                        { ["myMessage"]: msg.sentByUserToken === loggedUserToken },
+                                        { ["theirMessage"]: msg.sentByUserToken !== loggedUserToken }
+                                    )}
+                                    title={formattedTime}
+                                >
+                                    {msg.message}
+                                </div>
+                            </div>
+                            <div className="messageTime">{formattedTime}</div>
+                        </div>
+                    )
+                }
             });
 
             return toRender;
@@ -138,7 +158,7 @@ function Chat({
 
             {
                 isCheckingLoginStatus || (isGettingChatRoomDetails || !isChatRoomDetailsFetched) ?
-                    <LandingPageDesign isCheckingLoginStatus={isCheckingLoginStatus} />
+                    <LandingPageDesign isCheckingLoginStatus={isCheckingLoginStatus || isGettingChatRoomDetails} />
                     :
                     <PurpleGradientContainer childrenClassName="homeContainer">
                         <div
@@ -146,24 +166,14 @@ function Chat({
                             style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
                         >
                             <div className="chatTitle">
-                                <div className="lightTitle">{displayName}</div>
-                                <div className="onlineStatus">{displayNameUserActiveStatus}</div>
-                            </div>
-
-                            <div className="chatContent">
-                                {renderMessages()}
-                                {/* <div className={cx("message", "myMessageAlignment")}>
-                                    <div className="myMessage">
-                                        yobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biro
-                                    </div>
+                                <img alt="userIcon" src={userIcon} />
+                                <div>
+                                    <div className="lightTitle">{displayName}</div>
+                                    <div className="onlineStatus">{displayNameUserActiveStatus}</div>
                                 </div>
-
-                                <div className={cx("message")}>
-                                    <div className="theirMessage">
-                                        yobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biro
-                                    </div>
-                                </div> */}
                             </div>
+
+                            <div className="chatContent">{renderMessages()}</div>
                         </div>
 
                         <div

@@ -238,27 +238,28 @@ code {
 .chatTitle {
     height: 45px;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+    align-items: center;
     padding-left: 10px;
-    /* border-bottom: 2px solid rgb(119, 119, 119); */
     background: #24133f;
-
     background: linear-gradient(45deg, #24133f, var(--second));
 }
 
+.chatTitle img {
+    height: 30px;
+    margin-right: 10px;
+    filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%);
+}
+
 .lightTitle {
-    font-weight: 700;
-    font-size: 20px;
+    font-weight: 500;
+    font-size: 18px;
     letter-spacing: 0.1;
     color: #d8d8d8;
-    /* color: #bbbaba; */
 }
 
 .onlineStatus {
     color: #aaa8a8;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .chatContent {
@@ -268,9 +269,13 @@ code {
     background: linear-gradient(45deg, #24133f, var(--second));
 }
 
+.messageContainer {
+    width: 100%;
+    font-size: 14px;
+}
+
 .message {
     display: flex;
-    width: 100%;
 }
 
 .myMessageAlignment {
@@ -280,6 +285,7 @@ code {
 .myMessage {
     max-width: 60%;
     margin: 10px;
+    margin-bottom: 5px;
     padding: 10px;
     border-radius: 25px 25px 0px 25px;
     word-break: break-all;
@@ -291,6 +297,7 @@ code {
 .theirMessage {
     max-width: 60%;
     margin: 10px;
+    margin-bottom: 5px;
     padding: 10px;
     border-radius: 0px 25px 25px 25px;
     word-break: break-all;
@@ -298,6 +305,13 @@ code {
     background: #24133f;
     /* background: linear-gradient(45deg, var(--second), #24133f); */
     border: 1px solid var(--second);
+}
+
+.messageTime {
+    color: #aaa8a8;
+    font-size: 9.5px;
+    margin-right: 10px;
+    text-align: right;
 }
 
 .chatActionBox {

@@ -11,6 +11,7 @@ export const AUTH_API_URL_ADDRESS = "https://mngo.in/auth_api/";
 //general variables
 export const PROJECT_NAME = "MNgo Chat";
 export const LOGGED_USER_TOKEN_COOKIE_NAME = "mngoChatLoggenUserToken";
+export const MSG_TYPE_IMAGE = "image";
 
 //error variables
 export const SOMETHING_WENT_WRONG_ERROR = { statusCode: 500, msg: "Something went wrong" };
