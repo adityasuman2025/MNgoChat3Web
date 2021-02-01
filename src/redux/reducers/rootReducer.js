@@ -228,7 +228,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_CHAT_ROOM_DETAILS_SUCCESS': {
-            console.log("GET_CHAT_ROOM_DETAILS_SUCCESS", payload);
+            console.log("GET_CHAT_ROOM_DETAILS_SUCCESS");
             return {
                 ...state,
                 isGettingChatRoomDetails: false,
@@ -237,7 +237,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_CHAT_ROOM_DETAILS_FAILURE': {
-            console.log("GET_CHAT_ROOM_DETAILS_FAILURE", payload);
+            console.log("GET_CHAT_ROOM_DETAILS_FAILURE");
             return {
                 ...state,
                 isGettingChatRoomDetails: false,
