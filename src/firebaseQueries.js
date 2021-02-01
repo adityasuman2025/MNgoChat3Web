@@ -158,8 +158,6 @@ export async function getChatRoomDetails(chatRoomId) {
 }
 
 export async function getActiveStatusOfAUser(dispatch, userToken) {
-    // dispatch(getAllUsersAction());
-
     const usersDbRef = firebase.app().database().ref('users/' + userToken + "/lastActive");
     usersDbRef
         .on('value',

@@ -31,6 +31,7 @@ function Chat({
     chatRoomDetails: {
         displayName,
         members = {},
+        messages = {},
     } = {},
     match: {
         params: {
@@ -39,6 +40,8 @@ function Chat({
     } = {},
     dispatch,
 }) {
+    isCheckingLoginStatus = false;
+    isSomeoneLoggedIn = true;
     dayjs.locale('en');
     dayjs.extend(localizedFormat);
 
@@ -46,7 +49,7 @@ function Chat({
     const [msgText, setMsgText] = useState("");
 
     useEffect(() => {
-        dispatch(checkLoginStatusAction());
+        // dispatch(checkLoginStatusAction());
         dispatch(getChatRoomDetailsAction(chatRoomId));
     }, []);
 
@@ -70,7 +73,6 @@ function Chat({
     }, [isChatRoomDetailsFetched, members]);
 
     useEffect(() => {
-        console.log(new Date())
         if (activeStatusOfAUser) {
             const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
             const displayNameUserActiveStatusTimeStamp = Date.parse(activeStatusOfAUser) / 1000;
@@ -99,6 +101,29 @@ function Chat({
     //     }
     // }, []);
 
+    function renderMessages() {
+        if (typeof messages === "object") {
+            const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+
+            const toRender = Object.keys(messages).map((key, index) => {
+                const msg = messages[key];
+                return (
+                    <div
+                        key={msg.messageId + index}
+                        className={cx(
+                            "message",
+                            { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken }
+                        )}
+                    >
+                        <div className="myMessage">{msg.message}</div>
+                    </div>
+                )
+            });
+
+            return toRender;
+        }
+    }
+
     function redirectToHomeOrLoginPage() {
         if (!isCheckingLoginStatus) {
             if (!isSomeoneLoggedIn) {
@@ -118,16 +143,16 @@ function Chat({
                     <PurpleGradientContainer childrenClassName="homeContainer">
                         <div
                             className="chatWindow"
-                            style={{
-                                "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT,
-                            }}
+                            style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
                         >
                             <div className="chatTitle">
                                 <div className="lightTitle">{displayName}</div>
                                 <div className="onlineStatus">{displayNameUserActiveStatus}</div>
                             </div>
+
                             <div className="chatContent">
-                                <div className={cx("message", "myMessageAlignment")}>
+                                {renderMessages()}
+                                {/* <div className={cx("message", "myMessageAlignment")}>
                                     <div className="myMessage">
                                         yobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biro
                                     </div>
@@ -137,15 +162,13 @@ function Chat({
                                     <div className="theirMessage">
                                         yobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyobiroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biroyo biro
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
 
                         <div
                             className="chatActionBox"
-                            style={{
-                                "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT,
-                            }}
+                            style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
                         >
                             <img alt="uploadImgIcon" src={uploadImgIcon} />
                             <input
