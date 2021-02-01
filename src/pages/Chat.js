@@ -21,6 +21,7 @@ import {
 import {
     setUserActiveStatus,
     getActiveStatusOfAUser,
+    getMessagesOfAChatRoom,
 } from "../firebaseQueries";
 
 function Chat({
@@ -32,8 +33,8 @@ function Chat({
     chatRoomDetails: {
         displayName,
         members = {},
-        messages = {},
     } = {},
+    chatRoomMessages = {},
     match: {
         params: {
             chatRoomId,
@@ -56,6 +57,8 @@ function Chat({
 
     useEffect(() => {
         if (isChatRoomDetailsFetched && typeof members === "object") {
+            getMessagesOfAChatRoom(dispatch, chatRoomId);
+
             //display last active of other user in case of one-0-one chat only
             if (Object.keys(members).length === 2) {
                 try {
@@ -103,45 +106,46 @@ function Chat({
     // }, []);
 
     function renderMessages() {
-        console.log("messages", messages)
-        if (typeof messages === "object") {
-            const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+        const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
 
-            const toRender = Object.keys(messages).map(function(key, index) {
-                const msg = messages[key];
-                const time = msg.time;
-                const type = msg.type;
-                const formattedTime = dayjs(time).format("LT");
+        const messagesOfThisChatRoom = chatRoomMessages[chatRoomId] || [];
+        const toRender = messagesOfThisChatRoom.map(function(msg, index) {
+            if (typeof msg !== "object") {
+                return;
+            }
 
-                if (type === MSG_TYPE_IMAGE) {
+            const time = msg.time;
+            const type = msg.type;
+            const formattedTime = dayjs(time).format("LT");
 
-                } else {
-                    return (
-                        <div key={msg.messageId + index} className={"messageContainer"} >
+            if (type === MSG_TYPE_IMAGE) {
+
+            } else {
+                return (
+                    <div key={msg.messageId + index} className={"messageContainer"} >
+                        <div
+                            className={cx(
+                                "message",
+                                { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken }
+                            )}
+                        >
                             <div
                                 className={cx(
-                                    "message",
-                                    { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken }
+                                    { ["myMessage"]: msg.sentByUserToken === loggedUserToken },
+                                    { ["theirMessage"]: msg.sentByUserToken !== loggedUserToken }
                                 )}
+                                title={formattedTime}
                             >
-                                <div
-                                    className={cx(
-                                        { ["myMessage"]: msg.sentByUserToken === loggedUserToken },
-                                        { ["theirMessage"]: msg.sentByUserToken !== loggedUserToken }
-                                    )}
-                                    title={formattedTime}
-                                >
-                                    {msg.message}
-                                </div>
+                                {msg.message}
                             </div>
-                            <div className="messageTime">{formattedTime}</div>
                         </div>
-                    )
-                }
-            });
+                        <div className="messageTime">{formattedTime}</div>
+                    </div>
+                )
+            }
+        });
 
-            return toRender;
-        }
+        return toRender;
     }
 
     function redirectToHomeOrLoginPage() {
@@ -205,6 +209,7 @@ const mapStateToProps = (state) => {
         isChatRoomDetailsFetched: state.isChatRoomDetailsFetched,
         activeStatusOfAUser: state.activeStatusOfAUser,
         chatRoomDetails: state.chatRoomDetails,
+        chatRoomMessages: state.chatRoomMessages,
     }
 }
 

@@ -6,10 +6,15 @@ import {
     getUserAllChatsAction,
     getUserAllChatsSuccessAction,
     getUserAllChatsFailureAction,
+
     getAllUsersAction,
     getAllUsersSuccessAction,
     getAllUsersFailureAction,
+
     getActiveStatusOfAUserSuccessAction,
+
+    getMessagesOfAChatRoomAction,
+    getMessagesOfAChatRoomSuccessAction,
 } from "./redux/actions/index";
 
 export async function checkUserExistsInFirebase(loggedUserToken) {
@@ -70,16 +75,13 @@ export async function getUserChatRooms(dispatch) {
 
     dispatch(getUserAllChatsAction());
 
-    const usersDbRef = firebase.app().database().ref('users/');
+    const usersDbRef = firebase.app().database().ref('users/' + loggedUserToken + "/userChatRooms");
     usersDbRef
-        .child(loggedUserToken)
         .on('value',
             function(snap) {
                 const response = snap.val();
                 if (response) {
-                    const data = response.userChatRooms;
-
-                    dispatch(getUserAllChatsSuccessAction({ data }));
+                    dispatch(getUserAllChatsSuccessAction({ data: response }));
                 }
             },
             error => {
@@ -97,16 +99,16 @@ export async function getAllUsers(dispatch) {
 
     const usersDbRef = firebase.app().database().ref('users/');
     usersDbRef
-        .on('value',
-            function(snap) {
-                const response = snap.val();
-                if (response) {
-                    dispatch(getAllUsersSuccessAction({ data: response }));
-                }
-            },
-            error => {
-                dispatch(getAllUsersFailureAction({ msg: error.message }));
-            });
+        .once('value')
+        .then(async resp => {
+            const response = resp.val();
+            if (response) {
+                dispatch(getAllUsersSuccessAction({ data: response }));
+            }
+        })
+        .catch(error => {
+            dispatch(getAllUsersFailureAction({ msg: error.message }));
+        });
 }
 
 export async function setUserActiveStatus(activeStatus) {
@@ -127,15 +129,30 @@ export async function setUserActiveStatus(activeStatus) {
 export async function getChatRoomDetails(chatRoomId) {
     let toReturn = { statusCode: 500, data: false, msg: "Selected chat does not exist" };
 
-    const chatRoomDbRef = firebase.app().database().ref('chatRooms/');
+    const data = {};
+    const chatRoomDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId);
     await chatRoomDbRef
-        .child(chatRoomId)
+        .child("displayName")
         .once('value')
         .then(async resp => {
             const response = resp.val();
             if (response) {
+                data.displayName = response;
+            }
+        })
+        .catch(error => {
+            toReturn.msg = error.message;
+        });
+
+    await chatRoomDbRef
+        .child("members")
+        .once('value')
+        .then(async resp => {
+            const response = resp.val();
+            if (response) {
+                data.members = response;
                 toReturn.statusCode = 200;
-                toReturn.data = response;
+                toReturn.data = data;
             }
         })
         .catch(error => {
@@ -143,21 +160,13 @@ export async function getChatRoomDetails(chatRoomId) {
         });
 
     return toReturn;
-
-    // .on('value',
-    //     function(snap) {
-    //         const response = snap.val();
-    //         if (response) {
-    //             dispatch(getChatRoomDetailsSuccessAction({ data: response }));
-    //         }
-    //     },
-    //     error => {
-    //         dispatch(getChatRoomDetailsFailureAction({ msg: error.message }));
-    //     });
-
 }
 
 export async function getActiveStatusOfAUser(dispatch, userToken) {
+    if (!userToken) {
+        return;
+    }
+
     const usersDbRef = firebase.app().database().ref('users/' + userToken + "/lastActive");
     usersDbRef
         .on('value',
@@ -166,5 +175,25 @@ export async function getActiveStatusOfAUser(dispatch, userToken) {
                 if (response) {
                     dispatch(getActiveStatusOfAUserSuccessAction({ data: response }));
                 }
+            });
+}
+
+export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
+    if (!chatRoomId) {
+        return;
+    }
+
+    dispatch(getMessagesOfAChatRoomAction({ chatRoomId }));
+
+    const chatRoomDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages");
+    chatRoomDbRef
+        .on('child_added',
+            resp => {
+                const response = resp.val();
+                if (response) {
+                    dispatch(getMessagesOfAChatRoomSuccessAction({ data: { message: response, chatRoomId } }));
+                }
+            },
+            error => {
             });
 }

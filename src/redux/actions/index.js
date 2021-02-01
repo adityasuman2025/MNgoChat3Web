@@ -175,3 +175,15 @@ export const getActiveStatusOfAUserSuccessAction = (payload) => async (dispatch)
         dispatch({ type: 'GET_ACTIVE_STATUS_OF_A_USER_SUCCESS', payload });
     }
 }
+
+export const getMessagesOfAChatRoomAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_MESSAGES_OF_A_CHAT_ROOM', payload });
+    }
+}
+
+export const getMessagesOfAChatRoomSuccessAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS', payload });
+    }
+}

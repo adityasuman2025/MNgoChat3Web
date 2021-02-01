@@ -33,6 +33,8 @@ const defaultState = {
     chatRoomDetails: {},
 
     activeStatusOfAUser: null,
+
+    chatRoomMessages: {},
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -252,6 +254,34 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             return {
                 ...state,
                 activeStatusOfAUser: payload.data || null
+            }
+        }
+
+        case 'GET_MESSAGES_OF_A_CHAT_ROOM': {
+            console.log("GET_MESSAGES_OF_A_CHAT_ROOM");
+            return {
+                ...state,
+                chatRoomMessages: {
+                    ...state.chatRoomMessages,
+                    [payload.chatRoomId || ""]: []
+                }
+            }
+        }
+        case 'GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS': {
+            console.log("GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS");
+            const data = payload.data || {};
+            const chatRoomId = data.chatRoomId;
+            const message = data.message;
+
+            const messagesOfAChatRoom = state.chatRoomMessages[chatRoomId] || [];
+            messagesOfAChatRoom.push(message);
+
+            return {
+                ...state,
+                chatRoomMessages: {
+                    ...state.chatRoomMessages,
+                    [chatRoomId]: messagesOfAChatRoom
+                }
             }
         }
 
