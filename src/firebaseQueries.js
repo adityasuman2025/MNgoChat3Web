@@ -121,5 +121,42 @@ export async function setUserActiveStatus(activeStatus) {
             "isActive": activeStatus,
             "lastActive": (new Date()).toString(),
         });
+}
+
+export async function getChatRoomDetails(chatRoomId) {
+    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    if (!loggedUserToken) {
+        return
+    }
+
+    let toReturn = { statusCode: 500, data: false, msg: "Selected chat does not exist" };
+
+    const chatRoomDbRef = firebase.app().database().ref('chatRooms/');
+    await chatRoomDbRef
+        .child(chatRoomId)
+        .once('value')
+        .then(async resp => {
+            const response = resp.val();
+            if (response) {
+                toReturn.statusCode = 200;
+                toReturn.data = response;
+            }
+        })
+        .catch(error => {
+            toReturn.msg = error.message;
+        });
+
+    return toReturn;
+
+    // .on('value',
+    //     function(snap) {
+    //         const response = snap.val();
+    //         if (response) {
+    //             dispatch(getChatRoomDetailsSuccessAction({ data: response }));
+    //         }
+    //     },
+    //     error => {
+    //         dispatch(getChatRoomDetailsFailureAction({ msg: error.message }));
+    //     });
 
 }

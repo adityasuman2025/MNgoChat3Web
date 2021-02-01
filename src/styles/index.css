@@ -238,7 +238,9 @@ code {
 .chatTitle {
     height: 45px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
     padding-left: 10px;
     /* border-bottom: 2px solid rgb(119, 119, 119); */
     background: #24133f;
@@ -250,7 +252,13 @@ code {
     font-weight: 700;
     font-size: 20px;
     letter-spacing: 0.1;
+    color: #d8d8d8;
+    /* color: #bbbaba; */
+}
+
+.onlineStatus {
     color: #aaa8a8;
+    font-size: 12px;
 }
 
 .chatContent {
@@ -333,6 +341,11 @@ code {
 
 ::-ms-input-placeholder { /* Microsoft Edge */
     color: #aaa8a8;
+}
+
+/*-----hiding scrollbar----------*/
+::-webkit-scrollbar {
+    display: none;
 }
 
 .center {

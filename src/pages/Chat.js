@@ -9,7 +9,10 @@ import LandingPageDesign from "../components/LandingPageDesign";
 import PurpleGradientContainer from "../components/PurpleGradientContainer";
 
 import { CHAT_ACTION_BOX_HEIGHT } from "../constants";
-import { checkLoginStatusAction } from "../redux/actions/index";
+import {
+    checkLoginStatusAction,
+    getChatRoomDetailsAction
+} from "../redux/actions/index";
 import {
     setUserActiveStatus,
 } from "../firebaseQueries";
@@ -17,9 +20,14 @@ import {
 function Chat({
     isCheckingLoginStatus,
     isSomeoneLoggedIn,
+    isGettingChatRoomDetails,
+    isChatRoomDetailsFetched,
+    chatRoomDetails: {
+        displayName
+    } = {},
     match: {
         params: {
-            chatRoomId, //or userToken
+            chatRoomId,
         } = {}
     } = {},
     dispatch,
@@ -28,6 +36,7 @@ function Chat({
 
     useEffect(() => {
         dispatch(checkLoginStatusAction());
+        dispatch(getChatRoomDetailsAction(chatRoomId));
     }, []);
 
     // useEffect(() => {
@@ -56,7 +65,7 @@ function Chat({
             {redirectToHomeOrLoginPage()}
 
             {
-                isCheckingLoginStatus ?
+                isCheckingLoginStatus || (isGettingChatRoomDetails || !isChatRoomDetailsFetched) ?
                     <LandingPageDesign isCheckingLoginStatus={isCheckingLoginStatus} />
                     :
                     <PurpleGradientContainer childrenClassName="homeContainer">
@@ -67,7 +76,8 @@ function Chat({
                             }}
                         >
                             <div className="chatTitle">
-                                <div className="lightTitle">{chatRoomId}</div>
+                                <div className="lightTitle">{displayName}</div>
+                                <div className="onlineStatus">23 mins ago</div>
                             </div>
                             <div className="chatContent">
                                 <div className={cx("message", "myMessageAlignment")}>
@@ -111,6 +121,9 @@ const mapStateToProps = (state) => {
     return {
         isCheckingLoginStatus: state.isCheckingLoginStatus,
         isSomeoneLoggedIn: state.isSomeoneLoggedIn,
+        isGettingChatRoomDetails: state.isGettingChatRoomDetails,
+        isChatRoomDetailsFetched: state.isChatRoomDetailsFetched,
+        chatRoomDetails: state.chatRoomDetails,
     }
 }
 

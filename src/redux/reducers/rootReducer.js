@@ -26,6 +26,11 @@ const defaultState = {
     isGettingAllUsers: false,
     getAllUsersError: null,
     allUsers: {},
+
+    isGettingChatRoomDetails: false,
+    isChatRoomDetailsFetched: false,
+    getChatRoomDetailsError: null,
+    chatRoomDetails: {},
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -211,6 +216,35 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 getAllUsersError: payload.msg,
             }
         }
+
+        case 'GET_CHAT_ROOM_DETAILS': {
+            console.log("GET_CHAT_ROOM_DETAILS");
+            return {
+                ...state,
+                isGettingChatRoomDetails: true,
+                isChatRoomDetailsFetched: false,
+                getChatRoomDetailsError: null,
+                chatRoomDetails: {},
+            }
+        }
+        case 'GET_CHAT_ROOM_DETAILS_SUCCESS': {
+            console.log("GET_CHAT_ROOM_DETAILS_SUCCESS", payload);
+            return {
+                ...state,
+                isGettingChatRoomDetails: false,
+                isChatRoomDetailsFetched: true,
+                chatRoomDetails: payload.data || {},
+            }
+        }
+        case 'GET_CHAT_ROOM_DETAILS_FAILURE': {
+            console.log("GET_CHAT_ROOM_DETAILS_FAILURE", payload);
+            return {
+                ...state,
+                isGettingChatRoomDetails: false,
+                getChatRoomDetailsError: payload.msg,
+            }
+        }
+
 
         default: return state
     }

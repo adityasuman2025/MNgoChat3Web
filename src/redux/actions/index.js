@@ -12,6 +12,7 @@ import {
 import {
     checkUserExistsInFirebase,
     createUserInFirebase,
+    getChatRoomDetails,
 } from "../../firebaseQueries";
 
 export const showSnackBarAction = (msg, type) => async (dispatch) => {
@@ -140,5 +141,31 @@ export const getAllUsersSuccessAction = (payload) => async (dispatch) => {
 export const getAllUsersFailureAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'GET_ALL_USERS_FAILURE', payload });
+    }
+}
+
+export const getChatRoomDetailsAction = (chatRoomId) => async (dispatch) => {
+    dispatch({ type: 'GET_CHAT_ROOM_DETAILS' });
+
+    try {
+        const loggedUserToken = await getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+
+        const firebaseResponse = await getChatRoomDetails(chatRoomId);
+        if (firebaseResponse.statusCode === 200) {
+            const members = firebaseResponse.data.members;
+            if (members) {
+                if (loggedUserToken in members) {
+                    dispatch({ type: 'GET_CHAT_ROOM_DETAILS_SUCCESS', payload: firebaseResponse });
+                } else {
+                    dispatch({ type: 'GET_CHAT_ROOM_DETAILS_FAILURE', payload: { msg: "This chat does not belong to you" } });
+                }
+            } else {
+                dispatch({ type: 'GET_CHAT_ROOM_DETAILS_FAILURE', payload: { msg: "This chat does not belong to you" } });
+            }
+        } else {
+            dispatch({ type: 'GET_CHAT_ROOM_DETAILS_FAILURE', payload: firebaseResponse });
+        }
+    } catch {
+        dispatch({ type: 'GET_CHAT_ROOM_DETAILS_FAILURE', payload: SOMETHING_WENT_WRONG_ERROR });
     }
 }
