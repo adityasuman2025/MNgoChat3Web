@@ -124,11 +124,6 @@ export async function setUserActiveStatus(activeStatus) {
 }
 
 export async function getChatRoomDetails(chatRoomId) {
-    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
-    if (!loggedUserToken) {
-        return
-    }
-
     let toReturn = { statusCode: 500, data: false, msg: "Selected chat does not exist" };
 
     const chatRoomDbRef = firebase.app().database().ref('chatRooms/');
