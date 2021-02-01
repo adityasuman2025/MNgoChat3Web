@@ -15,6 +15,7 @@ import {
     setUserActiveStatus,
     getUserChatRooms,
     getAllUsers,
+    removeGetUserChatRoomsFirebaseQuery,
 } from "../firebaseQueries";
 
 const CHATS_TITLE = "Chats";
@@ -34,8 +35,14 @@ function HomePageContent({
     const [title, setTitle] = useState(CHATS_TITLE);
 
     useEffect(() => {
+        console.log("HOME mounted")
         getUserChatRooms(dispatch);
         getAllUsers(dispatch);
+
+        return () => {
+            console.log("HOME un-mounted")
+            removeGetUserChatRoomsFirebaseQuery();
+        }
     }, []);
 
     // useEffect(() => {

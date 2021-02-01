@@ -21,7 +21,9 @@ import {
 import {
     setUserActiveStatus,
     getActiveStatusOfAUser,
+    removeGetActiveStatusOfAUserFirebaseQuery,
     getMessagesOfAChatRoom,
+    removeGetMessagesOfAChatRoomFirebaseQuery,
 } from "../firebaseQueries";
 
 function Chat({
@@ -51,8 +53,15 @@ function Chat({
     const [msgText, setMsgText] = useState("");
 
     useEffect(() => {
+        console.log("CHAT mounted")
         // dispatch(checkLoginStatusAction());
         dispatch(getChatRoomDetailsAction(chatRoomId));
+
+        return () => {
+            console.log("CHAT un-mounted")
+            removeGetMessagesOfAChatRoomFirebaseQuery();
+            removeGetActiveStatusOfAUserFirebaseQuery();
+        }
     }, []);
 
     useEffect(() => {
