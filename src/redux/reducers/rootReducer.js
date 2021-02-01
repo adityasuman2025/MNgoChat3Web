@@ -31,6 +31,8 @@ const defaultState = {
     isChatRoomDetailsFetched: false,
     getChatRoomDetailsError: null,
     chatRoomDetails: {},
+
+    activeStatusOfAUser: null,
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -242,6 +244,14 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 ...state,
                 isGettingChatRoomDetails: false,
                 getChatRoomDetailsError: payload.msg,
+            }
+        }
+
+        case 'GET_ACTIVE_STATUS_OF_A_USER_SUCCESS': {
+            console.log("GET_ACTIVE_STATUS_OF_A_USER_SUCCESS");
+            return {
+                ...state,
+                activeStatusOfAUser: payload.data || null
             }
         }
 

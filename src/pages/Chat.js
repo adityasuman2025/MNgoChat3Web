@@ -2,19 +2,24 @@ import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
 import cx from "classnames";
+import dayjs from 'dayjs';
+import 'dayjs/locale/en';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 
 import sendIcon from "../images/send2.png";
 import uploadImgIcon from "../images/uploadImg.png";
 import LandingPageDesign from "../components/LandingPageDesign";
 import PurpleGradientContainer from "../components/PurpleGradientContainer";
 
-import { CHAT_ACTION_BOX_HEIGHT } from "../constants";
+import { CHAT_ACTION_BOX_HEIGHT, LOGGED_USER_TOKEN_COOKIE_NAME } from "../constants";
+import { getCookieValue } from "../utils";
 import {
     checkLoginStatusAction,
     getChatRoomDetailsAction
 } from "../redux/actions/index";
 import {
     setUserActiveStatus,
+    getActiveStatusOfAUser,
 } from "../firebaseQueries";
 
 function Chat({
@@ -22,8 +27,10 @@ function Chat({
     isSomeoneLoggedIn,
     isGettingChatRoomDetails,
     isChatRoomDetailsFetched,
+    activeStatusOfAUser,
     chatRoomDetails: {
-        displayName
+        displayName,
+        members = {},
     } = {},
     match: {
         params: {
@@ -32,12 +39,52 @@ function Chat({
     } = {},
     dispatch,
 }) {
+    dayjs.locale('en');
+    dayjs.extend(localizedFormat);
+
+    const [displayNameUserActiveStatus, setDisplayNameUserActiveStatus] = useState("");
     const [msgText, setMsgText] = useState("");
 
     useEffect(() => {
         dispatch(checkLoginStatusAction());
         dispatch(getChatRoomDetailsAction(chatRoomId));
     }, []);
+
+    useEffect(() => {
+        if (isChatRoomDetailsFetched && typeof members === "object") {
+            //display last active of other user in case of one-0-one chat only
+            if (Object.keys(members).length === 2) {
+                try {
+                    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+                    let displayNameUserToken = "";
+                    for (const userToken in members) {
+                        if (userToken !== loggedUserToken) {
+                            displayNameUserToken = userToken;
+                            break;
+                        }
+                    }
+                    getActiveStatusOfAUser(dispatch, displayNameUserToken);
+                } catch { }
+            }
+        }
+    }, [isChatRoomDetailsFetched, members]);
+
+    useEffect(() => {
+        console.log(new Date())
+        if (activeStatusOfAUser) {
+            const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
+            const displayNameUserActiveStatusTimeStamp = Date.parse(activeStatusOfAUser) / 1000;
+            console.log("diff", currentTimeStamp - displayNameUserActiveStatusTimeStamp);
+
+            //displaying online in 60s bandwidth
+            if ((currentTimeStamp - displayNameUserActiveStatusTimeStamp) <= 60) {
+                setDisplayNameUserActiveStatus("online");
+            } else {
+                const formattedTime = dayjs(activeStatusOfAUser).format("lll");
+                setDisplayNameUserActiveStatus(formattedTime);
+            }
+        }
+    }, [activeStatusOfAUser]);
 
     // useEffect(() => {
     //     setUserActiveStatus(true);
@@ -77,7 +124,7 @@ function Chat({
                         >
                             <div className="chatTitle">
                                 <div className="lightTitle">{displayName}</div>
-                                <div className="onlineStatus">23 mins ago</div>
+                                <div className="onlineStatus">{displayNameUserActiveStatus}</div>
                             </div>
                             <div className="chatContent">
                                 <div className={cx("message", "myMessageAlignment")}>
@@ -123,6 +170,7 @@ const mapStateToProps = (state) => {
         isSomeoneLoggedIn: state.isSomeoneLoggedIn,
         isGettingChatRoomDetails: state.isGettingChatRoomDetails,
         isChatRoomDetailsFetched: state.isChatRoomDetailsFetched,
+        activeStatusOfAUser: state.activeStatusOfAUser,
         chatRoomDetails: state.chatRoomDetails,
     }
 }

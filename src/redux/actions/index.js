@@ -169,3 +169,9 @@ export const getChatRoomDetailsAction = (chatRoomId) => async (dispatch) => {
         dispatch({ type: 'GET_CHAT_ROOM_DETAILS_FAILURE', payload: SOMETHING_WENT_WRONG_ERROR });
     }
 }
+
+export const getActiveStatusOfAUserSuccessAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_ACTIVE_STATUS_OF_A_USER_SUCCESS', payload });
+    }
+}

@@ -9,6 +9,7 @@ import {
     getAllUsersAction,
     getAllUsersSuccessAction,
     getAllUsersFailureAction,
+    getActiveStatusOfAUserSuccessAction,
 } from "./redux/actions/index";
 
 export async function checkUserExistsInFirebase(loggedUserToken) {
@@ -154,4 +155,18 @@ export async function getChatRoomDetails(chatRoomId) {
     //         dispatch(getChatRoomDetailsFailureAction({ msg: error.message }));
     //     });
 
+}
+
+export async function getActiveStatusOfAUser(dispatch, userToken) {
+    // dispatch(getAllUsersAction());
+
+    const usersDbRef = firebase.app().database().ref('users/' + userToken + "/lastActive");
+    usersDbRef
+        .on('value',
+            function(snap) {
+                const response = snap.val();
+                if (response) {
+                    dispatch(getActiveStatusOfAUserSuccessAction({ data: response }));
+                }
+            });
 }
