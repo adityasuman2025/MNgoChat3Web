@@ -62,7 +62,8 @@ function HomePageContent({
         if (type === CHATS_TITLE) {
             history.push("chat/" + uniqueId); //uniqueId = chat room id
         } else {
-            history.push("new-chat/" + uniqueId); //uniqueId = userToken
+            console.log("userAllChats", userAllChats);
+            // history.push("new-chat/" + uniqueId); //uniqueId = secondUserToken
         }
     }
 
