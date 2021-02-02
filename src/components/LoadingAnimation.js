@@ -6,9 +6,10 @@ import loaderImg from '../images/loader.gif';
 export default function LoadingAnimation({
     dark,
     loading,
+    className,
 }) {
     return loading ? (
-        <center>
+        <center className={className}>
             <img
                 alt="loading"
                 className={cx("loadingAnimation", { ["darkLoader"]: dark })}

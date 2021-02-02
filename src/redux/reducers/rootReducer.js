@@ -34,7 +34,8 @@ const defaultState = {
 
     activeStatusOfAUser: null,
 
-    chatRoomMessages: {},
+    isGettingChatRoomMessages: false,
+    chatRoomMessages: [],
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -251,9 +252,19 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
 
         case 'GET_ACTIVE_STATUS_OF_A_USER_SUCCESS': {
             console.log("GET_ACTIVE_STATUS_OF_A_USER_SUCCESS");
+            let activeStatusOfAUser = payload.data || null;
+            if (activeStatusOfAUser) {
+                const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
+                const displayNameUserActiveStatusTimeStamp = Date.parse(activeStatusOfAUser) / 1000;
+
+                //displaying online in 60s bandwidth
+                if ((currentTimeStamp - displayNameUserActiveStatusTimeStamp) <= 60) {
+                    activeStatusOfAUser = "online";
+                }
+            }
             return {
                 ...state,
-                activeStatusOfAUser: payload.data || null
+                activeStatusOfAUser,
             }
         }
 
@@ -261,27 +272,21 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             console.log("GET_MESSAGES_OF_A_CHAT_ROOM");
             return {
                 ...state,
-                chatRoomMessages: {
-                    ...state.chatRoomMessages,
-                    [payload.chatRoomId || ""]: []
-                }
+                isGettingChatRoomMessages: true,
+                chatRoomMessages: [],
             }
         }
         case 'GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS': {
             console.log("GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS");
-            const data = payload.data || {};
-            const chatRoomId = data.chatRoomId;
-            const message = data.message;
-
-            const messagesOfAChatRoom = state.chatRoomMessages[chatRoomId] || [];
-            messagesOfAChatRoom.push(message);
+            const message = payload.data || {};
 
             return {
                 ...state,
-                chatRoomMessages: {
+                isGettingChatRoomMessages: false,
+                chatRoomMessages: [
                     ...state.chatRoomMessages,
-                    [chatRoomId]: messagesOfAChatRoom
-                }
+                    message
+                ],
             }
         }
 

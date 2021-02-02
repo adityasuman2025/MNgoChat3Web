@@ -341,7 +341,12 @@ code {
     background: linear-gradient(45deg, var(--first), var(--second));
 }
 
-
+.chatWindowLoader {
+    display: flex;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+}
 
 /*----input fields placeholder color-------*/
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

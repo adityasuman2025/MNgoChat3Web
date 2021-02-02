@@ -11,9 +11,10 @@ import sendIcon from "../images/send2.png";
 import uploadImgIcon from "../images/uploadImg.png";
 import LandingPageDesign from "../components/LandingPageDesign";
 import PurpleGradientContainer from "../components/PurpleGradientContainer";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 import { CHAT_ACTION_BOX_HEIGHT, LOGGED_USER_TOKEN_COOKIE_NAME, MSG_TYPE_IMAGE } from "../constants";
-import { getCookieValue } from "../utils";
+import { getCookieValue, getUserTokenOfTheDisplayNameUser, scrollADivToBottom } from "../utils";
 import {
     checkLoginStatusAction,
     getChatRoomDetailsAction
@@ -32,12 +33,13 @@ function Chat({
     isSomeoneLoggedIn,
     isGettingChatRoomDetails,
     isChatRoomDetailsFetched,
+    isGettingChatRoomMessages,
     activeStatusOfAUser,
     chatRoomDetails: {
         displayName,
         members = {},
     } = {},
-    chatRoomMessages = {},
+    chatRoomMessages = [],
     match: {
         params: {
             chatRoomId,
@@ -48,7 +50,6 @@ function Chat({
     dayjs.locale('en');
     dayjs.extend(localizedFormat);
 
-    const [displayNameUserActiveStatus, setDisplayNameUserActiveStatus] = useState("");
     const [msgText, setMsgText] = useState("");
 
     useEffect(() => {
@@ -61,54 +62,34 @@ function Chat({
         });
 
         dispatch(checkLoginStatusAction());
-        
+
         return () => {
-            removeGetMessagesOfAChatRoomFirebaseQuery();
-            removeGetActiveStatusOfAUserFirebaseQuery();
+            removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId);
+            removeGetActiveStatusOfAUserFirebaseQuery(getUserTokenOfTheDisplayNameUser(members));
         }
     }, []);
 
-    useEffect(()=> {
-        if(isSomeoneLoggedIn) {
+    //to get chat room details
+    useEffect(() => {
+        if (isSomeoneLoggedIn) {
             dispatch(getChatRoomDetailsAction(chatRoomId));
         }
     }, [isSomeoneLoggedIn]);
 
+    //to get messages of the room and active status of the 2nd person
     useEffect(() => {
         if (isChatRoomDetailsFetched && typeof members === "object") {
             getMessagesOfAChatRoom(dispatch, chatRoomId);
-
-            //display last active of other user in case of one-0-one chat only
-            if (Object.keys(members).length === 2) {
-                try {
-                    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
-                    let displayNameUserToken = "";
-                    for (const userToken in members) {
-                        if (userToken !== loggedUserToken) {
-                            displayNameUserToken = userToken;
-                            break;
-                        }
-                    }
-                    getActiveStatusOfAUser(dispatch, displayNameUserToken);
-                } catch { }
-            }
+            getActiveStatusOfAUser(dispatch, getUserTokenOfTheDisplayNameUser(members));
         }
     }, [isChatRoomDetailsFetched, members]);
 
+    //to scroll the chat window to bottom when a new message comes
     useEffect(() => {
-        if (activeStatusOfAUser) {
-            const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
-            const displayNameUserActiveStatusTimeStamp = Date.parse(activeStatusOfAUser) / 1000;
-
-            //displaying online in 60s bandwidth
-            if ((currentTimeStamp - displayNameUserActiveStatusTimeStamp) <= 60) {
-                setDisplayNameUserActiveStatus("online");
-            } else {
-                const formattedTime = dayjs(activeStatusOfAUser).format("lll");
-                setDisplayNameUserActiveStatus(formattedTime);
-            }
+        if (chatRoomMessages) {
+            scrollADivToBottom("chatContent");
         }
-    }, [activeStatusOfAUser]);
+    }, [chatRoomMessages]);
 
     // useEffect(() => {
     //     setUserActiveStatus(true);
@@ -135,8 +116,7 @@ function Chat({
     function renderMessages() {
         const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
 
-        const messagesOfThisChatRoom = chatRoomMessages[chatRoomId] || [];
-        const toRender = messagesOfThisChatRoom.map(function(msg, index) {
+        const toRender = chatRoomMessages.map(function(msg, index) {
             if (typeof msg !== "object") {
                 return;
             }
@@ -200,11 +180,25 @@ function Chat({
                                 <img alt="userIcon" src={userIcon} />
                                 <div>
                                     <div className="lightTitle">{displayName}</div>
-                                    <div className="onlineStatus">{displayNameUserActiveStatus}</div>
+                                    <div className="onlineStatus">
+                                        {
+                                            activeStatusOfAUser ?
+                                                activeStatusOfAUser === "online" ?
+                                                    activeStatusOfAUser
+                                                    : dayjs(activeStatusOfAUser).format("lll")
+                                                : null
+                                        }
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="chatContent">{renderMessages()}</div>
+                            <div id="chatContent" className="chatContent">
+                                {
+                                    isGettingChatRoomMessages ?
+                                        <LoadingAnimation loading={true} className="chatWindowLoader" />
+                                        : renderMessages()
+                                }
+                            </div>
                         </div>
 
                         <form
@@ -235,6 +229,7 @@ const mapStateToProps = (state) => {
         isSomeoneLoggedIn: state.isSomeoneLoggedIn,
         isGettingChatRoomDetails: state.isGettingChatRoomDetails,
         isChatRoomDetailsFetched: state.isChatRoomDetailsFetched,
+        isGettingChatRoomMessages: state.isGettingChatRoomMessages,
         activeStatusOfAUser: state.activeStatusOfAUser,
         chatRoomDetails: state.chatRoomDetails,
         chatRoomMessages: state.chatRoomMessages,

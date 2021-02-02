@@ -1,8 +1,9 @@
 import React from 'react';
 import Cookies from "universal-cookie";
+import { animateScroll } from "react-scroll";
 import Slide from '@material-ui/core/Slide';
 
-import { COOKIE_EXPIRATION_TIME } from "./constants";
+import { COOKIE_EXPIRATION_TIME, LOGGED_USER_TOKEN_COOKIE_NAME } from "./constants";
 const cookies = new Cookies();
 
 //animation for apperance of dialog box
@@ -56,6 +57,36 @@ export function validateNumber(number) {
     var re = /^[0-9]*$/;
     return re.test(number);
 };
+
+export function getUserTokenOfTheDisplayNameUser(members) {
+    let displayNameUserToken = null;
+
+    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    if (Object.keys(members).length === 2) {
+        try {
+            for (const userToken in members) {
+                if (userToken !== loggedUserToken) {
+                    displayNameUserToken = userToken;
+                    break;
+                }
+            }
+        } catch { }
+    }
+
+    return displayNameUserToken;
+}
+
+export function scrollADivToBottom(containerId) {
+    if (!containerId) {
+        return;
+    }
+
+    animateScroll.scrollToBottom({
+        containerId: containerId,
+        duration: 500,
+    });
+}
+
 
 //function to logout
 export async function logout() {

@@ -214,7 +214,7 @@ export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
             resp => {
                 const response = resp.val();
                 if (response) {
-                    dispatch(getMessagesOfAChatRoomSuccessAction({ data: { message: response, chatRoomId } }));
+                    dispatch(getMessagesOfAChatRoomSuccessAction({ data: response }));
                 }
             });
 }
