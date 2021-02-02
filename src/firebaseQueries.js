@@ -1,7 +1,6 @@
 import firebase from './FirebaseConfig';
 
-import { LOGGED_USER_TOKEN_COOKIE_NAME } from "./constants";
-import { getCookieValue } from "./utils";
+import { getLoggedUserToken } from "./utils";
 import {
     getUserAllChatsAction,
     getUserAllChatsSuccessAction,
@@ -68,7 +67,7 @@ export async function createUserInFirebase(loggedUserToken, username) {
 }
 
 export async function getUserChatRooms(dispatch) {
-    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken) {
         return
     }
@@ -92,7 +91,7 @@ export async function getUserChatRooms(dispatch) {
 }
 
 export async function removeGetUserChatRoomsFirebaseQuery() {
-    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken) {
         return
     }
@@ -102,7 +101,7 @@ export async function removeGetUserChatRoomsFirebaseQuery() {
 }
 
 export async function getAllUsers(dispatch) {
-    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken) {
         return
     }
@@ -126,7 +125,7 @@ export async function getAllUsers(dispatch) {
 }
 
 export async function setUserActiveStatus(activeStatus) {
-    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken) {
         return
     }
@@ -229,7 +228,7 @@ export async function removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId) {
 }
 
 export async function sendMessageInAChatRoom(chatRoomId, message, type) {
-    const sentByUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    const sentByUserToken = getLoggedUserToken();;
     if (!chatRoomId || !sentByUserToken || !type) {
         return;
     }

@@ -1,8 +1,5 @@
-import {
-    LOGGED_USER_TOKEN_COOKIE_NAME,
-    SOMETHING_WENT_WRONG_ERROR,
-} from "../../constants";
-import { getCookieValue, makeCookie } from "../../utils";
+import { LOGGED_USER_TOKEN_COOKIE_NAME, SOMETHING_WENT_WRONG_ERROR } from "../../constants";
+import { getLoggedUserToken, makeCookie } from "../../utils";
 import {
     getUserDetails,
     verifyLogin,
@@ -22,7 +19,7 @@ export const showSnackBarAction = (msg, type) => async (dispatch) => {
 export const checkLoginStatusAction = () => async (dispatch) => {
     dispatch({ type: 'CHECK_LOGIN_STATUS' });
     try {
-        const loggedUserToken = await getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+        const loggedUserToken = getLoggedUserToken();
         if (loggedUserToken) {
             const response = await getUserDetails(loggedUserToken);
             if (response.statusCode === 200) {
@@ -148,7 +145,7 @@ export const getChatRoomDetailsAction = (chatRoomId) => async (dispatch) => {
     dispatch({ type: 'GET_CHAT_ROOM_DETAILS' });
 
     try {
-        const loggedUserToken = await getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+        const loggedUserToken = getLoggedUserToken();
 
         const firebaseResponse = await getChatRoomDetails(chatRoomId);
         if (firebaseResponse.statusCode === 200) {

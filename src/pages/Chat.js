@@ -13,8 +13,8 @@ import LandingPageDesign from "../components/LandingPageDesign";
 import PurpleGradientContainer from "../components/PurpleGradientContainer";
 import LoadingAnimation from "../components/LoadingAnimation";
 
-import { CHAT_ACTION_BOX_HEIGHT, LOGGED_USER_TOKEN_COOKIE_NAME, MSG_TYPE_IMAGE } from "../constants";
-import { getCookieValue, getUserTokenOfTheDisplayNameUser, scrollADivToBottom } from "../utils";
+import { CHAT_ACTION_BOX_HEIGHT, MSG_TYPE_IMAGE } from "../constants";
+import { getLoggedUserToken, getUserTokenOfTheDisplayNameUser, scrollADivToBottom } from "../utils";
 import {
     checkLoginStatusAction,
     getChatRoomDetailsAction
@@ -114,22 +114,24 @@ function Chat({
     }
 
     function renderMessages() {
-        const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+        const loggedUserToken = getLoggedUserToken();
 
+        const messageIds = [];
         const toRender = chatRoomMessages.map(function(msg, index) {
-            if (typeof msg !== "object") {
-                return;
-            }
+            if (typeof msg !== "object") return;
 
-            const time = msg.time;
+            const messageId = msg.messageId;
             const type = msg.type;
-            const formattedTime = dayjs(time).format("LT");
+            const formattedTime = dayjs(msg.time).format("LT");
 
+            if (messageIds.includes(messageId)) return;
+
+            messageIds.push(messageId);
             if (type === MSG_TYPE_IMAGE) {
 
             } else {
                 return (
-                    <div key={msg.messageId + index} className={"messageContainer"} >
+                    <div key={messageId + index} className={"messageContainer"} >
                         <div
                             className={cx(
                                 "message",

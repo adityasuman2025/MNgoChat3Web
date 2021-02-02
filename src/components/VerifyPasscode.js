@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 
 import ActionButton from "./ActionButton";
 
-import { LOGGED_USER_TOKEN_COOKIE_NAME } from "../constants";
 import { showSnackBarAction, verifyPasscodeAction } from "../redux/actions/index";
-import { getCookieValue } from "../utils";
+import { getLoggedUserToken } from "../utils";
 
 function VerifyPassCode({
     isVerifyingPasscode,
@@ -21,7 +20,7 @@ function VerifyPassCode({
             return;
         }
 
-        const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+        const loggedUserToken = getLoggedUserToken();
         if (passcode !== "" && loggedUserToken) {
             dispatch(verifyPasscodeAction(loggedUserToken, passcode));
         } else {

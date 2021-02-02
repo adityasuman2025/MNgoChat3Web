@@ -58,10 +58,14 @@ export function validateNumber(number) {
     return re.test(number);
 };
 
+export function getLoggedUserToken() {
+    return getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+}
+
 export function getUserTokenOfTheDisplayNameUser(members) {
     let displayNameUserToken = null;
 
-    const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    const loggedUserToken = getLoggedUserToken();
     if (Object.keys(members).length === 2) {
         try {
             for (const userToken in members) {
