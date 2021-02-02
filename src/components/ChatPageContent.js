@@ -40,9 +40,9 @@ function ChatPageContent({
     dayjs.extend(localizedFormat);
 
     const [msgText, setMsgText] = useState("");
-    const [activeStatus, setActiveStatus] = useState("");
 
     //to get messages of the room
+    //getting active status of the 2nd user and setting active status of the logged user
     useEffect(() => {
         // window.addEventListener('offline', function(e) {
         //     console.log('offline');
@@ -53,9 +53,18 @@ function ChatPageContent({
         // });
 
         getMessagesOfAChatRoom(dispatch, chatRoomId);
+        getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
+        setUserActiveStatus(true);
+
+        const setActiveStatusInterval = setInterval(function() {
+            getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
+            setUserActiveStatus(true);
+        }, 10000); //setting user lastActive time every 10 seconds
+        //other users need to compare their local time with that user lastActiveTime to get his active status
 
         return () => {
             removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId);
+            clearInterval(setActiveStatusInterval);
         }
     }, []);
 
@@ -67,22 +76,6 @@ function ChatPageContent({
             readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
         }
     }, [chatRoomMessages]);
-
-    //getting active status of the 2nd user and setting active status of the logged user
-    useEffect(() => {
-        getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
-        setUserActiveStatus(true);
-
-        const setActiveStatusInterval = setInterval(function() {
-            getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
-            setUserActiveStatus(true);
-        }, 10000); //setting user lastActive time every 10 seconds
-        //other users need to compare their local time with that user lastActiveTime to get his active status
-
-        return () => {
-            clearInterval(setActiveStatusInterval);
-        }
-    }, []);
 
     async function handleSendMsgBtnClick(e) {
         e.preventDefault();

@@ -262,16 +262,15 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'GET_ACTIVE_STATUS_OF_A_USER_SUCCESS': {
-            console.log("GET_ACTIVE_STATUS_OF_A_USER_SUCCESS");
             let activeStatusOfAUser = payload.data || null;
             if (activeStatusOfAUser) {
                 const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
                 const displayNameUserActiveStatusTimeStamp = Date.parse(activeStatusOfAUser) / 1000;
                 const timeDiff = currentTimeStamp - displayNameUserActiveStatusTimeStamp;
-                console.log("timeDiff", timeDiff);
+                console.log("GET_ACTIVE_STATUS_OF_A_USER_SUCCESS", timeDiff);
 
-                //displaying online in 60s bandwidth
-                if (timeDiff <= 30) {
+                //displaying online in 20s bandwidth
+                if (timeDiff <= 20) {
                     activeStatusOfAUser = "online";
                 }
             }

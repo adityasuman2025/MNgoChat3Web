@@ -35,17 +35,8 @@ function HomePageContent({
     const [title, setTitle] = useState(CHATS_TITLE);
 
     useEffect(() => {
-        console.log("HOME mounted")
         getUserChatRooms(dispatch);
         getAllUsers(dispatch);
-
-        return () => {
-            console.log("HOME un-mounted")
-            removeGetUserChatRoomsFirebaseQuery();
-        }
-    }, []);
-
-    useEffect(() => {
         setUserActiveStatus(true);
 
         const setActiveStatusInterval = setInterval(function() {
@@ -54,6 +45,7 @@ function HomePageContent({
         //other users need to compare their local time with that user lastActiveTime to get his active status
 
         return () => {
+            removeGetUserChatRoomsFirebaseQuery();
             clearInterval(setActiveStatusInterval);
         }
     }, []);
@@ -66,8 +58,12 @@ function HomePageContent({
         }
     }
 
-    function handleUserItemClick(chatRoomId) {
-        history.push("chat/" + chatRoomId);
+    function handleUserItemClick(uniqueId, type) {
+        if (type === CHATS_TITLE) {
+            history.push("chat/" + uniqueId); //uniqueId = chat room id
+        } else {
+            history.push("new-chat/" + uniqueId); //uniqueId = userToken
+        }
     }
 
     return (
@@ -99,7 +95,7 @@ function HomePageContent({
                                                 <div
                                                     key={key}
                                                     className={cx("listUserItem", { ["unSeenMsgUser"]: isUnSeen })}
-                                                    onClick={() => handleUserItemClick(key)}
+                                                    onClick={() => handleUserItemClick(key, title)}
                                                 >
                                                     <img alt="userIcon" src={userIcon} />
                                                     {user.displayName}
@@ -116,7 +112,7 @@ function HomePageContent({
                                                     <div
                                                         key={userToken}
                                                         className="listUserItem"
-                                                        onClick={handleUserItemClick}
+                                                        onClick={() => handleUserItemClick(userToken, title)}
                                                     >
                                                         <img alt="userIcon" src={userIcon} />
                                                         {displayName}
