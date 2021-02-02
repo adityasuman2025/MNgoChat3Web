@@ -62,22 +62,46 @@ export function getLoggedUserToken() {
     return getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
 }
 
-export function getUserTokenOfTheDisplayNameUser(members) {
-    let displayNameUserToken = null;
+export function getUserTokenOfTheSecondUser(members) {
+    if (!members) {
+        return null
+    }
+    let userTokenOfSecondUser = null;
 
     const loggedUserToken = getLoggedUserToken();
     if (Object.keys(members).length === 2) {
         try {
             for (const userToken in members) {
                 if (userToken !== loggedUserToken) {
-                    displayNameUserToken = userToken;
+                    userTokenOfSecondUser = userToken;
                     break;
                 }
             }
         } catch { }
     }
 
-    return displayNameUserToken;
+    return userTokenOfSecondUser;
+}
+
+export function getUsernameOfTheSecondUser(members) {
+    if (!members) {
+        return null
+    }
+    let usernameOfSecondUser = null;
+
+    const loggedUserToken = getLoggedUserToken();
+    if (Object.keys(members).length === 2) {
+        try {
+            for (const userToken in members) {
+                if (userToken !== loggedUserToken) {
+                    usernameOfSecondUser = members[userToken].name;
+                    break;
+                }
+            }
+        } catch { }
+    }
+
+    return usernameOfSecondUser;
 }
 
 export function scrollADivToBottom(containerId) {

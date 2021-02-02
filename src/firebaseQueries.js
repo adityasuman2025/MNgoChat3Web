@@ -145,19 +145,6 @@ export async function getChatRoomDetails(chatRoomId) {
     const data = {};
     const chatRoomDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId);
     await chatRoomDbRef
-        .child("displayName")
-        .once('value')
-        .then(async resp => {
-            const response = resp.val();
-            if (response) {
-                data.displayName = response;
-            }
-        })
-        .catch(error => {
-            toReturn.msg = error.message;
-        });
-
-    await chatRoomDbRef
         .child("members")
         .once('value')
         .then(async resp => {
@@ -166,6 +153,7 @@ export async function getChatRoomDetails(chatRoomId) {
                 data.members = response;
                 toReturn.statusCode = 200;
                 toReturn.data = data;
+                toReturn.msg = "";
             }
         })
         .catch(error => {
@@ -182,26 +170,19 @@ export async function getActiveStatusOfAUser(dispatch, userToken) {
 
     const activeStatusDbRef = firebase.app().database().ref('users/' + userToken + "/lastActive");
     activeStatusDbRef
-        .on('value',
-            function(snap) {
-                const response = snap.val();
-                if (response) {
-                    dispatch(getActiveStatusOfAUserSuccessAction({ data: response }));
-                }
-            });
-}
-
-export async function removeGetActiveStatusOfAUserFirebaseQuery(userToken) {
-    if (!userToken) {
-        return;
-    }
-
-    const activeStatusDbRef = firebase.app().database().ref('users/' + userToken + "/lastActive");
-    activeStatusDbRef.off();
+        .once('value')
+        .then(async resp => {
+            const response = resp.val();
+            if (response) {
+                dispatch(getActiveStatusOfAUserSuccessAction({ data: response }));
+            }
+        })
+        .catch(error => { });
 }
 
 export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
-    if (!chatRoomId) {
+    const loggedUserToken = getLoggedUserToken();
+    if (!chatRoomId || !loggedUserToken) {
         return;
     }
 
@@ -227,9 +208,9 @@ export async function removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId) {
     chatRoomMessagesDbRef.off();
 }
 
-export async function sendMessageInAChatRoom(chatRoomId, message, type) {
+export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUserToken) {
     const sentByUserToken = getLoggedUserToken();;
-    if (!chatRoomId || !sentByUserToken || !type) {
+    if (!chatRoomId || !sentByUserToken || !type || !secondUserToken) {
         return;
     }
 
@@ -245,4 +226,23 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type) {
             time: (new Date()).toString()
         },
             (error) => { });
+
+    const userChatRoomRef = firebase.app().database().ref('users/' + secondUserToken + "/userChatRooms/" + chatRoomId);
+    userChatRoomRef
+        .child("unSeenMsgCount")
+        .set(firebase.database.ServerValue.increment(1))
+        .catch(error => { })
+}
+
+export async function readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId) {
+    const loggedUserToken = getLoggedUserToken();
+    if (!loggedUserToken) {
+        return;
+    }
+
+    const userChatRoomRef = firebase.app().database().ref('users/' + loggedUserToken + "/userChatRooms/" + chatRoomId);
+    userChatRoomRef
+        .child("unSeenMsgCount")
+        .set(0)
+        .catch(error => { })
 }

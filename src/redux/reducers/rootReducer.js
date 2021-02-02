@@ -1,3 +1,8 @@
+import {
+    getUserTokenOfTheSecondUser,
+    getUsernameOfTheSecondUser,
+} from "../../utils";
+
 const defaultState = {
     snackBarCount: 0,
     snackBarMsg: null,
@@ -234,11 +239,17 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
         case 'GET_CHAT_ROOM_DETAILS_SUCCESS': {
             console.log("GET_CHAT_ROOM_DETAILS_SUCCESS");
+            const data = payload.data || {};
+            const members = data.members;
+
             return {
                 ...state,
                 isGettingChatRoomDetails: false,
                 isChatRoomDetailsFetched: true,
-                chatRoomDetails: payload.data || {},
+                chatRoomDetails: {
+                    usernameOfSecondUser: getUsernameOfTheSecondUser(members),
+                    userTokenOfSecondUser: getUserTokenOfTheSecondUser(members),
+                },
             }
         }
         case 'GET_CHAT_ROOM_DETAILS_FAILURE': {
@@ -256,9 +267,11 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             if (activeStatusOfAUser) {
                 const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
                 const displayNameUserActiveStatusTimeStamp = Date.parse(activeStatusOfAUser) / 1000;
+                const timeDiff = currentTimeStamp - displayNameUserActiveStatusTimeStamp;
+                console.log("timeDiff", timeDiff);
 
                 //displaying online in 60s bandwidth
-                if ((currentTimeStamp - displayNameUserActiveStatusTimeStamp) <= 60) {
+                if (timeDiff <= 30) {
                     activeStatusOfAUser = "online";
                 }
             }

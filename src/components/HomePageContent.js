@@ -45,18 +45,18 @@ function HomePageContent({
         }
     }, []);
 
-    // useEffect(() => {
-    //     setUserActiveStatus(true);
+    useEffect(() => {
+        setUserActiveStatus(true);
 
-    //     const setActiveStatusInterval = setInterval(function() {
-    //         setUserActiveStatus(true);
-    //     }, 10000); //setting user lastActive time every 10 seconds
-    //     //other users need to compare their local time with that user lastActiveTime to get his active status
+        const setActiveStatusInterval = setInterval(function() {
+            setUserActiveStatus(true);
+        }, 10000); //setting user lastActive time every 10 seconds
+        //other users need to compare their local time with that user lastActiveTime to get his active status
 
-    //     return () => {
-    //         clearInterval(setActiveStatusInterval);
-    //     }
-    // }, []);
+        return () => {
+            clearInterval(setActiveStatusInterval);
+        }
+    }, []);
 
     function hanldeNavBtnClick(type) {
         if (type === CHATS_TITLE) {
