@@ -24,6 +24,7 @@ import {
     removeGetActiveStatusOfAUserFirebaseQuery,
     getMessagesOfAChatRoom,
     removeGetMessagesOfAChatRoomFirebaseQuery,
+    sendMessageInAChatRoom,
 } from "../firebaseQueries";
 
 function Chat({
@@ -53,6 +54,14 @@ function Chat({
     const [msgText, setMsgText] = useState("");
 
     useEffect(() => {
+        window.addEventListener('offline', function(e) {
+            console.log('offline');
+        });
+
+        window.addEventListener('online', function(e) {
+            console.log('online');
+        });
+
         console.log("CHAT mounted")
         // dispatch(checkLoginStatusAction());
         dispatch(getChatRoomDetailsAction(chatRoomId));
@@ -113,6 +122,15 @@ function Chat({
     //         clearInterval(setActiveStatusInterval);
     //     }
     // }, []);
+
+    async function handleSendMsgBtnClick(e) {
+        e.preventDefault();
+
+        if (msgText !== "") {
+            await sendMessageInAChatRoom(chatRoomId, msgText, "text");
+            setMsgText("");
+        }
+    }
 
     function renderMessages() {
         const loggedUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
@@ -189,9 +207,10 @@ function Chat({
                             <div className="chatContent">{renderMessages()}</div>
                         </div>
 
-                        <div
+                        <form
                             className="chatActionBox"
                             style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
+                            onSubmit={handleSendMsgBtnClick}
                         >
                             <img alt="uploadImgIcon" src={uploadImgIcon} />
                             <input
@@ -202,8 +221,8 @@ function Chat({
                                 value={msgText}
                                 onChange={(e) => setMsgText(e.target.value)}
                             />
-                            <img alt="sendIcon" src={sendIcon} />
-                        </div>
+                            <img alt="sendIcon" src={sendIcon} onClick={handleSendMsgBtnClick} />
+                        </form>
                     </PurpleGradientContainer>
             }
         </>

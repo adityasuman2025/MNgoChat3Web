@@ -227,3 +227,23 @@ export async function removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId) {
     const chatRoomMessagesDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages");
     chatRoomMessagesDbRef.off();
 }
+
+export async function sendMessageInAChatRoom(chatRoomId, message, type) {
+    const sentByUserToken = getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
+    if (!chatRoomId || !sentByUserToken || !type) {
+        return;
+    }
+
+    const timeStamp = Math.floor(Date.now());
+    const messageId = timeStamp + "_by_" + sentByUserToken;
+    const chatRoomMsgDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages/" + messageId);
+    await chatRoomMsgDbRef
+        .set({
+            messageId,
+            message,
+            sentByUserToken,
+            type,
+            time: (new Date()).toString()
+        },
+            (error) => { });
+}
