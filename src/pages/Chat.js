@@ -45,8 +45,6 @@ function Chat({
     } = {},
     dispatch,
 }) {
-    isCheckingLoginStatus = false;
-    isSomeoneLoggedIn = true;
     dayjs.locale('en');
     dayjs.extend(localizedFormat);
 
@@ -62,16 +60,19 @@ function Chat({
             console.log('online');
         });
 
-        console.log("CHAT mounted")
-        // dispatch(checkLoginStatusAction());
-        dispatch(getChatRoomDetailsAction(chatRoomId));
-
+        dispatch(checkLoginStatusAction());
+        
         return () => {
-            console.log("CHAT un-mounted")
             removeGetMessagesOfAChatRoomFirebaseQuery();
             removeGetActiveStatusOfAUserFirebaseQuery();
         }
     }, []);
+
+    useEffect(()=> {
+        if(isSomeoneLoggedIn) {
+            dispatch(getChatRoomDetailsAction(chatRoomId));
+        }
+    }, [isSomeoneLoggedIn]);
 
     useEffect(() => {
         if (isChatRoomDetailsFetched && typeof members === "object") {
@@ -98,7 +99,6 @@ function Chat({
         if (activeStatusOfAUser) {
             const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
             const displayNameUserActiveStatusTimeStamp = Date.parse(activeStatusOfAUser) / 1000;
-            console.log("diff", currentTimeStamp - displayNameUserActiveStatusTimeStamp);
 
             //displaying online in 60s bandwidth
             if ((currentTimeStamp - displayNameUserActiveStatusTimeStamp) <= 60) {

@@ -34,7 +34,7 @@ function Home({
             {redirectToHomeOrLoginPage()}
 
             {
-                isCheckingLoginStatus ?
+                isCheckingLoginStatus || !isSomeoneLoggedIn ?
                     <LandingPageDesign isCheckingLoginStatus={isCheckingLoginStatus} />
                     :
                     <PurpleGradientContainer childrenClassName="flexCenter">
