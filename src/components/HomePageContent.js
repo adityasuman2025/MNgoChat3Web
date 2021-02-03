@@ -58,63 +58,67 @@ function HomePageContent({
         }
     }
 
-    function handleUserItemClick(uniqueId) {
-        if (!uniqueId) return;
+    function handleUserItemClick(data) {
+        if (!data) return;
 
         if (title === CHATS_TITLE) {
-            history.push("chat/" + uniqueId); //uniqueId = chat room id
+            history.push("chat/" + data); //data = chatRoomId
         } else {
-            for (const userToken in userAllChats) {
-                const userChat = userAllChats[userToken];
-                const displayName = userChat.displayName;
-                const chatRoomId = userChat.chatRoomId;
+            const selectedUsername = data.username;
+            const selectedUserToken = data.userToken;
+            if (selectedUsername && selectedUserToken) {
+                for (const chatRoomId in userAllChats) {
+                    const userChatRoom = userAllChats[chatRoomId];
+                    const secondUserToken = userChatRoom.secondUserToken;
 
-                //if that user is already present in all-chats of loggedUser
-                //then redirecting him to the chat page of that chatRoomId
-                if (uniqueId.trim() === displayName.trim()) {
-                    history.push("chat/" + chatRoomId);
-                    return;
+                    //if that user is already present in all-chats of loggedUser
+                    //then redirecting him to the chat page of that chatRoomId
+                    if (selectedUserToken.trim() === secondUserToken.trim()) {
+                        history.push("chat/" + chatRoomId);
+                        return;
+                    }
                 }
-            }
 
-            //if that user is not present in all-chats of loggedUser
-            //then redirecting him to the new-chat page for that secondUserToken (other userToken)
-            history.push("new-chat/" + uniqueId); //uniqueId = secondUserToken
+                // if that user is not present in all-chats of loggedUser
+                // then redirecting him to the new-chat page for that secondUserToken (other userToken)
+                const selectedUserDetails = { name: selectedUsername, token: selectedUserToken };
+                history.push("new-chat/" + JSON.stringify(selectedUserDetails));
+            }
         }
     }
 
     function renderAllChats() {
-        // unread msg chatroom will be listed first
-        const toRender = Object.keys(userAllChats).map(function(key) {
-            const user = userAllChats[key];
-            const unSeenMsgCount = parseInt(user.unSeenMsgCount) || 0;
+        // unread msg chatRooms will be listed first
+        const toRender = Object.keys(userAllChats).map(function(chatRoomId) {
+            const userChat = userAllChats[chatRoomId];
+            const unSeenMsgCount = parseInt(userChat.unSeenMsgCount) || 0;
 
             if (unSeenMsgCount === 0) return;
             return (
                 <div
-                    key={key}
+                    key={chatRoomId}
                     className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
-                    onClick={() => handleUserItemClick(key, title)}
+                    onClick={() => handleUserItemClick(chatRoomId, title)}
                 >
                     <img alt="userIcon" src={userIcon} />
-                    {user.displayName}
+                    {userChat.displayName}
                 </div>
             )
         });
 
-        toRender.push(Object.keys(userAllChats).map(function(key) {
-            const user = userAllChats[key];
-            const unSeenMsgCount = parseInt(user.unSeenMsgCount) || 0;
+        toRender.push(Object.keys(userAllChats).map(function(chatRoomId) {
+            const userChat = userAllChats[chatRoomId];
+            const unSeenMsgCount = parseInt(userChat.unSeenMsgCount) || 0;
 
             if (unSeenMsgCount !== 0) return;
             return (
                 <div
-                    key={key}
+                    key={chatRoomId}
                     className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
-                    onClick={() => handleUserItemClick(key)}
+                    onClick={() => handleUserItemClick(chatRoomId)}
                 >
                     <img alt="userIcon" src={userIcon} />
-                    {user.displayName}
+                    {userChat.displayName}
                 </div>
             )
         }));
@@ -153,7 +157,7 @@ function HomePageContent({
                                                     <div
                                                         key={userToken}
                                                         className="listUserItem"
-                                                        onClick={() => handleUserItemClick(displayName)}
+                                                        onClick={() => handleUserItemClick(user)}
                                                     >
                                                         <img alt="userIcon" src={userIcon} />
                                                         {displayName}

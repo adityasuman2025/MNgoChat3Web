@@ -18,7 +18,7 @@ const Routes = () => (
             <Route exact path="/register" component={Register} />
             <Route exact path="/home" component={Home} />
             <Route exact path="/chat/:chatRoomId" component={Chat} />
-            <Route exact path="/new-chat/:secondUserToken" component={NewChat} />
+            <Route exact path="/new-chat/:selectedUserDetails" component={NewChat} />
 
             <Route path="*" component={NotFound} />
         </Switch>

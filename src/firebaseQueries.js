@@ -279,3 +279,24 @@ export async function getTypeStatusOfAUser(dispatch, chatRoomId, secondUserToken
         })
         .catch(error => { });
 }
+
+export async function startANewChatRoom(params) {
+    const loggedUserToken = getLoggedUserToken();
+    const { dispatch, loggedUsername, secondUserToken, secondUsername } = params;
+    if (!loggedUserToken || !loggedUsername || !secondUserToken || !secondUsername) {
+        return;
+    }
+    console.log("startANewChatRoom", params);
+
+    // const userChatRoomLastTypeRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/members/" + secondUserToken);
+    // userChatRoomLastTypeRef
+    //     .child("lastTyped")
+    //     .once('value')
+    //     .then(async resp => {
+    //         const response = resp.val();
+    //         if (response) {
+    //             dispatch(getTypeStatusOfAUserSuccessAction({ data: response }));
+    //         }
+    //     })
+    //     .catch(error => { });
+}
