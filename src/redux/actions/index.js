@@ -207,3 +207,19 @@ export const startANewChatRoomFailureAction = (payload) => async (dispatch) => {
         dispatch({ type: 'START_A_NEW_CHAT_ROOM_FAILURE', payload });
     }
 }
+
+export const uploadImageInFirebaseAction = () => async (dispatch) => {
+    dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE' });
+}
+
+export const uploadImageInFirebaseSuccessAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE_SUCCESS', payload });
+    }
+}
+
+export const uploadImageInFirebaseFailureAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE_FAILURE', payload });
+    }
+}

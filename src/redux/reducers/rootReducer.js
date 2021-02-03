@@ -49,6 +49,10 @@ const defaultState = {
     isANewChatRoomStarted: false,
     startNewChatRoomError: null,
     newChatRoomDetails: {},
+
+    isUploadingImage: false,
+    uploadImageError: null,
+    uploadedImageDetails: {},
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -345,7 +349,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'START_A_NEW_CHAT_ROOM_SUCCESS': {
-            console.log("START_A_NEW_CHAT_ROOM_SUCCESS", payload);
+            console.log("START_A_NEW_CHAT_ROOM_SUCCESS");
             return {
                 ...state,
                 isStartingANewChatRoom: false,
@@ -360,6 +364,34 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 ...state,
                 isStartingANewChatRoom: false,
                 startNewChatRoomError: payload.msg,
+            }
+        }
+
+        case 'UPLOAD_IMAGE_IN_FIREBASE': {
+            console.log("UPLOAD_IMAGE_IN_FIREBASE");
+            return {
+                ...state,
+                isUploadingImage: true,
+                uploadImageError: null,
+                uploadedImageDetails: {},
+            }
+        }
+
+        case 'UPLOAD_IMAGE_IN_FIREBASE_SUCCESS': {
+            console.log("UPLOAD_IMAGE_IN_FIREBASE_SUCCESS");
+            return {
+                ...state,
+                isUploadingImage: false,
+                uploadedImageDetails: payload.data || {},
+            }
+        }
+
+        case 'UPLOAD_IMAGE_IN_FIREBASE_FAILURE': {
+            console.log("UPLOAD_IMAGE_IN_FIREBASE_FAILURE");
+            return {
+                ...state,
+                isUploadingImage: true,
+                uploadImageError: payload.msg,
             }
         }
 

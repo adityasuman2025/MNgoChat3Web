@@ -286,7 +286,11 @@ code {
     margin: 10px;
     margin-bottom: 2px;
 }
-    
+
+.message img {
+    max-width: 100%;
+    border-radius: 25px;
+}
 
 .myMessageAlignment {
     justify-content: flex-end;
@@ -310,7 +314,7 @@ code {
     color: #aaa8a8;
     background: #24133f;
     background: linear-gradient(45deg, var(--second), #24133f);
-    border: 1px solid var(--first); 
+    border: 1px solid var(--first);
 }
 
 .messageTime {
@@ -327,12 +331,23 @@ code {
     align-items: center;
     justify-content: space-around;
     background: linear-gradient(45deg, #24133f, var(--second));
+    overflow-y: hidden;
 }
 
-.chatActionBox img {
+.chatActionBoxImg {
     width: 35px;
     cursor: pointer;
     filter: invert(91%) sepia(6%) saturate(0%) hue-rotate(244deg) brightness(93%) contrast(96%);
+}
+
+.closeIcon {
+    width: 20px;
+    cursor: pointer;
+    filter: invert(91%) sepia(6%) saturate(0%) hue-rotate(244deg) brightness(93%) contrast(96%);
+}
+
+.sendImgPreview {
+    width: 100px;
 }
 
 .sendMsgTextInput {
@@ -353,6 +368,7 @@ code {
     justify-content: center;
     align-items: center;
 }
+
 
 /*----input fields placeholder color-------*/
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -400,7 +416,7 @@ code {
     .formInputField {
         width: 280px;
     }
-    
+
     .actionBtnContainer {
         width: 300px;
     }
@@ -413,7 +429,6 @@ code {
     .homeContainer {
         width: 80%;
     }
-    
 }
 
 @media screen and (max-width: 500px) {
@@ -435,6 +450,6 @@ code {
     }
 
     .sendMsgTextInput {
-        width: calc(100% - 120px);
+        width: calc(100% - 140px);
     }
 }

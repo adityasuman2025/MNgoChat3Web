@@ -21,6 +21,10 @@ import {
     startANewChatRoomAction,
     startANewChatRoomSuccessAction,
     startANewChatRoomFailureAction,
+
+    uploadImageInFirebaseAction,
+    uploadImageInFirebaseSuccessAction,
+    uploadImageInFirebaseFailureAction,
 } from "./redux/actions/index";
 
 export async function checkUserExistsInFirebase(loggedUserToken) {
@@ -336,4 +340,33 @@ export async function startANewChatRoom(params) {
         });
 
     dispatch(startANewChatRoomSuccessAction({ data: { chatRoomId } }));
+}
+
+export async function uploadImageInFirebase(dispatch, imageFile) {
+    const loggedUserToken = getLoggedUserToken();
+    if (!loggedUserToken || !imageFile) return;
+
+    dispatch(uploadImageInFirebaseAction());
+    const timeStamp = Math.floor(Date.now());
+    const imageName = timeStamp + "_" + loggedUserToken.substring(0, 3) + ".png";
+
+    //putting image in firebase
+    const storageRef = firebase.app().storage().ref().child("image/" + imageName);
+    const resp = storageRef.put(imageFile);
+    resp
+        .on(
+            firebase.storage.TaskEvent.STATE_CHANGED,
+            snapshot => {
+                const percent = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            },
+            error => {
+                dispatch(uploadImageInFirebaseFailureAction({ msg: "Fail to upload image" }));
+            },
+            () => {
+                storageRef.getDownloadURL()
+                    .then((downloadUrl) => {
+                        dispatch(uploadImageInFirebaseSuccessAction({ data: { downloadUrl } }));
+                    })
+            }
+        )
 }

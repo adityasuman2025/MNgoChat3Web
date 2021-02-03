@@ -13,6 +13,13 @@ export const PROJECT_NAME = "MNgo Chat";
 export const LOGGED_USER_TOKEN_COOKIE_NAME = "mngoChatLoggenUserToken";
 export const MSG_TYPE_IMAGE = "image";
 export const DEFAULT_DATE = "1999-03-03T";
+export const IMAGE_COMPRESSION_OPTIONS = {
+    maxSizeMB: 0.1,
+    maxWidthOrHeight: 600,
+    useWebWorker: true
+};
+export const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg"];
+
 
 //error variables
 export const SOMETHING_WENT_WRONG_ERROR = { statusCode: 500, msg: "Something went wrong" };

@@ -9,21 +9,17 @@ function SnackBarWrapper({
     snackBarType,
 
     checkLoginStatusError,
-
     loginUserError,
 
     isUserRegistered,
     registerUserError,
 
     verifyPasscodeError,
-
     getUserAllChatsError,
-
     getAllUsersError,
-
     getChatRoomDetailsError,
-
     startNewChatRoomError,
+    uploadImageError,
 
     children,
 }) {
@@ -97,6 +93,11 @@ function SnackBarWrapper({
         }
     }, [startNewChatRoomError]);
 
+    useEffect(() => {
+        if (uploadImageError) {
+            makeSnackBar(uploadImageError);
+        }
+    }, [uploadImageError]);
 
     function makeSnackBar(msg, type) {
         setSnackBarMsgState(msg);
@@ -129,21 +130,17 @@ const mapStateToProps = (state) => {
         snackBarType: state.snackBarType,
 
         checkLoginStatusError: state.checkLoginStatusError,
-
         loginUserError: state.loginUserError,
 
         isUserRegistered: state.isUserRegistered,
         registerUserError: state.registerUserError,
 
         verifyPasscodeError: state.verifyPasscodeError,
-
         getUserAllChatsError: state.getUserAllChatsError,
-
         getAllUsersError: state.getAllUsersError,
-
         getChatRoomDetailsError: state.getChatRoomDetailsError,
-
         startNewChatRoomError: state.startNewChatRoomError,
+        uploadImageError: state.uploadImageError,
     }
 }
 
