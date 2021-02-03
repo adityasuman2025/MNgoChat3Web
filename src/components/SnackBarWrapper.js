@@ -23,6 +23,8 @@ function SnackBarWrapper({
 
     getChatRoomDetailsError,
 
+    startNewChatRoomError,
+
     children,
 }) {
     const [snackBarVisible, setSnackBarVisible] = useState(false);
@@ -89,6 +91,13 @@ function SnackBarWrapper({
         }
     }, [getChatRoomDetailsError]);
 
+    useEffect(() => {
+        if (startNewChatRoomError) {
+            makeSnackBar(startNewChatRoomError);
+        }
+    }, [startNewChatRoomError]);
+
+
     function makeSnackBar(msg, type) {
         setSnackBarMsgState(msg);
         setSnackBarTypeState(type);
@@ -133,6 +142,8 @@ const mapStateToProps = (state) => {
         getAllUsersError: state.getAllUsersError,
 
         getChatRoomDetailsError: state.getChatRoomDetailsError,
+
+        startNewChatRoomError: state.startNewChatRoomError,
     }
 }
 

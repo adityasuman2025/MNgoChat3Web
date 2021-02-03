@@ -44,6 +44,11 @@ const defaultState = {
     chatRoomMessages: [],
 
     typeStatusOfAUser: null,
+
+    isStartingANewChatRoom: false,
+    isANewChatRoomStarted: false,
+    startNewChatRoomError: null,
+    newChatRoomDetails: {},
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -327,6 +332,38 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 typeStatusOfAUser,
             }
         }
+
+        case 'START_A_NEW_CHAT_ROOM': {
+            console.log("START_A_NEW_CHAT_ROOM");
+            return {
+                ...state,
+                isStartingANewChatRoom: true,
+                isANewChatRoomStarted: false,
+                startNewChatRoomError: null,
+                newChatRoomDetails: {},
+            }
+        }
+
+        case 'START_A_NEW_CHAT_ROOM_SUCCESS': {
+            console.log("START_A_NEW_CHAT_ROOM_SUCCESS", payload);
+            return {
+                ...state,
+                isStartingANewChatRoom: false,
+                isANewChatRoomStarted: true,
+                newChatRoomDetails: payload.data || {},
+            }
+        }
+
+        case 'START_A_NEW_CHAT_ROOM_FAILURE': {
+            console.log("START_A_NEW_CHAT_ROOM_FAILURE");
+            return {
+                ...state,
+                isStartingANewChatRoom: false,
+                startNewChatRoomError: payload.msg,
+            }
+        }
+
+
 
         default: return state
     }

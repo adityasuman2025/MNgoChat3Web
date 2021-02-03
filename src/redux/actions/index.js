@@ -190,3 +190,19 @@ export const getTypeStatusOfAUserSuccessAction = (payload) => async (dispatch) =
         dispatch({ type: 'GET_TYPE_STATUS_OF_A_USER_SUCCESS', payload });
     }
 }
+
+export const startANewChatRoomAction = () => async (dispatch) => {
+    dispatch({ type: 'START_A_NEW_CHAT_ROOM' });
+}
+
+export const startANewChatRoomSuccessAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'START_A_NEW_CHAT_ROOM_SUCCESS', payload });
+    }
+}
+
+export const startANewChatRoomFailureAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'START_A_NEW_CHAT_ROOM_FAILURE', payload });
+    }
+}

@@ -14,6 +14,11 @@ import { startANewChatRoom } from "../firebaseQueries";
 function NewChat({
     isCheckingLoginStatus,
     isSomeoneLoggedIn,
+    isStartingANewChatRoom,
+    isANewChatRoomStarted,
+    newChatRoomDetails: {
+        chatRoomId,
+    },
     userDetails: {
         username: loggedUsername
     } = {},
@@ -24,6 +29,7 @@ function NewChat({
     } = {},
     dispatch,
 }) {
+    const [redirectToChat, setRedirectToChat] = useState(false);
     const [secondUserDetails, setSecondUserDetails] = useState({});
 
     useEffect(() => {
@@ -47,6 +53,12 @@ function NewChat({
         }
     }, [isSomeoneLoggedIn]);
 
+    useEffect(() => {
+        if (isANewChatRoomStarted && chatRoomId) {
+            setRedirectToChat(true);
+        }
+    }, [isANewChatRoomStarted]);
+
     function handleStartBtnClick() {
         startANewChatRoom({ dispatch, loggedUsername, ...secondUserDetails });
     }
@@ -61,6 +73,7 @@ function NewChat({
 
     return (
         <>
+            {redirectToChat ? <Redirect to={"/chat/" + chatRoomId} /> : null}
             {redirectToHomeOrLoginPage()}
 
             {
@@ -79,16 +92,14 @@ function NewChat({
                                 </div>
                             </div>
 
-                            <div id="chatContent" className="chatContent">
-                                y yo
-                            </div>
+                            <div id="chatContent" className="chatContent"></div>
                             <div
                                 className="chatActionBox"
                                 style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
                             >
                                 <ActionButton
                                     dark={false}
-                                    // showLoader={isLoggingUser}
+                                    showLoader={isStartingANewChatRoom}
                                     buttonText="Start Chat"
                                     onClick={handleStartBtnClick}
                                 />
@@ -104,6 +115,9 @@ const mapStateToProps = (state) => {
     return {
         isCheckingLoginStatus: state.isCheckingLoginStatus,
         isSomeoneLoggedIn: state.isSomeoneLoggedIn,
+        isStartingANewChatRoom: state.isStartingANewChatRoom,
+        isANewChatRoomStarted: state.isANewChatRoomStarted,
+        newChatRoomDetails: state.newChatRoomDetails,
         userDetails: state.userDetails,
     }
 }

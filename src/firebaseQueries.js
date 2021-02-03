@@ -17,6 +17,10 @@ import {
     getMessagesOfAChatRoomSuccessAction,
 
     getTypeStatusOfAUserSuccessAction,
+
+    startANewChatRoomAction,
+    startANewChatRoomSuccessAction,
+    startANewChatRoomFailureAction,
 } from "./redux/actions/index";
 
 export async function checkUserExistsInFirebase(loggedUserToken) {
@@ -218,7 +222,7 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUs
     }
 
     const timeStamp = Math.floor(Date.now());
-    const messageId = timeStamp + "_by_" + sentByUserToken.substring(0, 5);;
+    const messageId = timeStamp + "_by_" + sentByUserToken.substring(0, 5);
     const chatRoomMsgDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages/" + messageId);
     await chatRoomMsgDbRef
         .set({
@@ -286,17 +290,51 @@ export async function startANewChatRoom(params) {
     if (!loggedUserToken || !loggedUsername || !secondUserToken || !secondUsername) {
         return;
     }
-    console.log("startANewChatRoom", params);
 
-    // const userChatRoomLastTypeRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/members/" + secondUserToken);
-    // userChatRoomLastTypeRef
-    //     .child("lastTyped")
-    //     .once('value')
-    //     .then(async resp => {
-    //         const response = resp.val();
-    //         if (response) {
-    //             dispatch(getTypeStatusOfAUserSuccessAction({ data: response }));
-    //         }
-    //     })
-    //     .catch(error => { });
+    dispatch(startANewChatRoomAction());
+    const timeStamp = Math.floor(Date.now());
+    const chatRoomId = timeStamp + "_" + loggedUserToken.substring(0, 3) + "_" + secondUserToken.substring(0, 3);
+
+    const createChatRoomDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId);
+    await createChatRoomDbRef
+        .set({
+            chatRoomId,
+            members: {
+                [loggedUserToken]: { name: loggedUsername },
+                [secondUserToken]: { name: secondUsername },
+            },
+            addedOn: dayjs().format(),
+        })
+        .catch(error => {
+            dispatch(startANewChatRoomFailureAction({ msg: error.message }));
+            return;
+        });
+
+    const loggedUserChatRoomsDbRef = firebase.app().database().ref('users/' + loggedUserToken + "/userChatRooms/" + chatRoomId);
+    await loggedUserChatRoomsDbRef
+        .set({
+            chatRoomId,
+            displayName: secondUsername,
+            secondUserToken,
+            unSeenMsgCount: 0,
+        })
+        .catch(error => {
+            dispatch(startANewChatRoomFailureAction({ msg: error.message }));
+            return;
+        });
+
+    const secondUserChatRoomsDbRef = firebase.app().database().ref('users/' + secondUserToken + "/userChatRooms/" + chatRoomId);
+    await secondUserChatRoomsDbRef
+        .set({
+            chatRoomId,
+            displayName: loggedUsername,
+            secondUserToken: loggedUserToken,
+            unSeenMsgCount: 0,
+        })
+        .catch(error => {
+            dispatch(startANewChatRoomFailureAction({ msg: error.message }));
+            return;
+        });
+
+    dispatch(startANewChatRoomSuccessAction({ data: { chatRoomId } }));
 }
