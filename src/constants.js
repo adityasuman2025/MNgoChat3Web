@@ -19,6 +19,7 @@ export const IMAGE_COMPRESSION_OPTIONS = {
     useWebWorker: true
 };
 export const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg"];
+export const PAGINATION_MESSAGE_COUNT = 20;
 
 
 //error variables

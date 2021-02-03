@@ -41,6 +41,8 @@ const defaultState = {
     activeStatusOfAUser: null,
 
     isGettingChatRoomMessages: false,
+    isInitialMessagesFetched: false,
+    isANewMessage: 0,
     chatRoomMessages: [],
 
     typeStatusOfAUser: null,
@@ -297,17 +299,25 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             return {
                 ...state,
                 isGettingChatRoomMessages: true,
+                isInitialMessagesFetched: false,
+                isANewMessage: 0,
                 chatRoomMessages: [],
             }
         }
         case 'GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS': {
             console.log("GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS");
             const messageItem = payload.data || {};
+            const newMessage = payload.isANewMessage || false;
             const message = messageItem.message;
             messageItem.message = decryptText(message);
 
+            let isANewMessage = state.isANewMessage;
+            if (newMessage) {
+                isANewMessage++;
+            }
             return {
                 ...state,
+                isANewMessage,
                 chatRoomMessages: [
                     ...state.chatRoomMessages,
                     messageItem,
@@ -320,6 +330,28 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             return {
                 ...state,
                 isGettingChatRoomMessages: false,
+                isInitialMessagesFetched: true,
+            }
+        }
+
+        case 'GET_PAGINATED_MESSAGES': {
+            console.log("GET_PAGINATED_MESSAGES");
+            return {
+                ...state,
+                isGettingChatRoomMessages: true,
+            }
+        }
+        case 'GET_PAGINATED_MESSAGES_SUCCESS': {
+            console.log("GET_PAGINATED_MESSAGES_SUCCESS");
+            const messages = payload.data || [];
+
+            return {
+                ...state,
+                isGettingChatRoomMessages: false,
+                chatRoomMessages: [
+                    ...messages,
+                    ...state.chatRoomMessages,
+                ],
             }
         }
 

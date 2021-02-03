@@ -365,7 +365,7 @@ code {
 
 .chatWindowLoader {
     display: flex;
-    height: 100px;
+    margin-top: 10px;
     justify-content: center;
     align-items: center;
 }

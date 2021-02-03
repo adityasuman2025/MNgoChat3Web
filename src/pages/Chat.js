@@ -22,10 +22,8 @@ function Chat({
     } = {},
     dispatch,
 }) {
-    isCheckingLoginStatus = false;
-    isSomeoneLoggedIn = true;
     useEffect(() => {
-        // dispatch(checkLoginStatusAction());
+        dispatch(checkLoginStatusAction());
     }, []);
 
     //to get chat room details

@@ -184,6 +184,15 @@ export const getMessagesOfAChatRoomAllSuccessAction = (payload) => async (dispat
     dispatch({ type: 'GET_MESSAGES_OF_A_CHAT_ROOM_ALL_SUCCESS', payload });
 }
 
+export const getPaginatedMessagesAction = (payload) => async (dispatch) => {
+    dispatch({ type: 'GET_PAGINATED_MESSAGES', payload });
+}
+export const getPaginatedMessagesSuccessAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_PAGINATED_MESSAGES_SUCCESS', payload });
+    }
+}
+
 export const getTypeStatusOfAUserSuccessAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'GET_TYPE_STATUS_OF_A_USER_SUCCESS', payload });

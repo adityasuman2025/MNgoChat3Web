@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import imageCompression from 'browser-image-compression';
 import cx from "classnames";
+import InfiniteScroll from 'react-infinite-scroll-component';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 
 import closeIcon from "../images/close.png";
@@ -27,6 +28,7 @@ import {
     setUserActiveStatus,
     getActiveStatusOfAUser,
     getMessagesOfAChatRoom,
+    getPaginatedMessages,
     removeGetMessagesOfAChatRoomFirebaseQuery,
     sendMessageInAChatRoom,
     readingNewMessagesOfTheLoggedUserForThatChatRoom,
@@ -37,18 +39,20 @@ import {
 
 function ChatPageContent({
     isGettingChatRoomMessages,
+    isInitialMessagesFetched,
     isUploadingImage,
+    isANewMessage,
     chatRoomId,
     activeStatusOfAUser,
     typeStatusOfAUser,
+    uploadedImageDetails: {
+        downloadUrl,
+    } = {},
     chatRoomDetails: {
         usernameOfSecondUser,
         userTokenOfSecondUser,
     } = {},
     chatRoomMessages = [],
-    uploadedImageDetails: {
-        downloadUrl,
-    } = {},
     dispatch,
 }) {
     const imageInputRef = useRef();
@@ -73,33 +77,40 @@ function ChatPageContent({
         getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
         setUserActiveStatus(true);
         getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
+        readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
 
-        // const setActiveStatusInterval = setInterval(function() {
-        //     getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
-        //     setUserActiveStatus(true);
-        // }, 10000); //setting user lastActive time every 10 seconds
+        const setActiveStatusInterval = setInterval(function() {
+            getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
+            setUserActiveStatus(true);
+        }, 10000); //setting user lastActive time every 10 seconds
         //other users need to compare their local time with that user lastActiveTime to get his active status
 
-        // const getTypeStatusInterval = setInterval(function() {
-        //     getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
-        // }, 1000); //getting user typings status in 1 s
+        const getTypeStatusInterval = setInterval(function() {
+            getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
+        }, 1000); //getting user typings status in 1 s
         //other users need to compare their local time with that user lastTypedTime to get his typing status
 
         return () => {
             removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId);
-            // clearInterval(setActiveStatusInterval);
-            // clearInterval(getTypeStatusInterval);
+            clearInterval(setActiveStatusInterval);
+            clearInterval(getTypeStatusInterval);
+            readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
         }
     }, []);
 
+    useEffect(() => {
+        if (isInitialMessagesFetched) {
+            scrollADivToBottom("chatContent");
+        }
+    }, [isInitialMessagesFetched]);
+
     //to scroll the chat window to bottom when a new message comes
     useEffect(() => {
-        if (chatRoomMessages) {
-            scrollADivToBottom("chatContent");
+        scrollADivToBottom("chatContent");
 
-            readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
-        }
-    }, [chatRoomMessages]);
+        readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
+    }, [isANewMessage]);
+
 
     useEffect(() => {
         if (downloadUrl) {
@@ -115,8 +126,8 @@ function ChatPageContent({
             await uploadImageInFirebase(dispatch, choosedImg);
         } else {
             if (msgText.trim() !== "") {
-                await sendMessageInAChatRoom(chatRoomId, msgText, "text", userTokenOfSecondUser);
                 setMsgText("");
+                await sendMessageInAChatRoom(chatRoomId, msgText, "text", userTokenOfSecondUser);
             }
         }
     }
@@ -204,6 +215,14 @@ function ChatPageContent({
         return toRender;
     }
 
+    function loadMoreMessages() {
+        console.log("need more");
+        const messageIdOfTheFirstMessageInList = (chatRoomMessages[0] || {}).messageId;
+        console.log("messageIdOfTheFirstMessageInList", messageIdOfTheFirstMessageInList);
+
+        getPaginatedMessages(dispatch, chatRoomId, messageIdOfTheFirstMessageInList);
+    }
+
     return (
         <PurpleGradientContainer childrenClassName="homeContainer">
             {
@@ -236,13 +255,20 @@ function ChatPageContent({
                     </div>
                 </div>
 
-                <div id="chatContent" className="chatContent">
-                    {
-                        isGettingChatRoomMessages ?
-                            <LoadingAnimation loading={true} className="chatWindowLoader" />
-                            :
-                            renderMessages()
-                    }
+                <div id="chatContent" className="chatContent" >
+                    <InfiniteScroll
+                        hasMore={true}
+                        inverse={true}
+                        scrollThreshold={1}
+                        dataLength={chatRoomMessages.length}
+                        scrollableTarget="chatContent"
+                        next={loadMoreMessages}
+                    >
+                        <>
+                            <LoadingAnimation loading={isGettingChatRoomMessages} className="chatWindowLoader" />
+                            {renderMessages()}
+                        </>
+                    </InfiniteScroll>
                 </div>
             </div>
 
@@ -296,7 +322,9 @@ function ChatPageContent({
 const mapStateToProps = (state) => {
     return {
         isGettingChatRoomMessages: state.isGettingChatRoomMessages,
+        isInitialMessagesFetched: state.isInitialMessagesFetched,
         isUploadingImage: state.isUploadingImage,
+        isANewMessage: state.isANewMessage,
         activeStatusOfAUser: state.activeStatusOfAUser,
         typeStatusOfAUser: state.typeStatusOfAUser,
         uploadedImageDetails: state.uploadedImageDetails,

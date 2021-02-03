@@ -1,7 +1,8 @@
 import firebase from './FirebaseConfig';
 
 import dayjs from "./dayjs";
-import { getLoggedUserToken, encryptText } from "./utils";
+import { PAGINATION_MESSAGE_COUNT } from "./constants";
+import { getLoggedUserToken, encryptText, decryptText, isEmpty } from "./utils";
 import {
     getUserAllChatsAction,
     getUserAllChatsSuccessAction,
@@ -16,6 +17,9 @@ import {
     getMessagesOfAChatRoomAction,
     getMessagesOfAChatRoomSuccessAction,
     getMessagesOfAChatRoomAllSuccessAction,
+
+    getPaginatedMessagesAction,
+    getPaginatedMessagesSuccessAction,
 
     getTypeStatusOfAUserSuccessAction,
 
@@ -190,31 +194,6 @@ export async function getActiveStatusOfAUser(dispatch, userToken) {
         .catch(error => { });
 }
 
-export function isEmpty(obj) {
-
-    // null and undefined are "empty"
-    if (obj == null) return true;
-
-    // Assume if it has a length property with a non-zero value
-    // that that property is correct.
-    if (obj.length > 0) return false;
-    if (obj.length === 0) return true;
-
-    // If it isn't an object at this point
-    // it is empty, but it can't be anything *but* empty
-    // Is it empty?  Depends on your application.
-    if (typeof obj !== "object") return true;
-
-    // Otherwise, does it have any properties of its own?
-    // Note that this doesn't handle
-    // toString and valueOf enumeration bugs in IE < 9
-    for (var key in obj) {
-        if (hasOwnProperty.call(obj, key)) return false;
-    }
-
-    return true;
-}
-
 export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
     const loggedUserToken = getLoggedUserToken();
     if (!chatRoomId || !loggedUserToken) {
@@ -224,19 +203,10 @@ export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
     dispatch(getMessagesOfAChatRoomAction({ chatRoomId }));
 
     const chatRoomMessagesDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages");
-    // await chatRoomMessagesDbRef
-    //     .on('child_added',
-    //         resp => {
-    //             const response = resp.val();
-    //             if (response) {
-    //                 dispatch(getMessagesOfAChatRoomSuccessAction({ data: response }));
-    //             }
-    //         });
-
     chatRoomMessagesDbRef.off();
     chatRoomMessagesDbRef
         .orderByChild('messageId')
-        .limitToLast(10)
+        .limitToLast(PAGINATION_MESSAGE_COUNT)
         .once('value')
         .then(resp => {
             let isFirstFetch = true;
@@ -259,10 +229,43 @@ export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
                             isFirstFetch = false;
                         } else {
                             const chatMessages = resp.val();
-                            dispatch(getMessagesOfAChatRoomSuccessAction({ data: chatMessages }));
+                            dispatch(getMessagesOfAChatRoomSuccessAction({ data: chatMessages, isANewMessage: true }));
                         }
                     },
                     error => { });
+        })
+        .catch(error => { });
+}
+
+export function getPaginatedMessages(dispatch, chatRoomId, messageIdOfTheFirstMessageInList) {
+    const loggedUserToken = getLoggedUserToken();
+    if (!chatRoomId || !loggedUserToken || !messageIdOfTheFirstMessageInList) {
+        return;
+    }
+
+    dispatch(getPaginatedMessagesAction());
+
+    const chatRoomMessagesDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages");
+    chatRoomMessagesDbRef
+        .orderByChild('messageId')
+        .endAt(messageIdOfTheFirstMessageInList)
+        .limitToLast(PAGINATION_MESSAGE_COUNT)
+        .once('value')
+        .then(resp => {
+            const chatMessages = resp.val();
+            if (chatMessages) {
+                const messages = [];
+                for (const messageId in chatMessages) {
+                    if (messageId === messageIdOfTheFirstMessageInList) continue;
+
+                    const messageItem = chatMessages[messageId];
+                    const message = messageItem.message;
+                    messageItem.message = decryptText(message);
+
+                    messages.push(messageItem);
+                }
+                dispatch(getPaginatedMessagesSuccessAction({ data: messages }));
+            }
         })
         .catch(error => { });
 }
