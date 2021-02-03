@@ -47,7 +47,6 @@ export async function createUserInFirebase(loggedUserToken, username) {
         .set({
             "userToken": loggedUserToken,
             "username": username,
-            "isActive": false,
             "lastActive": dayjs().format(),
             "addedOn": dayjs().format(),
             "userChatRooms": {}
@@ -136,7 +135,6 @@ export async function setUserActiveStatus(activeStatus) {
     usersDbRef
         .child(loggedUserToken)
         .update({
-            "isActive": activeStatus,
             "lastActive": dayjs().format(), //iso format
         });
 }
@@ -218,7 +216,7 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUs
     }
 
     const timeStamp = Math.floor(Date.now());
-    const messageId = timeStamp + "_by_" + sentByUserToken;
+    const messageId = timeStamp + "_by_" + sentByUserToken.substring(0, 5);;
     const chatRoomMsgDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages/" + messageId);
     await chatRoomMsgDbRef
         .set({
