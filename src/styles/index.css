@@ -290,6 +290,7 @@ code {
 .message img {
     max-width: 100%;
     border-radius: 25px;
+    cursor: pointer;
 }
 
 .myMessageAlignment {
@@ -369,6 +370,45 @@ code {
     align-items: center;
 }
 
+.imageViewer {
+    position: fixed;
+    z-index: 100;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: rgba(0,0,0, 0.4); */
+}
+
+.imageViewerBg {
+    position: fixed;
+    z-index: 99;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(24, 24, 24, 0.8);
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+}
+
+.imageViewerCloseIcon {
+    position: fixed;
+    z-index: 102;
+    top: 20px;
+    right: 20px;
+    width: 25px;
+    cursor: pointer;
+    filter: invert(100%) sepia(25%) saturate(0%) hue-rotate(253deg) brightness(104%) contrast(101%);
+}
+
+.imageViewerImg {
+    z-index: 102;
+    max-width: 80%;
+}
 
 /*----input fields placeholder color-------*/
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

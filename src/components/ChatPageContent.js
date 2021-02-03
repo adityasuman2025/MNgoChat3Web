@@ -10,6 +10,8 @@ import sendIcon from "../images/send2.png";
 import uploadImgIcon from "../images/uploadImg.png";
 import PurpleGradientContainer from "./PurpleGradientContainer";
 import LoadingAnimation from "./LoadingAnimation";
+import ImageViewer from "./ImageViewer";
+import ImageWithLoader from "./ImageWithLoader";
 
 import dayjs from "../dayjs";
 import { getLoggedUserToken, scrollADivToBottom } from "../utils";
@@ -52,6 +54,7 @@ function ChatPageContent({
     const imageInputRef = useRef();
     dayjs.extend(localizedFormat);
 
+    const [viewImg, setViewImg] = useState(null);
     const [choosedImg, setChoosedImg] = useState(null);
     const [msgText, setMsgText] = useState("");
 
@@ -151,6 +154,12 @@ function ChatPageContent({
         setChoosedImg(null);
     }
 
+    function handleImageClick(src) {
+        if (src) {
+            setViewImg(src);
+        }
+    }
+
     function renderMessages() {
         const loggedUserToken = getLoggedUserToken();
 
@@ -182,7 +191,7 @@ function ChatPageContent({
                         >
                             {
                                 type === MSG_TYPE_IMAGE ?
-                                    <img src={msg.message} />
+                                    <ImageWithLoader src={msg.message} onClick={() => handleImageClick(msg.message)} />
                                     : msg.message
                             }
                         </div>
@@ -197,10 +206,17 @@ function ChatPageContent({
 
     return (
         <PurpleGradientContainer childrenClassName="homeContainer">
+            {
+                viewImg ?
+                    <ImageViewer src={viewImg} onClose={() => setViewImg(null)} />
+                    : null
+            }
+
             <div
                 className="chatWindow"
                 style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
             >
+
                 <div className="chatTitle">
                     <img alt="userIcon" src={userIcon} />
                     <div>
