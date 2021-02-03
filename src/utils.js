@@ -1,8 +1,10 @@
 import React from 'react';
+import CryptoJS from "crypto-js";
 import Cookies from "universal-cookie";
 import { animateScroll } from "react-scroll";
 import Slide from '@material-ui/core/Slide';
 
+import { ENCRYPTION_KEY } from "./encryptionConstants";
 import { COOKIE_EXPIRATION_TIME, LOGGED_USER_TOKEN_COOKIE_NAME } from "./constants";
 const cookies = new Cookies();
 
@@ -36,6 +38,27 @@ export function makeCookie(key, value) {
         return false;
     }
 };
+
+export function encryptText(text) {
+    try {
+        const encryptedValue = CryptoJS.AES.encrypt(text, ENCRYPTION_KEY).toString();
+        return encryptedValue;
+    } catch {
+        return null;
+    }
+}
+
+export function decryptText(enryptedValue) {
+    let value = null;
+    try {
+        const decrypted = CryptoJS.AES.decrypt(enryptedValue, ENCRYPTION_KEY);
+        value = CryptoJS.enc.Utf8.stringify(decrypted);
+    } catch {
+        return null;
+    }
+
+    return value;
+}
 
 //function to validate name, contact no and email
 export function validateUsername(name) {

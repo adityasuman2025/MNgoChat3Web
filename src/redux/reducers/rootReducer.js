@@ -1,6 +1,7 @@
 import {
     getUserTokenOfTheSecondUser,
     getUsernameOfTheSecondUser,
+    decryptText,
 } from "../../utils";
 
 const defaultState = {
@@ -269,8 +270,8 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 const timeDiff = currentTimeStamp - displayNameUserActiveStatusTimeStamp;
                 console.log("GET_ACTIVE_STATUS_OF_A_USER_SUCCESS", timeDiff);
 
-                //displaying online in 20s bandwidth
-                if (timeDiff <= 20) {
+                //displaying online in 12s bandwidth
+                if (timeDiff <= 12) {
                     activeStatusOfAUser = "online";
                 }
             }
@@ -290,14 +291,16 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
         case 'GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS': {
             console.log("GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS");
-            const message = payload.data || {};
+            const messageItem = payload.data || {};
+            const message = messageItem.message;
+            messageItem.message = decryptText(message);
 
             return {
                 ...state,
                 isGettingChatRoomMessages: false,
                 chatRoomMessages: [
                     ...state.chatRoomMessages,
-                    message
+                    messageItem,
                 ],
             }
         }

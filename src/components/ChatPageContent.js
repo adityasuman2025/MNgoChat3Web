@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import cx from "classnames";
-import dayjs from 'dayjs';
-import 'dayjs/locale/en';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 
 import userIcon from "../images/user.png";
@@ -11,11 +9,9 @@ import uploadImgIcon from "../images/uploadImg.png";
 import PurpleGradientContainer from "./PurpleGradientContainer";
 import LoadingAnimation from "./LoadingAnimation";
 
-import { CHAT_ACTION_BOX_HEIGHT, MSG_TYPE_IMAGE } from "../constants";
-import {
-    getLoggedUserToken,
-    scrollADivToBottom
-} from "../utils";
+import dayjs from "../dayjs";
+import { CHAT_ACTION_BOX_HEIGHT, MSG_TYPE_IMAGE, DEFAULT_DATE } from "../constants";
+import { getLoggedUserToken, scrollADivToBottom } from "../utils";
 import {
     setUserActiveStatus,
     getActiveStatusOfAUser,
@@ -36,7 +32,6 @@ function ChatPageContent({
     chatRoomMessages = [],
     dispatch,
 }) {
-    dayjs.locale('en');
     dayjs.extend(localizedFormat);
 
     const [msgText, setMsgText] = useState("");
@@ -95,7 +90,7 @@ function ChatPageContent({
 
             const messageId = msg.messageId;
             const type = msg.type;
-            const formattedTime = dayjs(msg.time).format("LT");
+            const formattedTime = dayjs(DEFAULT_DATE + msg.time).format("LT");
 
             if (messageIds.includes(messageId)) return;
 

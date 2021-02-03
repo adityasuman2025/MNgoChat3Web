@@ -1,6 +1,7 @@
 import firebase from './FirebaseConfig';
 
-import { getLoggedUserToken } from "./utils";
+import dayjs from "./dayjs";
+import { getLoggedUserToken, encryptText } from "./utils";
 import {
     getUserAllChatsAction,
     getUserAllChatsSuccessAction,
@@ -47,7 +48,8 @@ export async function createUserInFirebase(loggedUserToken, username) {
             "userToken": loggedUserToken,
             "username": username,
             "isActive": false,
-            "lastActive": (new Date()).toString(),
+            "lastActive": dayjs().format(),
+            "addedOn": dayjs().format(),
             "userChatRooms": {}
         },
             (error) => {
@@ -135,7 +137,7 @@ export async function setUserActiveStatus(activeStatus) {
         .child(loggedUserToken)
         .update({
             "isActive": activeStatus,
-            "lastActive": (new Date()).toString(),
+            "lastActive": dayjs().format(), //iso format
         });
 }
 
@@ -210,7 +212,8 @@ export async function removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId) {
 
 export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUserToken) {
     const sentByUserToken = getLoggedUserToken();;
-    if (!chatRoomId || !sentByUserToken || !type || !secondUserToken) {
+    const encryptedMsg = encryptText(message);
+    if (!chatRoomId || !sentByUserToken || !type || !secondUserToken || !encryptedMsg) {
         return;
     }
 
@@ -220,12 +223,11 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUs
     await chatRoomMsgDbRef
         .set({
             messageId,
-            message,
+            message: encryptedMsg,
             sentByUserToken,
             type,
-            time: (new Date()).toString()
-        },
-            (error) => { });
+            time: dayjs().format("HH:mm:ssZ"),
+        });
 
     const userChatRoomRef = firebase.app().database().ref('users/' + secondUserToken + "/userChatRooms/" + chatRoomId);
     userChatRoomRef
