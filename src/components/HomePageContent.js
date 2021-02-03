@@ -58,12 +58,28 @@ function HomePageContent({
         }
     }
 
-    function handleUserItemClick(uniqueId, type) {
-        if (type === CHATS_TITLE) {
+    function handleUserItemClick(uniqueId) {
+        if (!uniqueId) return;
+
+        if (title === CHATS_TITLE) {
             history.push("chat/" + uniqueId); //uniqueId = chat room id
         } else {
-            console.log("userAllChats", userAllChats);
-            // history.push("new-chat/" + uniqueId); //uniqueId = secondUserToken
+            for (const userToken in userAllChats) {
+                const userChat = userAllChats[userToken];
+                const displayName = userChat.displayName;
+                const chatRoomId = userChat.chatRoomId;
+
+                //if that user is already present in all-chats of loggedUser
+                //then redirecting him to the chat page of that chatRoomId
+                if (uniqueId.trim() === displayName.trim()) {
+                    history.push("chat/" + chatRoomId);
+                    return;
+                }
+            }
+
+            //if that user is not present in all-chats of loggedUser
+            //then redirecting him to the new-chat page for that secondUserToken (other userToken)
+            history.push("new-chat/" + uniqueId); //uniqueId = secondUserToken
         }
     }
 
@@ -95,7 +111,7 @@ function HomePageContent({
                 <div
                     key={key}
                     className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
-                    onClick={() => handleUserItemClick(key, title)}
+                    onClick={() => handleUserItemClick(key)}
                 >
                     <img alt="userIcon" src={userIcon} />
                     {user.displayName}
@@ -137,7 +153,7 @@ function HomePageContent({
                                                     <div
                                                         key={userToken}
                                                         className="listUserItem"
-                                                        onClick={() => handleUserItemClick(userToken, title)}
+                                                        onClick={() => handleUserItemClick(displayName)}
                                                     >
                                                         <img alt="userIcon" src={userIcon} />
                                                         {displayName}

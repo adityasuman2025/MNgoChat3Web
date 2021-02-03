@@ -2,9 +2,12 @@ import React, { useEffect } from "react";
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
 
+import userIcon from "../images/user.png";
 import LandingPageDesign from "../components/LandingPageDesign";
-import ChatPageContent from "../components/ChatPageContent";
+import PurpleGradientContainer from "../components/PurpleGradientContainer";
+import ActionButton from "../components/ActionButton";
 
+import { CHAT_ACTION_BOX_HEIGHT } from "../constants";
 import {
     checkLoginStatusAction,
 } from "../redux/actions/index";
@@ -19,16 +22,10 @@ function NewChat({
     } = {},
     dispatch,
 }) {
+    console.log("secondUserToken", secondUserToken)
     useEffect(() => {
         dispatch(checkLoginStatusAction());
     }, []);
-
-    //to get chat room details
-    useEffect(() => {
-        if (isSomeoneLoggedIn) {
-            // dispatch(getChatRoomDetailsAction(chatRoomId));
-        }
-    }, [isSomeoneLoggedIn]);
 
     function redirectToHomeOrLoginPage() {
         if (!isCheckingLoginStatus) {
@@ -46,8 +43,34 @@ function NewChat({
                 isCheckingLoginStatus ?
                     <LandingPageDesign isCheckingLoginStatus={isCheckingLoginStatus} />
                     :
-                    "nice"
-                // <ChatPageContent dispatch={dispatch} chatRoomId={chatRoomId} />
+                    <PurpleGradientContainer childrenClassName="homeContainer">
+                        <div
+                            className="chatWindow"
+                            style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
+                        >
+                            <div className="chatTitle">
+                                <img alt="userIcon" src={userIcon} />
+                                <div>
+                                    <div className="lightTitle">{secondUserToken}</div>
+                                </div>
+                            </div>
+
+                            <div id="chatContent" className="chatContent">
+                                y yo
+                            </div>
+                            <div
+                                className="chatActionBox"
+                                style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
+                            >
+                                <ActionButton
+                                    dark={false}
+                                    // showLoader={isLoggingUser}
+                                    buttonText="Start Chat"
+                                // onClick={handleLoginBtnClick}
+                                />
+                            </div>
+                        </div>
+                    </PurpleGradientContainer>
             }
         </>
     );
