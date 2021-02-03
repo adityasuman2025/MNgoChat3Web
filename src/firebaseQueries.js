@@ -15,6 +15,8 @@ import {
 
     getMessagesOfAChatRoomAction,
     getMessagesOfAChatRoomSuccessAction,
+
+    getTypeStatusOfAUserSuccessAction,
 } from "./redux/actions/index";
 
 export async function checkUserExistsInFirebase(loggedUserToken) {
@@ -236,7 +238,7 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUs
 
 export async function readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId) {
     const loggedUserToken = getLoggedUserToken();
-    if (!loggedUserToken) {
+    if (!loggedUserToken || !chatRoomId) {
         return;
     }
 
@@ -245,4 +247,35 @@ export async function readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomI
         .child("unSeenMsgCount")
         .set(0)
         .catch(error => { })
+}
+
+export async function setUserTypeStatus(chatRoomId) {
+    const loggedUserToken = getLoggedUserToken();
+    if (!loggedUserToken || !chatRoomId) {
+        return;
+    }
+
+    const userChatRoomRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/members/" + loggedUserToken);
+    userChatRoomRef
+        .child("lastTyped")
+        .set(dayjs().format())
+        .catch(error => { })
+}
+
+export async function getTypeStatusOfAUser(dispatch, chatRoomId, secondUserToken) {
+    if (!secondUserToken || !chatRoomId) {
+        return;
+    }
+
+    const userChatRoomLastTypeRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/members/" + secondUserToken);
+    userChatRoomLastTypeRef
+        .child("lastTyped")
+        .once('value')
+        .then(async resp => {
+            const response = resp.val();
+            if (response) {
+                dispatch(getTypeStatusOfAUserSuccessAction({ data: response }));
+            }
+        })
+        .catch(error => { });
 }

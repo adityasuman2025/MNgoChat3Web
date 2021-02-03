@@ -184,3 +184,9 @@ export const getMessagesOfAChatRoomSuccessAction = (payload) => async (dispatch)
         dispatch({ type: 'GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS', payload });
     }
 }
+
+export const getTypeStatusOfAUserSuccessAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_TYPE_STATUS_OF_A_USER_SUCCESS', payload });
+    }
+}

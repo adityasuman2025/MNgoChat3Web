@@ -42,6 +42,8 @@ const defaultState = {
 
     isGettingChatRoomMessages: false,
     chatRoomMessages: [],
+
+    typeStatusOfAUser: null,
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -305,6 +307,26 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
 
+        case 'GET_TYPE_STATUS_OF_A_USER_SUCCESS': {
+            let typeStatusOfAUser = payload.data || null;
+            if (typeStatusOfAUser) {
+                const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
+                const displayNameUserActiveStatusTimeStamp = Date.parse(typeStatusOfAUser) / 1000;
+                const timeDiff = currentTimeStamp - displayNameUserActiveStatusTimeStamp;
+                console.log("GET_TYPE_STATUS_OF_A_USER_SUCCESS", timeDiff);
+
+                //displaying online in 1s bandwidth
+                if (timeDiff <= 1) {
+                    typeStatusOfAUser = "...typing";
+                } else {
+                    typeStatusOfAUser = null;
+                }
+            }
+            return {
+                ...state,
+                typeStatusOfAUser,
+            }
+        }
 
         default: return state
     }

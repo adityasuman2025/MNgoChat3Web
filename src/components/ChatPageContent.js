@@ -19,12 +19,15 @@ import {
     removeGetMessagesOfAChatRoomFirebaseQuery,
     sendMessageInAChatRoom,
     readingNewMessagesOfTheLoggedUserForThatChatRoom,
+    setUserTypeStatus,
+    getTypeStatusOfAUser,
 } from "../firebaseQueries";
 
 function ChatPageContent({
     isGettingChatRoomMessages,
     chatRoomId,
     activeStatusOfAUser,
+    typeStatusOfAUser,
     chatRoomDetails: {
         usernameOfSecondUser,
         userTokenOfSecondUser,
@@ -50,6 +53,7 @@ function ChatPageContent({
         getMessagesOfAChatRoom(dispatch, chatRoomId);
         getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
         setUserActiveStatus(true);
+        getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
 
         const setActiveStatusInterval = setInterval(function() {
             getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
@@ -57,9 +61,15 @@ function ChatPageContent({
         }, 10000); //setting user lastActive time every 10 seconds
         //other users need to compare their local time with that user lastActiveTime to get his active status
 
+        const getTypeStatusInterval = setInterval(function() {
+            getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
+        }, 1000); //getting user typings status in 1 s
+        //other users need to compare their local time with that user lastTypedTime to get his typing status
+
         return () => {
             removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId);
             clearInterval(setActiveStatusInterval);
+            clearInterval(getTypeStatusInterval);
         }
     }, []);
 
@@ -125,6 +135,11 @@ function ChatPageContent({
         return toRender;
     }
 
+    function handleChangeMsgInput(e) {
+        setMsgText(e.target.value)
+        setUserTypeStatus(chatRoomId);
+    }
+
     return (
         <PurpleGradientContainer childrenClassName="homeContainer">
             <div
@@ -137,11 +152,14 @@ function ChatPageContent({
                         <div className="lightTitle">{usernameOfSecondUser}</div>
                         <div className="onlineStatus">
                             {
-                                activeStatusOfAUser ?
-                                    activeStatusOfAUser !== "online" ?
-                                        dayjs(activeStatusOfAUser).format("lll")
-                                        : "online"
-                                    : ""
+                                typeStatusOfAUser ?
+                                    typeStatusOfAUser
+                                    :
+                                    activeStatusOfAUser ?
+                                        activeStatusOfAUser !== "online" ?
+                                            dayjs(activeStatusOfAUser).format("lll")
+                                            : "online"
+                                        : ""
                             }
                         </div>
                     </div>
@@ -169,7 +187,7 @@ function ChatPageContent({
                     placeholder="type message"
                     autoFocus
                     value={msgText}
-                    onChange={(e) => setMsgText(e.target.value)}
+                    onChange={handleChangeMsgInput}
                 />
                 <img alt="sendIcon" src={sendIcon} onClick={handleSendMsgBtnClick} />
             </form>
@@ -181,6 +199,7 @@ const mapStateToProps = (state) => {
     return {
         isGettingChatRoomMessages: state.isGettingChatRoomMessages,
         activeStatusOfAUser: state.activeStatusOfAUser,
+        typeStatusOfAUser: state.typeStatusOfAUser,
         chatRoomDetails: state.chatRoomDetails,
         chatRoomMessages: state.chatRoomMessages,
     }
