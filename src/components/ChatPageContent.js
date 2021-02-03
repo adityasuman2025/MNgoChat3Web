@@ -80,7 +80,7 @@ function ChatPageContent({
     async function handleSendMsgBtnClick(e) {
         e.preventDefault();
 
-        if (msgText !== "") {
+        if (msgText.trim() !== "") {
             await sendMessageInAChatRoom(chatRoomId, msgText, "text", userTokenOfSecondUser);
             setMsgText("");
         }
@@ -142,9 +142,11 @@ function ChatPageContent({
                         <div className="lightTitle">{usernameOfSecondUser}</div>
                         <div className="onlineStatus">
                             {
-                                activeStatusOfAUser !== "online" ?
-                                    dayjs(activeStatusOfAUser).format("lll")
-                                    : "online"
+                                activeStatusOfAUser ?
+                                    activeStatusOfAUser !== "online" ?
+                                        dayjs(activeStatusOfAUser).format("lll")
+                                        : "online"
+                                    : ""
                             }
                         </div>
                     </div>

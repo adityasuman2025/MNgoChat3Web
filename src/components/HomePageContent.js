@@ -67,6 +67,45 @@ function HomePageContent({
         }
     }
 
+    function renderAllChats() {
+        // unread msg chatroom will be listed first
+        const toRender = Object.keys(userAllChats).map(function(key) {
+            const user = userAllChats[key];
+            const unSeenMsgCount = parseInt(user.unSeenMsgCount) || 0;
+
+            if (unSeenMsgCount === 0) return;
+            return (
+                <div
+                    key={key}
+                    className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
+                    onClick={() => handleUserItemClick(key, title)}
+                >
+                    <img alt="userIcon" src={userIcon} />
+                    {user.displayName}
+                </div>
+            )
+        });
+
+        toRender.push(Object.keys(userAllChats).map(function(key) {
+            const user = userAllChats[key];
+            const unSeenMsgCount = parseInt(user.unSeenMsgCount) || 0;
+
+            if (unSeenMsgCount !== 0) return;
+            return (
+                <div
+                    key={key}
+                    className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
+                    onClick={() => handleUserItemClick(key, title)}
+                >
+                    <img alt="userIcon" src={userIcon} />
+                    {user.displayName}
+                </div>
+            )
+        }));
+
+        return toRender;
+    }
+
     return (
         <div className="homeContainer">
             <div
@@ -87,22 +126,7 @@ function HomePageContent({
                             <div>
                                 {
                                     title === CHATS_TITLE ?
-                                        Object.keys(userAllChats).map(function(key) {
-                                            const user = userAllChats[key];
-                                            const unSeenMsgCount = user.unSeenMsgCount || 0;
-                                            const isUnSeen = (unSeenMsgCount > 0);
-
-                                            return (
-                                                <div
-                                                    key={key}
-                                                    className={cx("listUserItem", { ["unSeenMsgUser"]: isUnSeen })}
-                                                    onClick={() => handleUserItemClick(key, title)}
-                                                >
-                                                    <img alt="userIcon" src={userIcon} />
-                                                    {user.displayName}
-                                                </div>
-                                            )
-                                        })
+                                        renderAllChats()
                                         :
                                         Object.keys(allUsers).map(function(userToken) {
                                             const user = allUsers[userToken];
