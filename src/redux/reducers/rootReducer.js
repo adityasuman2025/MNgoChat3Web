@@ -308,11 +308,18 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
 
             return {
                 ...state,
-                isGettingChatRoomMessages: false,
                 chatRoomMessages: [
                     ...state.chatRoomMessages,
                     messageItem,
                 ],
+            }
+        }
+        case 'GET_MESSAGES_OF_A_CHAT_ROOM_ALL_SUCCESS': {
+            console.log("GET_MESSAGES_OF_A_CHAT_ROOM_ALL_SUCCESS");
+
+            return {
+                ...state,
+                isGettingChatRoomMessages: false,
             }
         }
 

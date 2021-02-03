@@ -238,10 +238,10 @@ function ChatPageContent({
 
                 <div id="chatContent" className="chatContent">
                     {
-                        // isGettingChatRoomMessages ?
-                        // <LoadingAnimation loading={true} className="chatWindowLoader" />
-                        // : 
-                        renderMessages()
+                        isGettingChatRoomMessages ?
+                            <LoadingAnimation loading={true} className="chatWindowLoader" />
+                            :
+                            renderMessages()
                     }
                 </div>
             </div>

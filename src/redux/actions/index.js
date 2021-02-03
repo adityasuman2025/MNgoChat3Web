@@ -113,13 +113,11 @@ export const verifyPasscodeAction = (loggedUserToken, passcode) => async (dispat
 export const getUserAllChatsAction = () => async (dispatch) => {
     dispatch({ type: 'GET_USER_ALL_CHATS' });
 }
-
 export const getUserAllChatsSuccessAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'GET_USER_ALL_CHATS_SUCCESS', payload });
     }
 }
-
 export const getUserAllChatsFailureAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'GET_USER_ALL_CHATS_FAILURE', payload });
@@ -129,13 +127,11 @@ export const getUserAllChatsFailureAction = (payload) => async (dispatch) => {
 export const getAllUsersAction = () => async (dispatch) => {
     dispatch({ type: 'GET_ALL_USERS' });
 }
-
 export const getAllUsersSuccessAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'GET_ALL_USERS_SUCCESS', payload });
     }
 }
-
 export const getAllUsersFailureAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'GET_ALL_USERS_FAILURE', payload });
@@ -179,11 +175,13 @@ export const getMessagesOfAChatRoomAction = (payload) => async (dispatch) => {
         dispatch({ type: 'GET_MESSAGES_OF_A_CHAT_ROOM', payload });
     }
 }
-
 export const getMessagesOfAChatRoomSuccessAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS', payload });
     }
+}
+export const getMessagesOfAChatRoomAllSuccessAction = (payload) => async (dispatch) => {
+    dispatch({ type: 'GET_MESSAGES_OF_A_CHAT_ROOM_ALL_SUCCESS', payload });
 }
 
 export const getTypeStatusOfAUserSuccessAction = (payload) => async (dispatch) => {
@@ -195,13 +193,11 @@ export const getTypeStatusOfAUserSuccessAction = (payload) => async (dispatch) =
 export const startANewChatRoomAction = () => async (dispatch) => {
     dispatch({ type: 'START_A_NEW_CHAT_ROOM' });
 }
-
 export const startANewChatRoomSuccessAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'START_A_NEW_CHAT_ROOM_SUCCESS', payload });
     }
 }
-
 export const startANewChatRoomFailureAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'START_A_NEW_CHAT_ROOM_FAILURE', payload });
@@ -211,13 +207,11 @@ export const startANewChatRoomFailureAction = (payload) => async (dispatch) => {
 export const uploadImageInFirebaseAction = () => async (dispatch) => {
     dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE' });
 }
-
 export const uploadImageInFirebaseSuccessAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE_SUCCESS', payload });
     }
 }
-
 export const uploadImageInFirebaseFailureAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE_FAILURE', payload });

@@ -15,6 +15,7 @@ import {
 
     getMessagesOfAChatRoomAction,
     getMessagesOfAChatRoomSuccessAction,
+    getMessagesOfAChatRoomAllSuccessAction,
 
     getTypeStatusOfAUserSuccessAction,
 
@@ -189,6 +190,31 @@ export async function getActiveStatusOfAUser(dispatch, userToken) {
         .catch(error => { });
 }
 
+export function isEmpty(obj) {
+
+    // null and undefined are "empty"
+    if (obj == null) return true;
+
+    // Assume if it has a length property with a non-zero value
+    // that that property is correct.
+    if (obj.length > 0) return false;
+    if (obj.length === 0) return true;
+
+    // If it isn't an object at this point
+    // it is empty, but it can't be anything *but* empty
+    // Is it empty?  Depends on your application.
+    if (typeof obj !== "object") return true;
+
+    // Otherwise, does it have any properties of its own?
+    // Note that this doesn't handle
+    // toString and valueOf enumeration bugs in IE < 9
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key)) return false;
+    }
+
+    return true;
+}
+
 export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
     const loggedUserToken = getLoggedUserToken();
     if (!chatRoomId || !loggedUserToken) {
@@ -198,14 +224,47 @@ export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
     dispatch(getMessagesOfAChatRoomAction({ chatRoomId }));
 
     const chatRoomMessagesDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages");
+    // await chatRoomMessagesDbRef
+    //     .on('child_added',
+    //         resp => {
+    //             const response = resp.val();
+    //             if (response) {
+    //                 dispatch(getMessagesOfAChatRoomSuccessAction({ data: response }));
+    //             }
+    //         });
+
+    chatRoomMessagesDbRef.off();
     chatRoomMessagesDbRef
-        .on('child_added',
-            resp => {
-                const response = resp.val();
-                if (response) {
-                    dispatch(getMessagesOfAChatRoomSuccessAction({ data: response }));
-                }
-            });
+        .orderByChild('messageId')
+        .limitToLast(10)
+        .once('value')
+        .then(resp => {
+            let isFirstFetch = true;
+            const chatMessages = resp.val();
+            for (const id in chatMessages) {
+                const message = chatMessages[id];
+                dispatch(getMessagesOfAChatRoomSuccessAction({ data: message }));
+            }
+            if (isEmpty(chatMessages)) {
+                isFirstFetch = false;
+            }
+
+            dispatch(getMessagesOfAChatRoomAllSuccessAction());
+            chatRoomMessagesDbRef
+                .endAt()
+                .limitToLast(1)
+                .on('child_added',
+                    resp => {
+                        if (isFirstFetch) {
+                            isFirstFetch = false;
+                        } else {
+                            const chatMessages = resp.val();
+                            dispatch(getMessagesOfAChatRoomSuccessAction({ data: chatMessages }));
+                        }
+                    },
+                    error => { });
+        })
+        .catch(error => { });
 }
 
 export async function removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId) {
