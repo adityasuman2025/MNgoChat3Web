@@ -141,5 +141,6 @@ export function scrollADivToBottom(containerId) {
 
 //function to logout
 export async function logout() {
-    await cookies.remove("mngoChatLoggedUserToken", { path: "/", expires: COOKIE_EXPIRATION_TIME });
+    console.log("logging out");
+    await cookies.remove(LOGGED_USER_TOKEN_COOKIE_NAME, { path: "/", expires: COOKIE_EXPIRATION_TIME });
 };

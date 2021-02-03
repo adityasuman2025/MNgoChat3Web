@@ -1,5 +1,5 @@
 import { LOGGED_USER_TOKEN_COOKIE_NAME, SOMETHING_WENT_WRONG_ERROR } from "../../constants";
-import { getLoggedUserToken, makeCookie } from "../../utils";
+import { getLoggedUserToken, makeCookie, logout } from "../../utils";
 import {
     getUserDetails,
     verifyLogin,
@@ -45,6 +45,7 @@ export const checkLoginStatusAction = () => async (dispatch) => {
                     }
                 }
             } else {
+                logout();
                 dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: response });
             }
         } else {

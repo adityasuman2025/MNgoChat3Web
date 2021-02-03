@@ -26,9 +26,8 @@ import {
 export async function checkUserExistsInFirebase(loggedUserToken) {
     let toReturn = { statusCode: 500, data: false, msg: "" };
 
-    const usersDbRef = firebase.app().database().ref('users/');
+    const usersDbRef = firebase.app().database().ref('users/' + loggedUserToken + "/userToken");
     await usersDbRef
-        .child(loggedUserToken)
         .once('value')
         .then(async resp => {
             const response = resp.val();

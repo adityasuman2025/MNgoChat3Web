@@ -203,9 +203,16 @@ code {
     height: 50px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding-left: 10px;
+    padding-right: 10px;
     border-bottom: 2px solid #24133f;
     background: #d8d8d8;
+}
+
+.homeTitle img {
+    height: 27px;
+    cursor: pointer;
 }
 
 .homeContent {

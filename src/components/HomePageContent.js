@@ -5,12 +5,12 @@ import cx from "classnames";
 import userIcon from "../images/user.png";
 import allChats from "../images/allChats.png";
 import allUsersIcon from "../images/allUsers.png";
+import logoutIcon from "../images/logout.png";
 import LoadingAnimation from "./LoadingAnimation";
 
-import {
-    BOTTOM_NAV_HEIGHT,
-    BOTTOM_NAV_BOTTOM_MARGIN,
-} from "../constants";
+import { BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN } from "../constants";
+import { logout } from "../utils";
+import { checkLoginStatusAction } from "../redux/actions/index";
 import {
     setUserActiveStatus,
     getUserChatRooms,
@@ -87,13 +87,20 @@ function HomePageContent({
         }
     }
 
+    async function handleLogoutBtnClick() {
+        await logout();
+        dispatch(checkLoginStatusAction());
+    }
+
     function renderAllChats() {
         // unread msg chatRooms will be listed first
         const toRender = Object.keys(userAllChats).map(function(chatRoomId) {
             const userChat = userAllChats[chatRoomId];
             const unSeenMsgCount = parseInt(userChat.unSeenMsgCount) || 0;
+            const displayName = userChat.displayName;
 
             if (unSeenMsgCount === 0) return;
+            if (!displayName) return;
             return (
                 <div
                     key={chatRoomId}
@@ -101,7 +108,7 @@ function HomePageContent({
                     onClick={() => handleUserItemClick(chatRoomId, title)}
                 >
                     <img alt="userIcon" src={userIcon} />
-                    {userChat.displayName}
+                    {displayName}
                 </div>
             )
         });
@@ -109,8 +116,10 @@ function HomePageContent({
         toRender.push(Object.keys(userAllChats).map(function(chatRoomId) {
             const userChat = userAllChats[chatRoomId];
             const unSeenMsgCount = parseInt(userChat.unSeenMsgCount) || 0;
+            const displayName = userChat.displayName;
 
             if (unSeenMsgCount !== 0) return;
+            if (!displayName) return;
             return (
                 <div
                     key={chatRoomId}
@@ -118,7 +127,7 @@ function HomePageContent({
                     onClick={() => handleUserItemClick(chatRoomId)}
                 >
                     <img alt="userIcon" src={userIcon} />
-                    {userChat.displayName}
+                    {displayName}
                 </div>
             )
         }));
@@ -137,6 +146,7 @@ function HomePageContent({
             >
                 <div className="homeTitle">
                     <div className="darkTitle">{title}</div>
+                    <img alt="logoutIcon" src={logoutIcon} onClick={handleLogoutBtnClick} />
                 </div>
                 <div className="homeContent">
                     {
@@ -152,6 +162,7 @@ function HomePageContent({
                                             const user = allUsers[userToken];
                                             const displayName = user.username;
 
+                                            if (!displayName) return;
                                             if (displayName !== loggedUsername) {
                                                 return (
                                                     <div
