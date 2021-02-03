@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import SnackBar from "./SnackBar";
+import OfflineModal from "./OfflineModal";
 
 function SnackBarWrapper({
     snackBarCount,
@@ -23,9 +24,22 @@ function SnackBarWrapper({
 
     children,
 }) {
+    const [showOfflineWarning, setShowOffLineWarning] = useState(false);
     const [snackBarVisible, setSnackBarVisible] = useState(false);
     const [snackBarMsgState, setSnackBarMsgState] = useState("");
     const [snackBarTypeState, setSnackBarTypeState] = useState("success")
+
+    useEffect(() => {
+        window.addEventListener('offline', function(e) {
+            console.log('offline');
+            setShowOffLineWarning(true);
+        });
+
+        window.addEventListener('online', function(e) {
+            console.log('online');
+            setShowOffLineWarning(false);
+        });
+    }, []);
 
     useEffect(() => {
         if (snackBarMsg) {
@@ -111,6 +125,11 @@ function SnackBarWrapper({
 
     return (
         <>
+            {
+                showOfflineWarning ?
+                    <OfflineModal />
+                    : null
+            }
             {children}
             <SnackBar
                 open={snackBarVisible}
@@ -121,7 +140,6 @@ function SnackBarWrapper({
         </>
     )
 }
-
 
 const mapStateToProps = (state) => {
     return {

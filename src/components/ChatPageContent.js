@@ -65,14 +65,6 @@ function ChatPageContent({
     //to get messages of the room
     //getting active status of the 2nd user and setting active status of the logged user
     useEffect(() => {
-        // window.addEventListener('offline', function(e) {
-        //     console.log('offline');
-        // });
-
-        // window.addEventListener('online', function(e) {
-        //     console.log('online');
-        // });
-
         getMessagesOfAChatRoom(dispatch, chatRoomId);
         getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
         setUserActiveStatus(true);
