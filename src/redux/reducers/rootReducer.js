@@ -365,7 +365,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
 
                 //displaying online in 1s bandwidth
                 if (timeDiff <= 1) {
-                    typeStatusOfAUser = "...typing";
+                    typeStatusOfAUser = "typing...";
                 } else {
                     typeStatusOfAUser = null;
                 }

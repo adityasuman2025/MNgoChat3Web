@@ -15,7 +15,7 @@ export const MSG_TYPE_IMAGE = "image";
 export const DEFAULT_DATE = "1999-03-03T";
 export const IMAGE_COMPRESSION_OPTIONS = {
     maxSizeMB: 0.1,
-    maxWidthOrHeight: 600,
+    maxWidthOrHeight: 2000,
     useWebWorker: true
 };
 export const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg"];

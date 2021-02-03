@@ -103,7 +103,6 @@ function ChatPageContent({
         readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
     }, [isANewMessage]);
 
-
     useEffect(() => {
         if (downloadUrl) {
             sendMessageInAChatRoom(chatRoomId, downloadUrl, "image", userTokenOfSecondUser);
@@ -208,10 +207,7 @@ function ChatPageContent({
     }
 
     function loadMoreMessages() {
-        console.log("need more");
         const messageIdOfTheFirstMessageInList = (chatRoomMessages[0] || {}).messageId;
-        console.log("messageIdOfTheFirstMessageInList", messageIdOfTheFirstMessageInList);
-
         getPaginatedMessages(dispatch, chatRoomId, messageIdOfTheFirstMessageInList);
     }
 
