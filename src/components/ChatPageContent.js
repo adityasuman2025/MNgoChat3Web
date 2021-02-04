@@ -53,10 +53,10 @@ function ChatPageContent({
     chatRoomMessages = [],
     dispatch,
 }) {
-    const imageInputRef = useRef();
-    const textInputRef = useRef();
     dayjs.extend(localizedFormat);
 
+    const imageInputRef = useRef();
+    const textInputRef = useRef();
     const [selectedMsgForReply, setSelectedMsgForReply] = useState(null);
     const [viewImg, setViewImg] = useState(null);
     const [choosedImg, setChoosedImg] = useState(null);
