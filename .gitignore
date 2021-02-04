@@ -23,5 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 
 /src/FirebaseConfig.js
-/src/dbSchema.json
 /src/encryptionConstants.js
