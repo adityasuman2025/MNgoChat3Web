@@ -237,7 +237,7 @@ export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
         .catch(error => { });
 }
 
-export function getPaginatedMessages(dispatch, chatRoomId, messageIdOfTheFirstMessageInList) {
+export async function getPaginatedMessages(dispatch, chatRoomId, messageIdOfTheFirstMessageInList) {
     const loggedUserToken = getLoggedUserToken();
     if (!chatRoomId || !loggedUserToken || !messageIdOfTheFirstMessageInList) {
         return;
@@ -411,9 +411,7 @@ export async function uploadImageInFirebase(dispatch, imageFile) {
     try {
         dispatch(uploadImageInFirebaseAction());
 
-        console.log(`originalFile size ${imageFile.size / 1024} KB`);
         const compressedImg = await imageCompression(imageFile, IMAGE_COMPRESSION_OPTIONS);
-        console.log(`compressedFile size ${compressedImg.size / 1024} KB`); // smaller than maxSizeMB
         if (!compressedImg) return;
 
         const timeStamp = Math.floor(Date.now());

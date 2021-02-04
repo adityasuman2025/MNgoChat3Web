@@ -149,10 +149,6 @@ function ChatPageContent({
         }
     }
 
-    function handleCloseIconClick() {
-        setChoosedImg(null);
-    }
-
     function handleImageClick(src) {
         if (src) {
             setViewImg(src);
@@ -262,7 +258,7 @@ function ChatPageContent({
                             {
                                 choosedImg ?
                                     <>
-                                        <img alt="closeIcon" className="closeIcon" src={closeIcon} onClick={handleCloseIconClick} />
+                                        <img alt="closeIcon" className="closeIcon" src={closeIcon} onClick={() => setChoosedImg(null)} />
                                         <img alt="choosenImg" className="sendImgPreview" src={URL.createObjectURL(choosedImg)} />
                                     </>
                                     :
