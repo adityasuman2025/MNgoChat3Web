@@ -31,12 +31,10 @@ function SnackBarWrapper({
 
     useEffect(() => {
         window.addEventListener('offline', function(e) {
-            console.log('offline');
             setShowOffLineWarning(true);
         });
 
         window.addEventListener('online', function(e) {
-            console.log('online');
             setShowOffLineWarning(false);
         });
     }, []);

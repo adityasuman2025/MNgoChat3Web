@@ -165,6 +165,5 @@ export function isEmpty(obj) {
 
 //function to logout
 export async function logout() {
-    console.log("logging out");
     await cookies.remove(LOGGED_USER_TOKEN_COOKIE_NAME, { path: "/", expires: COOKIE_EXPIRATION_TIME });
 };

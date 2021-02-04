@@ -59,7 +59,6 @@ const defaultState = {
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
     switch (type) {
         case 'SHOW_SNACKBAR': {
-            console.log("SHOW_SNACKBAR");
             return {
                 ...state,
                 snackBarCount: state.snackBarCount + 1,
@@ -69,7 +68,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'CHECK_LOGIN_STATUS': {
-            console.log("CHECK_LOGIN_STATUS");
             return {
                 ...state,
                 isCheckingLoginStatus: true,
@@ -85,7 +83,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 isSomeoneLoggedIn = true;
             }
 
-            console.log("CHECK_LOGIN_STATUS_SUCCESS");
             return {
                 ...state,
                 isCheckingLoginStatus: false,
@@ -94,7 +91,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'CHECK_LOGIN_STATUS_FAILURE': {
-            console.log("CHECK_LOGIN_STATUS_FAILURE");
             return {
                 ...state,
                 isCheckingLoginStatus: false,
@@ -103,7 +99,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'LOGIN_USER': {
-            console.log("LOGIN_USER");
             return {
                 ...state,
                 isLoggingUser: true,
@@ -119,7 +114,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 isSomeoneLoggedIn = true;
             }
 
-            console.log("LOGIN_USER_SUCCESS");
             return {
                 ...state,
                 isLoggingUser: false,
@@ -128,7 +122,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'LOGIN_USER_FAILURE': {
-            console.log("LOGIN_USER_FAILURE");
             return {
                 ...state,
                 isLoggingUser: false,
@@ -137,7 +130,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'REGISTER_USER': {
-            console.log("REGISTER_USER");
             return {
                 ...state,
                 isRegisteringUser: true,
@@ -146,7 +138,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'REGISTER_USER_SUCCESS': {
-            console.log("REGISTER_USER_SUCCESS");
             return {
                 ...state,
                 isRegisteringUser: false,
@@ -154,7 +145,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'REGISTER_USER_FAILURE': {
-            console.log("REGISTER_USER_FAILURE");
             return {
                 ...state,
                 isRegisteringUser: false,
@@ -163,7 +153,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'VERIFY_PASSCODE': {
-            console.log("VERIFY_PASSCODE");
             return {
                 ...state,
                 isVerifyingPasscode: true,
@@ -172,7 +161,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'VERIFY_PASSCODE_SUCCESS': {
-            console.log("VERIFY_PASSCODE_SUCCESS");
             return {
                 ...state,
                 isVerifyingPasscode: false,
@@ -180,7 +168,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'VERIFY_PASSCODE_FAILURE': {
-            console.log("VERIFY_PASSCODE_FAILURE");
             return {
                 ...state,
                 isVerifyingPasscode: false,
@@ -189,7 +176,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'GET_USER_ALL_CHATS': {
-            console.log("GET_USER_ALL_CHATS");
             return {
                 ...state,
                 isGettingUserAllChats: true,
@@ -198,7 +184,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_USER_ALL_CHATS_SUCCESS': {
-            console.log("GET_USER_ALL_CHATS_SUCCESS");
             return {
                 ...state,
                 isGettingUserAllChats: false,
@@ -206,7 +191,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_USER_ALL_CHATS_FAILURE': {
-            console.log("GET_USER_ALL_CHATS_FAILURE");
             return {
                 ...state,
                 isGettingUserAllChats: false,
@@ -215,7 +199,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'GET_ALL_USERS': {
-            console.log("GET_ALL_USERS");
             return {
                 ...state,
                 isGettingAllUsers: true,
@@ -224,7 +207,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_ALL_USERS_SUCCESS': {
-            console.log("GET_ALL_USERS_SUCCESS");
             return {
                 ...state,
                 isGettingAllUsers: false,
@@ -232,7 +214,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_ALL_USERS_FAILURE': {
-            console.log("GET_ALL_USERS_FAILURE");
             return {
                 ...state,
                 isGettingAllUsers: false,
@@ -241,7 +222,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'GET_CHAT_ROOM_DETAILS': {
-            console.log("GET_CHAT_ROOM_DETAILS");
             return {
                 ...state,
                 isGettingChatRoomDetails: true,
@@ -251,7 +231,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_CHAT_ROOM_DETAILS_SUCCESS': {
-            console.log("GET_CHAT_ROOM_DETAILS_SUCCESS");
             const data = payload.data || {};
             const members = data.members;
 
@@ -266,7 +245,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_CHAT_ROOM_DETAILS_FAILURE': {
-            console.log("GET_CHAT_ROOM_DETAILS_FAILURE");
             return {
                 ...state,
                 isGettingChatRoomDetails: false,
@@ -280,7 +258,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
                 const displayNameUserActiveStatusTimeStamp = Date.parse(activeStatusOfAUser) / 1000;
                 const timeDiff = currentTimeStamp - displayNameUserActiveStatusTimeStamp;
-                console.log("GET_ACTIVE_STATUS_OF_A_USER_SUCCESS", timeDiff);
 
                 //displaying online in 10s bandwidth
                 if (timeDiff <= 10) {
@@ -294,7 +271,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'GET_MESSAGES_OF_A_CHAT_ROOM': {
-            console.log("GET_MESSAGES_OF_A_CHAT_ROOM");
             return {
                 ...state,
                 isGettingChatRoomMessages: true,
@@ -304,7 +280,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS': {
-            console.log("GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS");
             const messageItem = payload.data || {};
             const newMessage = payload.isANewMessage || false;
             const message = messageItem.message;
@@ -329,8 +304,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'GET_MESSAGES_OF_A_CHAT_ROOM_ALL_SUCCESS': {
-            console.log("GET_MESSAGES_OF_A_CHAT_ROOM_ALL_SUCCESS");
-
             return {
                 ...state,
                 isGettingChatRoomMessages: false,
@@ -339,14 +312,12 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'GET_PAGINATED_MESSAGES': {
-            console.log("GET_PAGINATED_MESSAGES");
             return {
                 ...state,
                 isGettingChatRoomMessages: true,
             }
         }
         case 'GET_PAGINATED_MESSAGES_SUCCESS': {
-            console.log("GET_PAGINATED_MESSAGES_SUCCESS");
             const messages = payload.data || [];
 
             return {
@@ -365,7 +336,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
                 const displayNameUserActiveStatusTimeStamp = Date.parse(typeStatusOfAUser) / 1000;
                 const timeDiff = currentTimeStamp - displayNameUserActiveStatusTimeStamp;
-                console.log("GET_TYPE_STATUS_OF_A_USER_SUCCESS", timeDiff);
 
                 //displaying online in 1s bandwidth
                 if (timeDiff <= 1) {
@@ -381,7 +351,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'START_A_NEW_CHAT_ROOM': {
-            console.log("START_A_NEW_CHAT_ROOM");
             return {
                 ...state,
                 isStartingANewChatRoom: true,
@@ -390,9 +359,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 newChatRoomDetails: {},
             }
         }
-
         case 'START_A_NEW_CHAT_ROOM_SUCCESS': {
-            console.log("START_A_NEW_CHAT_ROOM_SUCCESS");
             return {
                 ...state,
                 isStartingANewChatRoom: false,
@@ -400,9 +367,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 newChatRoomDetails: payload.data || {},
             }
         }
-
         case 'START_A_NEW_CHAT_ROOM_FAILURE': {
-            console.log("START_A_NEW_CHAT_ROOM_FAILURE");
             return {
                 ...state,
                 isStartingANewChatRoom: false,
@@ -411,24 +376,19 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'UPLOAD_IMAGE_IN_FIREBASE': {
-            console.log("UPLOAD_IMAGE_IN_FIREBASE");
             return {
                 ...state,
                 isUploadingImage: true,
                 uploadImageError: null,
             }
         }
-
         case 'UPLOAD_IMAGE_IN_FIREBASE_SUCCESS': {
-            console.log("UPLOAD_IMAGE_IN_FIREBASE_SUCCESS");
             return {
                 ...state,
                 isUploadingImage: false,
             }
         }
-
         case 'UPLOAD_IMAGE_IN_FIREBASE_FAILURE': {
-            console.log("UPLOAD_IMAGE_IN_FIREBASE_FAILURE");
             return {
                 ...state,
                 isUploadingImage: true,

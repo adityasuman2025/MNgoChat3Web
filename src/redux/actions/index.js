@@ -28,7 +28,6 @@ export const checkLoginStatusAction = () => async (dispatch) => {
 
                 const firebaseResponse = await checkUserExistsInFirebase(loggedUserToken);
                 if (firebaseResponse.statusCode === 200) {
-                    console.log("user exists in firebase");
                     dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
                 } else {
                     const error = firebaseResponse.msg
@@ -36,7 +35,6 @@ export const checkLoginStatusAction = () => async (dispatch) => {
                         dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse });
                     } else {
                         const firebaseResponse2 = await createUserInFirebase(loggedUserToken, username);
-                        console.log("user created in firebase");
                         if (firebaseResponse2.statusCode === 200) {
                             dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
                         } else {
