@@ -406,7 +406,7 @@ code {
 }
 
 .imageViewerImg {
-    z-index: 102;
+    z-index: 101;
     max-width: 80%;
 }
 

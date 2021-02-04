@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import imageCompression from 'browser-image-compression';
 import cx from "classnames";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
@@ -16,14 +15,8 @@ import ImageWithLoader from "./ImageWithLoader";
 
 import dayjs from "../dayjs";
 import { getLoggedUserToken, scrollADivToBottom } from "../utils";
-import { showSnackBarAction } from "../redux/actions/index";
-import {
-    CHAT_ACTION_BOX_HEIGHT,
-    MSG_TYPE_IMAGE,
-    DEFAULT_DATE,
-    IMAGE_COMPRESSION_OPTIONS,
-    ALLOWED_IMAGE_TYPES,
-} from "../constants";
+import { CHAT_ACTION_BOX_HEIGHT, MSG_TYPE_IMAGE, DEFAULT_DATE, ALLOWED_IMAGE_TYPES } from "../constants";
+import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
 import {
     setUserActiveStatus,
     getActiveStatusOfAUser,
@@ -45,9 +38,6 @@ function ChatPageContent({
     chatRoomId,
     activeStatusOfAUser,
     typeStatusOfAUser,
-    uploadedImageDetails: {
-        downloadUrl,
-    } = {},
     chatRoomDetails: {
         usernameOfSecondUser,
         userTokenOfSecondUser,
@@ -103,18 +93,29 @@ function ChatPageContent({
         readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
     }, [isANewMessage]);
 
-    useEffect(() => {
-        if (downloadUrl) {
-            sendMessageInAChatRoom(chatRoomId, downloadUrl, "image", userTokenOfSecondUser);
-            setChoosedImg(null);
-        }
-    }, [downloadUrl]);
+    function loadMoreMessages() {
+        const messageIdOfTheFirstMessageInList = (chatRoomMessages[0] || {}).messageId;
+        getPaginatedMessages(dispatch, chatRoomId, messageIdOfTheFirstMessageInList);
+    }
 
     async function handleSendMsgBtnClick(e) {
         e.preventDefault();
 
         if (choosedImg) {
-            await uploadImageInFirebase(dispatch, choosedImg);
+            await uploadImageInFirebase(dispatch, choosedImg)
+                .then((snapshot) => {
+                    snapshot.getDownloadURL()
+                        .then((downloadURL) => {
+                            if (downloadURL) {
+                                sendMessageInAChatRoom(chatRoomId, downloadURL, "image", userTokenOfSecondUser);
+                                setChoosedImg(null);
+                            }
+                            dispatch(uploadImageInFirebaseSuccessAction());
+                        });
+                })
+                .catch((error) => {
+                    dispatch(uploadImageInFirebaseFailureAction({ msg: "Fail to upload image" }));
+                });
         } else {
             if (msgText.trim() !== "") {
                 setMsgText("");
@@ -138,11 +139,7 @@ function ChatPageContent({
                 const selectedImg = event.target.files[0];
                 const selectedImgType = selectedImg.type;
                 if (ALLOWED_IMAGE_TYPES.includes(selectedImgType)) {
-                    console.log(`originalFile size ${selectedImg.size / 1024} KB`);
-                    const compressedImg = await imageCompression(selectedImg, IMAGE_COMPRESSION_OPTIONS);
-                    console.log(`compressedFile size ${compressedImg.size / 1024} KB`); // smaller than maxSizeMB
-
-                    setChoosedImg(compressedImg);
+                    setChoosedImg(selectedImg);
                 } else {
                     dispatch(showSnackBarAction("Only images are allowed"));
                 }
@@ -206,11 +203,6 @@ function ChatPageContent({
         return toRender;
     }
 
-    function loadMoreMessages() {
-        const messageIdOfTheFirstMessageInList = (chatRoomMessages[0] || {}).messageId;
-        getPaginatedMessages(dispatch, chatRoomId, messageIdOfTheFirstMessageInList);
-    }
-
     return (
         <PurpleGradientContainer childrenClassName="homeContainer">
             {
@@ -219,10 +211,7 @@ function ChatPageContent({
                     : null
             }
 
-            <div
-                className="chatWindow"
-                style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
-            >
+            <div className="chatWindow" style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }} >
 
                 <div className="chatTitle">
                     <img alt="userIcon" src={userIcon} />
@@ -270,24 +259,24 @@ function ChatPageContent({
                         <LoadingAnimation loading={isUploadingImage} />
                         :
                         <>
-                            <input
-                                ref={imageInputRef}
-                                style={{ display: "none" }}
-                                type="file"
-                                name="myImage"
-                                onChange={handleSelectImage}
-                                accept="image/*"
-                            />
-
                             {
                                 choosedImg ?
                                     <>
-                                        <img alt="closeIcon" src={closeIcon} onClick={handleCloseIconClick} className="closeIcon" />
-                                        <img alt="choosenImg" src={URL.createObjectURL(choosedImg)} className="sendImgPreview" />
+                                        <img alt="closeIcon" className="closeIcon" src={closeIcon} onClick={handleCloseIconClick} />
+                                        <img alt="choosenImg" className="sendImgPreview" src={URL.createObjectURL(choosedImg)} />
                                     </>
                                     :
                                     <>
-                                        <img alt="uploadImgIcon" src={uploadImgIcon} onClick={handleImageUploadIconClick} className="chatActionBoxImg" />
+                                        <input
+                                            ref={imageInputRef}
+                                            style={{ display: "none" }}
+                                            type="file"
+                                            name="myImage"
+                                            onChange={handleSelectImage}
+                                            accept="image/*"
+                                        />
+
+                                        <img alt="uploadImgIcon" className="chatActionBoxImg" src={uploadImgIcon} onClick={handleImageUploadIconClick} />
                                         <input
                                             type="text"
                                             className="sendMsgTextInput"
@@ -315,7 +304,6 @@ const mapStateToProps = (state) => {
         isANewMessage: state.isANewMessage,
         activeStatusOfAUser: state.activeStatusOfAUser,
         typeStatusOfAUser: state.typeStatusOfAUser,
-        uploadedImageDetails: state.uploadedImageDetails,
         chatRoomDetails: state.chatRoomDetails,
         chatRoomMessages: state.chatRoomMessages,
     }

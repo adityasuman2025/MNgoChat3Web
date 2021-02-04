@@ -216,10 +216,8 @@ export const startANewChatRoomFailureAction = (payload) => async (dispatch) => {
 export const uploadImageInFirebaseAction = () => async (dispatch) => {
     dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE' });
 }
-export const uploadImageInFirebaseSuccessAction = (payload) => async (dispatch) => {
-    if (payload) {
-        dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE_SUCCESS', payload });
-    }
+export const uploadImageInFirebaseSuccessAction = () => async (dispatch) => {
+    dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE_SUCCESS' });
 }
 export const uploadImageInFirebaseFailureAction = (payload) => async (dispatch) => {
     if (payload) {

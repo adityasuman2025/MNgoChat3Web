@@ -1,7 +1,8 @@
-import firebase from './FirebaseConfig';
+import imageCompression from 'browser-image-compression';
 
+import firebase from './FirebaseConfig';
 import dayjs from "./dayjs";
-import { PAGINATION_MESSAGE_COUNT } from "./constants";
+import { PAGINATION_MESSAGE_COUNT, IMAGE_COMPRESSION_OPTIONS } from "./constants";
 import { getLoggedUserToken, encryptText, decryptText, isEmpty } from "./utils";
 import {
     getUserAllChatsAction,
@@ -28,7 +29,6 @@ import {
     startANewChatRoomFailureAction,
 
     uploadImageInFirebaseAction,
-    uploadImageInFirebaseSuccessAction,
     uploadImageInFirebaseFailureAction,
 } from "./redux/actions/index";
 
@@ -408,27 +408,22 @@ export async function uploadImageInFirebase(dispatch, imageFile) {
     const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken || !imageFile) return;
 
-    dispatch(uploadImageInFirebaseAction());
-    const timeStamp = Math.floor(Date.now());
-    const imageName = timeStamp + "_" + loggedUserToken.substring(0, 3) + ".png";
+    try {
+        dispatch(uploadImageInFirebaseAction());
 
-    //putting image in firebase
-    const storageRef = firebase.app().storage().ref().child("image/" + imageName);
-    const resp = storageRef.put(imageFile);
-    resp
-        .on(
-            firebase.storage.TaskEvent.STATE_CHANGED,
-            snapshot => {
-                const percent = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            },
-            error => {
-                dispatch(uploadImageInFirebaseFailureAction({ msg: "Fail to upload image" }));
-            },
-            () => {
-                storageRef.getDownloadURL()
-                    .then((downloadUrl) => {
-                        dispatch(uploadImageInFirebaseSuccessAction({ data: { downloadUrl } }));
-                    })
-            }
-        )
+        console.log(`originalFile size ${imageFile.size / 1024} KB`);
+        const compressedImg = await imageCompression(imageFile, IMAGE_COMPRESSION_OPTIONS);
+        console.log(`compressedFile size ${compressedImg.size / 1024} KB`); // smaller than maxSizeMB
+        if (!compressedImg) return;
+
+        const timeStamp = Math.floor(Date.now());
+        const imageName = timeStamp + "_" + loggedUserToken.substring(0, 3) + ".png";
+
+        //putting image in firebase
+        const storageRef = firebase.app().storage().ref().child("image/" + imageName);
+        await storageRef.put(compressedImg);
+        return storageRef;
+    } catch {
+        dispatch(uploadImageInFirebaseFailureAction({ msg: "Fail to upload image" }));
+    }
 }

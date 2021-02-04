@@ -54,7 +54,6 @@ const defaultState = {
 
     isUploadingImage: false,
     uploadImageError: null,
-    uploadedImageDetails: {},
 }
 
 const rootReducer = (state = defaultState, { type, payload = {} }) => {
@@ -283,8 +282,8 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 const timeDiff = currentTimeStamp - displayNameUserActiveStatusTimeStamp;
                 console.log("GET_ACTIVE_STATUS_OF_A_USER_SUCCESS", timeDiff);
 
-                //displaying online in 12s bandwidth
-                if (timeDiff <= 12) {
+                //displaying online in 10s bandwidth
+                if (timeDiff <= 10) {
                     activeStatusOfAUser = "online";
                 }
             }
@@ -412,7 +411,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
                 ...state,
                 isUploadingImage: true,
                 uploadImageError: null,
-                uploadedImageDetails: {},
             }
         }
 
@@ -421,7 +419,6 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             return {
                 ...state,
                 isUploadingImage: false,
-                uploadedImageDetails: payload.data || {},
             }
         }
 
