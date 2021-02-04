@@ -262,6 +262,11 @@ export async function getPaginatedMessages(dispatch, chatRoomId, messageIdOfTheF
                     const message = messageItem.message;
                     messageItem.message = decryptText(message);
 
+                    const originalMessage = messageItem.originalMessage;
+                    if (originalMessage) {
+                        messageItem.originalMessage = decryptText(originalMessage);
+                    }
+
                     messages.push(messageItem);
                 }
                 dispatch(getPaginatedMessagesSuccessAction({ data: messages }));
@@ -279,7 +284,7 @@ export async function removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId) {
     chatRoomMessagesDbRef.off();
 }
 
-export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUserToken) {
+export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUserToken, originalMessage, originalMessageType) {
     const sentByUserToken = getLoggedUserToken();;
     const encryptedMsg = encryptText(message);
     if (!chatRoomId || !sentByUserToken || !type || !secondUserToken || !encryptedMsg) {
@@ -288,15 +293,21 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUs
 
     const timeStamp = Math.floor(Date.now());
     const messageId = timeStamp + "_by_" + sentByUserToken.substring(0, 5);
+    const toSet = {
+        messageId,
+        message: encryptedMsg,
+        sentByUserToken,
+        type,
+        time: dayjs().format("HH:mm:ssZ"),
+    };
+    if (originalMessage) {
+        const encryptedOrgMessage = encryptText(originalMessage);
+        toSet.originalMessage = encryptedOrgMessage;
+        toSet.originalMessageType = originalMessageType;
+    }
+
     const chatRoomMsgDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages/" + messageId);
-    await chatRoomMsgDbRef
-        .set({
-            messageId,
-            message: encryptedMsg,
-            sentByUserToken,
-            type,
-            time: dayjs().format("HH:mm:ssZ"),
-        });
+    await chatRoomMsgDbRef.set(toSet);
 
     const userChatRoomRef = firebase.app().database().ref('users/' + secondUserToken + "/userChatRooms/" + chatRoomId);
     userChatRoomRef

@@ -310,6 +310,11 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             const message = messageItem.message;
             messageItem.message = decryptText(message);
 
+            const originalMessage = messageItem.originalMessage;
+            if (originalMessage) {
+                messageItem.originalMessage = decryptText(originalMessage);
+            }
+
             let isANewMessage = state.isANewMessage;
             if (newMessage) {
                 isANewMessage++;

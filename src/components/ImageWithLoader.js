@@ -4,6 +4,7 @@ import LoadingAnimation from "./LoadingAnimation";
 
 export default function ImageWithLoader({
     className,
+    loaderClassName,
     src,
     onClick,
 }) {
@@ -12,7 +13,7 @@ export default function ImageWithLoader({
     if (!src) return;
     return (
         <>
-            <LoadingAnimation loading={showLoader} />
+            <LoadingAnimation loading={showLoader} loaderClassName={loaderClassName} />
             <img src={src} className={className} onLoad={() => setShowLoader(false)} onClick={onClick} onError={() => setShowLoader(false)} />
         </>
     );

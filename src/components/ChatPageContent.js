@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import cx from "classnames";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 
-import replyIcon from "../images/reply.png";
 import closeIcon from "../images/close.png";
 import userIcon from "../images/user.png";
 import sendIcon from "../images/send2.png";
@@ -13,11 +11,20 @@ import PurpleGradientContainer from "./PurpleGradientContainer";
 import LoadingAnimation from "./LoadingAnimation";
 import ImageViewer from "./ImageViewer";
 import ImageWithLoader from "./ImageWithLoader";
+import MessageItem from "./MessageItem";
 
 import dayjs from "../dayjs";
 import { getLoggedUserToken, scrollADivToBottom } from "../utils";
-import { CHAT_ACTION_BOX_HEIGHT, MSG_TYPE_IMAGE, DEFAULT_DATE, ALLOWED_IMAGE_TYPES } from "../constants";
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
+import {
+    CHAT_ACTION_BOX_HEIGHT,
+    REPLY_PREVIEW_BOX_HEIGHT,
+    CHAT_ACTION_WITH_REPLY_PREVIEW_BOX_HEIGHT,
+    MSG_TYPE_IMAGE,
+    MSG_TYPE_REPLY,
+    ALLOWED_IMAGE_TYPES,
+    DEFAULT_DATE,
+} from "../constants";
 import {
     setUserActiveStatus,
     getActiveStatusOfAUser,
@@ -47,9 +54,10 @@ function ChatPageContent({
     dispatch,
 }) {
     const imageInputRef = useRef();
+    const textInputRef = useRef();
     dayjs.extend(localizedFormat);
 
-    const [isAMessageSelected, setIsAMessageSelected] = useState(false);
+    const [selectedMsgForReply, setSelectedMsgForReply] = useState(null);
     const [viewImg, setViewImg] = useState(null);
     const [choosedImg, setChoosedImg] = useState(null);
     const [msgText, setMsgText] = useState("");
@@ -109,7 +117,7 @@ function ChatPageContent({
                     snapshot.getDownloadURL()
                         .then((downloadURL) => {
                             if (downloadURL) {
-                                sendMessageInAChatRoom(chatRoomId, downloadURL, "image", userTokenOfSecondUser);
+                                sendMessageInAChatRoom(chatRoomId, downloadURL, MSG_TYPE_IMAGE, userTokenOfSecondUser);
                                 setChoosedImg(null);
                             }
                             dispatch(uploadImageInFirebaseSuccessAction());
@@ -121,7 +129,16 @@ function ChatPageContent({
         } else {
             if (msgText.trim() !== "") {
                 setMsgText("");
-                await sendMessageInAChatRoom(chatRoomId, msgText, "text", userTokenOfSecondUser);
+                if (selectedMsgForReply) {
+                    const originalMessage = selectedMsgForReply.message;
+                    const originalMessageType = selectedMsgForReply.type;
+                    if ((originalMessage !== null) && (originalMessage !== undefined)) {
+                        setSelectedMsgForReply(null);
+                        await sendMessageInAChatRoom(chatRoomId, msgText, MSG_TYPE_REPLY, userTokenOfSecondUser, originalMessage, originalMessageType);
+                    }
+                } else {
+                    await sendMessageInAChatRoom(chatRoomId, msgText, "text", userTokenOfSecondUser);
+                }
             }
         }
     }
@@ -157,11 +174,10 @@ function ChatPageContent({
         }
     }
 
-    function handleReplyIconClick(msg, index) {
-        if (!msg || !index) return;
-
-        console.log("msg item", msg, index)
-        setIsAMessageSelected(true);
+    function handleReplyIconClick(msg) {
+        if (!msg) return;
+        setSelectedMsgForReply(msg);
+        textInputRef.current && textInputRef.current.focus();
     }
 
     function renderMessages() {
@@ -172,32 +188,18 @@ function ChatPageContent({
             if (typeof msg !== "object") return;
 
             const messageId = msg.messageId;
-            const type = msg.type;
-            const isMineMsg = msg.sentByUserToken === loggedUserToken;
-            const formattedTime = dayjs(DEFAULT_DATE + msg.time).format("LT");
-
-            if (messageIds.includes(messageId)) return;
+            if (messageIds.includes(messageId)) return; //to avoid repetition of messages
             messageIds.push(messageId);
 
             return (
-                <div key={messageId + index} className={"messageContainer"} >
-                    <div className={cx("message", { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken })} >
-                        <div className={cx({ ["myMessage"]: isMineMsg }, { ["theirMessage"]: !isMineMsg })}>
-                            {
-                                type === MSG_TYPE_IMAGE ?
-                                    <ImageWithLoader src={msg.message} className="messageImg" onClick={() => handleImageClick(msg.message)} />
-                                    : msg.message
-                            }
-                            <img
-                                alt="replyIcon"
-                                className={cx({ ["myReplyIcon"]: isMineMsg }, { ["theirReplyIcon"]: !isMineMsg })}
-                                src={replyIcon}
-                                onClick={() => handleReplyIconClick(msg, index)}
-                            />
-                        </div>
-                    </div>
-                    <div className="messageTime">{formattedTime}</div>
-                </div>
+                <MessageItem
+                    key={messageId + index}
+                    loggedUserToken={loggedUserToken}
+                    formattedTime={dayjs(DEFAULT_DATE + msg.time).format("LT")}
+                    msg={msg}
+                    onImageClick={handleImageClick}
+                    onReplyIconClick={handleReplyIconClick}
+                />
             )
         });
 
@@ -212,8 +214,15 @@ function ChatPageContent({
                     : null
             }
 
-            <div className="chatWindow" style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }} >
-
+            <div
+                className="chatWindow"
+                style={{
+                    "--actionBoxHeight":
+                        selectedMsgForReply ?
+                            CHAT_ACTION_WITH_REPLY_PREVIEW_BOX_HEIGHT
+                            : CHAT_ACTION_BOX_HEIGHT
+                }}
+            >
                 <div className="chatTitle">
                     <img alt="userIcon" src={userIcon} />
                     <div>
@@ -250,6 +259,23 @@ function ChatPageContent({
                 </div>
             </div>
 
+            {
+                selectedMsgForReply ?
+                    <div className="replyMsgPreviewContainer" style={{ "--replyBoxHeight": REPLY_PREVIEW_BOX_HEIGHT }} >
+                        {
+                            selectedMsgForReply.type === MSG_TYPE_IMAGE ?
+                                <ImageWithLoader
+                                    className="replyMsgPreviewImg"
+                                    src={selectedMsgForReply.message}
+                                    onClick={() => handleImageClick(selectedMsgForReply.message)}
+                                />
+                                :
+                                <div className="replyMsgPreviewMsg" title={selectedMsgForReply.message}>{selectedMsgForReply.message}</div>
+                        }
+                    </div>
+                    : null
+            }
+
             <form
                 className="chatActionBox"
                 style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
@@ -278,14 +304,14 @@ function ChatPageContent({
                                         />
 
                                         {
-                                            isAMessageSelected ?
-                                                null
+                                            selectedMsgForReply ?
+                                                <img alt="closeIcon" className="closeIcon" src={closeIcon} onClick={() => setSelectedMsgForReply(null)} />
                                                 :
-
                                                 <img alt="uploadImgIcon" className="chatActionBoxImg" src={uploadImgIcon} onClick={handleImageUploadIconClick} />
                                         }
 
                                         <input
+                                            ref={textInputRef}
                                             type="text"
                                             className="sendMsgTextInput"
                                             placeholder="type message"
@@ -300,7 +326,7 @@ function ChatPageContent({
                         </>
                 }
             </form>
-        </PurpleGradientContainer>
+        </PurpleGradientContainer >
     )
 }
 

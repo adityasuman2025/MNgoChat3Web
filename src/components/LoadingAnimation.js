@@ -7,12 +7,13 @@ export default function LoadingAnimation({
     dark,
     loading,
     className,
+    loaderClassName,
 }) {
     return loading ? (
         <center className={className}>
             <img
                 alt="loading"
-                className={cx("loadingAnimation", { ["darkLoader"]: dark })}
+                className={cx("loadingAnimation", { ["darkLoader"]: dark }, loaderClassName)}
                 src={loaderImg}
             />
         </center>
