@@ -287,7 +287,7 @@ code {
     margin-bottom: 2px;
 }
 
-.message img {
+.messageImg {
     max-width: 100%;
     max-height: 200px;
     border-radius: 5px;
@@ -299,6 +299,7 @@ code {
 }
 
 .myMessage {
+    position: relative;
     max-width: 60%;
     padding: 10px;
     border-radius: 25px 25px 0px 25px;
@@ -309,6 +310,7 @@ code {
 }
 
 .theirMessage {
+    position: relative;
     max-width: 60%;
     padding: 10px;
     border-radius: 0px 25px 25px 25px;
@@ -317,6 +319,32 @@ code {
     background: #24133f;
     background: linear-gradient(45deg, var(--second), #24133f);
     border: 1px solid var(--first);
+}
+
+.myReplyIcon {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 12px;
+    cursor: pointer;
+    filter: invert(91%) sepia(6%) saturate(0%) hue-rotate(244deg) brightness(93%) contrast(96%);
+    padding: 3px;
+    border-radius: 10px;
+    background-color: rgba(255,255,255,1);
+    opacity: .4;
+}
+
+.theirReplyIcon {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 12px;
+    cursor: pointer;
+    filter: invert(91%) sepia(6%) saturate(0%) hue-rotate(244deg) brightness(93%) contrast(96%);
+    padding: 3px;
+    border-radius: 10px;
+    background-color: rgba(255,255,255,1);
+    opacity: .4;
 }
 
 .messageTime {

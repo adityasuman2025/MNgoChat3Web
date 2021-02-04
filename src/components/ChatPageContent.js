@@ -4,6 +4,7 @@ import cx from "classnames";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 
+import replyIcon from "../images/reply.png";
 import closeIcon from "../images/close.png";
 import userIcon from "../images/user.png";
 import sendIcon from "../images/send2.png";
@@ -48,6 +49,7 @@ function ChatPageContent({
     const imageInputRef = useRef();
     dayjs.extend(localizedFormat);
 
+    const [isAMessageSelected, setIsAMessageSelected] = useState(false);
     const [viewImg, setViewImg] = useState(null);
     const [choosedImg, setChoosedImg] = useState(null);
     const [msgText, setMsgText] = useState("");
@@ -61,21 +63,21 @@ function ChatPageContent({
         getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
         readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
 
-        const setActiveStatusInterval = setInterval(function() {
-            getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
-            setUserActiveStatus(true);
-        }, 10000); //setting user lastActive time every 10 seconds
+        // const setActiveStatusInterval = setInterval(function() {
+        //     getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
+        //     setUserActiveStatus(true);
+        // }, 10000); //setting user lastActive time every 10 seconds
         //other users need to compare their local time with that user lastActiveTime to get his active status
 
-        const getTypeStatusInterval = setInterval(function() {
-            getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
-        }, 1000); //getting user typings status in 1 s
-        //other users need to compare their local time with that user lastTypedTime to get his typing status
+        // const getTypeStatusInterval = setInterval(function() {
+        //     getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
+        // }, 1000); //getting user typings status in 1 s
+        // //other users need to compare their local time with that user lastTypedTime to get his typing status
 
         return () => {
             removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId);
-            clearInterval(setActiveStatusInterval);
-            clearInterval(getTypeStatusInterval);
+            // clearInterval(setActiveStatusInterval);
+            // clearInterval(getTypeStatusInterval);
             readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
         }
     }, []);
@@ -155,6 +157,13 @@ function ChatPageContent({
         }
     }
 
+    function handleReplyIconClick(msg, index) {
+        if (!msg || !index) return;
+
+        console.log("msg item", msg, index)
+        setIsAMessageSelected(true);
+    }
+
     function renderMessages() {
         const loggedUserToken = getLoggedUserToken();
 
@@ -164,6 +173,7 @@ function ChatPageContent({
 
             const messageId = msg.messageId;
             const type = msg.type;
+            const isMineMsg = msg.sentByUserToken === loggedUserToken;
             const formattedTime = dayjs(DEFAULT_DATE + msg.time).format("LT");
 
             if (messageIds.includes(messageId)) return;
@@ -171,24 +181,19 @@ function ChatPageContent({
 
             return (
                 <div key={messageId + index} className={"messageContainer"} >
-                    <div
-                        className={cx(
-                            "message",
-                            { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken }
-                        )}
-                    >
-                        <div
-                            className={cx(
-                                { ["myMessage"]: msg.sentByUserToken === loggedUserToken },
-                                { ["theirMessage"]: msg.sentByUserToken !== loggedUserToken }
-                            )}
-                            title={formattedTime}
-                        >
+                    <div className={cx("message", { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken })} >
+                        <div className={cx({ ["myMessage"]: isMineMsg }, { ["theirMessage"]: !isMineMsg })}>
                             {
                                 type === MSG_TYPE_IMAGE ?
-                                    <ImageWithLoader src={msg.message} onClick={() => handleImageClick(msg.message)} />
+                                    <ImageWithLoader src={msg.message} className="messageImg" onClick={() => handleImageClick(msg.message)} />
                                     : msg.message
                             }
+                            <img
+                                alt="replyIcon"
+                                className={cx({ ["myReplyIcon"]: isMineMsg }, { ["theirReplyIcon"]: !isMineMsg })}
+                                src={replyIcon}
+                                onClick={() => handleReplyIconClick(msg, index)}
+                            />
                         </div>
                     </div>
                     <div className="messageTime">{formattedTime}</div>
@@ -272,7 +277,14 @@ function ChatPageContent({
                                             accept="image/*"
                                         />
 
-                                        <img alt="uploadImgIcon" className="chatActionBoxImg" src={uploadImgIcon} onClick={handleImageUploadIconClick} />
+                                        {
+                                            isAMessageSelected ?
+                                                null
+                                                :
+
+                                                <img alt="uploadImgIcon" className="chatActionBoxImg" src={uploadImgIcon} onClick={handleImageUploadIconClick} />
+                                        }
+
                                         <input
                                             type="text"
                                             className="sendMsgTextInput"

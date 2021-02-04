@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import LoadingAnimation from "./LoadingAnimation";
 
 export default function ImageWithLoader({
+    className,
     src,
     onClick,
 }) {
@@ -12,7 +13,7 @@ export default function ImageWithLoader({
     return (
         <>
             <LoadingAnimation loading={showLoader} />
-            <img src={src} className="imageViewerImg" onLoad={() => setShowLoader(false)} onClick={onClick} onError={() => setShowLoader(false)} />
+            <img src={src} className={className} onLoad={() => setShowLoader(false)} onClick={onClick} onError={() => setShowLoader(false)} />
         </>
     );
 }
