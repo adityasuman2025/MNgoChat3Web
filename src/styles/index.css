@@ -289,7 +289,8 @@ code {
 
 .message img {
     max-width: 100%;
-    border-radius: 25px;
+    max-height: 200px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
@@ -408,6 +409,7 @@ code {
 .imageViewerImg {
     z-index: 101;
     max-width: 80%;
+    max-height: 90%;
 }
 
 .warningModal {
@@ -523,5 +525,9 @@ code {
     .warningModal img {
         z-index: 102;
         width: 130px;
+    }
+
+    .message img {
+        max-height: 150px;
     }
 }

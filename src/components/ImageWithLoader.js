@@ -12,7 +12,7 @@ export default function ImageWithLoader({
     return (
         <>
             <LoadingAnimation loading={showLoader} />
-            <img src={src} className="imageViewerImg" onLoad={() => setShowLoader(false)} onClick={onClick} />
+            <img src={src} className="imageViewerImg" onLoad={() => setShowLoader(false)} onClick={onClick} onError={() => setShowLoader(false)} />
         </>
     );
 }
