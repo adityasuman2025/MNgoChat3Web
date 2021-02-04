@@ -19,10 +19,6 @@ export default function MessageItem({
     const originalMessageType = msg.originalMessageType;
     const isMineMsg = msg.sentByUserToken === loggedUserToken;
 
-    function handleImageClick() {
-        onImageClick(message);
-    }
-
     function handleReplyIconClick() {
         onReplyIconClick(msg)
     }
@@ -36,7 +32,11 @@ export default function MessageItem({
                             <div className="replyMessageItem">
                                 {
                                     originalMessageType === MSG_TYPE_IMAGE ?
-                                        <ImageWithLoader src={originalMessage} className="messageImg" onClick={handleImageClick} />
+                                        <ImageWithLoader
+                                            src={originalMessage}
+                                            className="messageImg"
+                                            onClick={() => onImageClick(originalMessage)}
+                                        />
                                         : originalMessage
                                 }
                             </div>
@@ -44,7 +44,11 @@ export default function MessageItem({
                     }
                     {
                         type === MSG_TYPE_IMAGE ?
-                            <ImageWithLoader src={message} className="messageImg" onClick={handleImageClick} />
+                            <ImageWithLoader
+                                src={message}
+                                className="messageImg"
+                                onClick={() => onImageClick(message)}
+                            />
                             : message
                     }
                     <img

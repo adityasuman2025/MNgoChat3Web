@@ -71,21 +71,21 @@ function ChatPageContent({
         getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
         readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
 
-        // const setActiveStatusInterval = setInterval(function() {
-        //     getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
-        //     setUserActiveStatus(true);
-        // }, 10000); //setting user lastActive time every 10 seconds
-        //other users need to compare their local time with that user lastActiveTime to get his active status
+        const setActiveStatusInterval = setInterval(function() {
+            getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
+            setUserActiveStatus(true);
+        }, 10000); //setting user lastActive time every 10 seconds
+        // other users need to compare their local time with that user lastActiveTime to get his active status
 
-        // const getTypeStatusInterval = setInterval(function() {
-        //     getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
-        // }, 1000); //getting user typings status in 1 s
-        // //other users need to compare their local time with that user lastTypedTime to get his typing status
+        const getTypeStatusInterval = setInterval(function() {
+            getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
+        }, 1000); //getting user typings status in 1 s
+        //other users need to compare their local time with that user lastTypedTime to get his typing status
 
         return () => {
             removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId);
-            // clearInterval(setActiveStatusInterval);
-            // clearInterval(getTypeStatusInterval);
+            clearInterval(setActiveStatusInterval);
+            clearInterval(getTypeStatusInterval);
             readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
         }
     }, []);

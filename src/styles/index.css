@@ -286,6 +286,7 @@ code {
     margin: 10px;
     margin-bottom: 2px;
     color: #aaa8a8;
+    text-align: right;
 }
 
 .messageImg {
@@ -307,7 +308,6 @@ code {
     word-break: break-word;
     background: linear-gradient(45deg, var(--first), var(--second));
     border: 1px solid var(--first);
-    text-align: right;
 }
 
 .theirMessage {
@@ -326,6 +326,7 @@ code {
     padding: 10px;
     margin-bottom: 5px;
     border-radius: 5px;
+    font-size: 13.2px;
 }
 
 .myReplyIcon {
@@ -343,8 +344,8 @@ code {
 
 .theirReplyIcon {
     position: absolute;
-    bottom: 3px;
-    right: 3px;
+    bottom: 4px;
+    right: 4px;
     width: 12px;
     cursor: pointer;
     filter: invert(91%) sepia(6%) saturate(0%) hue-rotate(244deg) brightness(93%) contrast(96%);

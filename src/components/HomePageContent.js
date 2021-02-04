@@ -67,22 +67,24 @@ function HomePageContent({
             const selectedUsername = data.username;
             const selectedUserToken = data.userToken;
             if (selectedUsername && selectedUserToken) {
-                for (const chatRoomId in userAllChats) {
-                    const userChatRoom = userAllChats[chatRoomId];
-                    const secondUserToken = userChatRoom.secondUserToken;
+                try {
+                    for (const chatRoomId in userAllChats) {
+                        const userChatRoom = userAllChats[chatRoomId];
+                        const secondUserToken = userChatRoom.secondUserToken;
 
-                    //if that user is already present in all-chats of loggedUser
-                    //then redirecting him to the chat page of that chatRoomId
-                    if (selectedUserToken.trim() === secondUserToken.trim()) {
-                        history.push("chat/" + chatRoomId);
-                        return;
+                        //if that user is already present in all-chats of loggedUser
+                        //then redirecting him to the chat page of that chatRoomId
+                        if (selectedUserToken === secondUserToken) {
+                            history.push("chat/" + chatRoomId);
+                            return;
+                        }
                     }
-                }
 
-                // if that user is not present in all-chats of loggedUser
-                // then redirecting him to the new-chat page for that secondUserToken (other userToken)
-                const selectedUserDetails = { name: selectedUsername, token: selectedUserToken };
-                history.push("new-chat/" + JSON.stringify(selectedUserDetails));
+                    // if that user is not present in all-chats of loggedUser
+                    // then redirecting him to the new-chat page for that secondUserToken (other userToken)
+                    const selectedUserDetails = { name: selectedUsername, token: selectedUserToken };
+                    history.push("new-chat/" + JSON.stringify(selectedUserDetails));
+                } catch { }
             }
         }
     }
