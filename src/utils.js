@@ -1,6 +1,5 @@
 import { enc, AES } from "crypto-js";
 import Cookies from "universal-cookie";
-import { animateScroll } from "react-scroll";
 
 import { ENCRYPTION_KEY } from "./encryptionConstants";
 import { COOKIE_EXPIRATION_TIME, LOGGED_USER_TOKEN_COOKIE_NAME } from "./constants";
