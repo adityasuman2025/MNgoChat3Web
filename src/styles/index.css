@@ -308,6 +308,7 @@ code {
     word-break: break-word;
     background: linear-gradient(45deg, var(--first), var(--second));
     border: 1px solid var(--first);
+    cursor: pointer;
 }
 
 .theirMessage {
@@ -318,6 +319,7 @@ code {
     word-break: break-all;
     background: linear-gradient(45deg, var(--second), #24133f);
     border: 1px solid var(--first);
+    cursor: pointer;
 }
 
 .replyMessageItem {

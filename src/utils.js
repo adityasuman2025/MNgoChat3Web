@@ -120,17 +120,6 @@ export function getUsernameOfTheSecondUser(members) {
     return usernameOfSecondUser;
 }
 
-export function scrollADivToBottom(containerId) {
-    if (!containerId) {
-        return;
-    }
-
-    animateScroll.scrollToBottom({
-        containerId: containerId,
-        duration: 500,
-    });
-}
-
 export function isEmpty(obj) {
 
     // null and undefined are "empty"

@@ -14,7 +14,7 @@ import ImageWithLoader from "./ImageWithLoader";
 import MessageItem from "./MessageItem";
 
 import dayjs from "../dayjs";
-import { getLoggedUserToken, scrollADivToBottom } from "../utils";
+import { getLoggedUserToken } from "../utils";
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
 import {
     CHAT_ACTION_BOX_HEIGHT,
@@ -57,10 +57,13 @@ function ChatPageContent({
 
     const imageInputRef = useRef();
     const textInputRef = useRef();
+    const chatContentRef = useRef(null);
+
     const [selectedMsgForReply, setSelectedMsgForReply] = useState(null);
     const [viewImg, setViewImg] = useState(null);
     const [choosedImg, setChoosedImg] = useState(null);
     const [msgText, setMsgText] = useState("");
+    const [msgIdToScrollTo, setMmsgIdToScrollTo] = useState(null);
 
     //to get messages of the room
     //getting active status of the 2nd user and setting active status of the logged user
@@ -92,13 +95,13 @@ function ChatPageContent({
 
     useEffect(() => {
         if (isInitialMessagesFetched) {
-            scrollADivToBottom("chatContent");
+            chatContentRef.current && chatContentRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
     }, [isInitialMessagesFetched]);
 
     //to scroll the chat window to bottom when a new message comes
     useEffect(() => {
-        scrollADivToBottom("chatContent");
+        chatContentRef.current && chatContentRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
 
         readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
     }, [isANewMessage]);
@@ -130,12 +133,8 @@ function ChatPageContent({
             if (msgText.trim() !== "") {
                 setMsgText("");
                 if (selectedMsgForReply) {
-                    const originalMessage = selectedMsgForReply.message;
-                    const originalMessageType = selectedMsgForReply.type;
-                    if ((originalMessage !== null) && (originalMessage !== undefined)) {
-                        setSelectedMsgForReply(null);
-                        await sendMessageInAChatRoom(chatRoomId, msgText, MSG_TYPE_REPLY, userTokenOfSecondUser, originalMessage, originalMessageType);
-                    }
+                    setSelectedMsgForReply(null);
+                    await sendMessageInAChatRoom(chatRoomId, msgText, MSG_TYPE_REPLY, userTokenOfSecondUser, selectedMsgForReply);
                 } else {
                     await sendMessageInAChatRoom(chatRoomId, msgText, "text", userTokenOfSecondUser);
                 }
@@ -168,16 +167,30 @@ function ChatPageContent({
         }
     }
 
-    function handleImageClick(src) {
+    function handleImageClick(event, src) {
+        event.stopPropagation(); //to prevent trigger of parent onClick
+
         if (src) {
             setViewImg(src);
         }
     }
 
-    function handleReplyIconClick(msg) {
+    function handleReplyIconClick(event, msg) {
+        event.stopPropagation(); //to prevent trigger of parent onClick
+
         if (!msg) return;
         setSelectedMsgForReply(msg);
         textInputRef.current && textInputRef.current.focus();
+    }
+
+    function handleOriginalMsgClick(orgMsgId) {
+        if (!orgMsgId) return;
+        setMmsgIdToScrollTo(orgMsgId);
+
+        //resetting msgIdToScrollTo to null
+        setTimeout(function() {
+            setMmsgIdToScrollTo(null);
+        }, 1000);
     }
 
     function renderMessages() {
@@ -196,9 +209,11 @@ function ChatPageContent({
                     key={messageId + index}
                     loggedUserToken={loggedUserToken}
                     formattedTime={dayjs(DEFAULT_DATE + msg.time).format("LT")}
+                    msgIdToScrollTo={msgIdToScrollTo}
                     msg={msg}
                     onImageClick={handleImageClick}
                     onReplyIconClick={handleReplyIconClick}
+                    onOriginalMsgClick={handleOriginalMsgClick}
                 />
             )
         });
@@ -242,7 +257,7 @@ function ChatPageContent({
                     </div>
                 </div>
 
-                <div id="chatContent" className="chatContent" >
+                <div id="chatContent" className="chatContent">
                     <InfiniteScroll
                         hasMore={true}
                         inverse={true}
@@ -256,6 +271,8 @@ function ChatPageContent({
                             {renderMessages()}
                         </>
                     </InfiniteScroll>
+
+                    <div style={{ float: "left", clear: "both" }} ref={chatContentRef} />
                 </div>
             </div>
 

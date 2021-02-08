@@ -284,7 +284,7 @@ export async function removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId) {
     chatRoomMessagesDbRef.off();
 }
 
-export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUserToken, originalMessage, originalMessageType) {
+export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUserToken, originalMessage) {
     const sentByUserToken = getLoggedUserToken();;
     const encryptedMsg = encryptText(message);
     if (!chatRoomId || !sentByUserToken || !type || !secondUserToken || !encryptedMsg) {
@@ -301,9 +301,10 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUs
         time: dayjs().format("HH:mm:ssZ"),
     };
     if (originalMessage) {
-        const encryptedOrgMessage = encryptText(originalMessage);
+        const encryptedOrgMessage = encryptText(originalMessage.message);
+        toSet.originalMessageId = originalMessage.messageId;
         toSet.originalMessage = encryptedOrgMessage;
-        toSet.originalMessageType = originalMessageType;
+        toSet.originalMessageType = originalMessage.type;
     }
 
     const chatRoomMsgDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages/" + messageId);
