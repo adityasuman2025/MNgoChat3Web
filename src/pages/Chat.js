@@ -30,7 +30,7 @@ function Chat({
             {redirectToLoginPage(isCheckingLoginStatus, isSomeoneLoggedIn)}
 
             {
-                isGettingChatRoomDetails || !isChatRoomDetailsFetched ?
+                !isSomeoneLoggedIn || isGettingChatRoomDetails || !isChatRoomDetailsFetched ?
                     <LoadingAnimation loading />
                     :
                     <ChatPageContent dispatch={dispatch} chatRoomId={chatRoomId} />

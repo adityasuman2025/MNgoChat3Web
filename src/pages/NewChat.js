@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
 
 import userIcon from "../images/user.png";
-import LandingPageDesign from "../components/LandingPageDesign";
+import LoadingAnimation from "../components/LoadingAnimation";
 import PurpleGradientContainer from "../components/PurpleGradientContainer";
 import ActionButton from "../components/ActionButton";
 
 import { CHAT_ACTION_BOX_HEIGHT } from "../constants";
-import { checkLoginStatusAction, showSnackBarAction } from "../redux/actions/index";
+import { showSnackBarAction } from "../redux/actions/index";
 import { startANewChatRoom } from "../firebaseQueries";
+import { redirectToLoginPage } from "../utils";
 
 function NewChat({
     isCheckingLoginStatus,
@@ -31,10 +32,6 @@ function NewChat({
 }) {
     const [redirectToChat, setRedirectToChat] = useState(false);
     const [secondUserDetails, setSecondUserDetails] = useState({});
-
-    useEffect(() => {
-        dispatch(checkLoginStatusAction());
-    }, []);
 
     useEffect(() => {
         if (isSomeoneLoggedIn) {
@@ -63,22 +60,14 @@ function NewChat({
         startANewChatRoom({ dispatch, loggedUsername, ...secondUserDetails });
     }
 
-    function redirectToHomeOrLoginPage() {
-        if (!isCheckingLoginStatus) {
-            if (!isSomeoneLoggedIn) {
-                return <Redirect to="/login" />;
-            }
-        }
-    }
-
     return (
         <>
             {redirectToChat ? <Redirect to={"/chat/" + chatRoomId} /> : null}
-            {redirectToHomeOrLoginPage()}
+            {redirectToLoginPage(isCheckingLoginStatus, isSomeoneLoggedIn)}
 
             {
-                (!secondUserDetails.secondUsername) || isCheckingLoginStatus || !isSomeoneLoggedIn ?
-                    <LandingPageDesign isCheckingLoginStatus={isCheckingLoginStatus} />
+                (!secondUserDetails.secondUsername) || !isSomeoneLoggedIn ?
+                    <LoadingAnimation loading />
                     :
                     <PurpleGradientContainer childrenClassName="homeContainer">
                         <div
