@@ -10,7 +10,6 @@ import LoadingAnimation from "./LoadingAnimation";
 
 import { BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN } from "../constants";
 import { logout } from "../utils";
-import { checkLoginStatusAction } from "../redux/actions/index";
 import {
     setUserActiveStatus,
     getUserChatRooms,
@@ -90,8 +89,8 @@ function HomePageContent({
     }
 
     async function handleLogoutBtnClick() {
-        await logout();
-        dispatch(checkLoginStatusAction());
+        await logout(dispatch);
+        window.location.reload();
     }
 
     function renderAllChats() {

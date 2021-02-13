@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import SnackBar from "./SnackBar";
-import OfflineModal from "./OfflineModal";
+import SnackBar from "./components/SnackBar";
+import OfflineModal from "./components/OfflineModal";
+import PurpleGradientContainer from "./components/PurpleGradientContainer";
+import LandingPageDesign from "./components/LandingPageDesign";
 
-function SnackBarWrapper({
+import { checkLoginStatusAction } from "./redux/actions/index";
+
+function RootWrapper({
+    isCheckingLoginStatus,
+
     snackBarCount,
     snackBarMsg,
     snackBarType,
@@ -23,6 +29,8 @@ function SnackBarWrapper({
     uploadImageError,
 
     children,
+
+    dispatch,
 }) {
     const [showOfflineWarning, setShowOffLineWarning] = useState(false);
     const [snackBarVisible, setSnackBarVisible] = useState(false);
@@ -37,6 +45,10 @@ function SnackBarWrapper({
         window.addEventListener('online', function(e) {
             setShowOffLineWarning(false);
         });
+    }, []);
+
+    useEffect(() => {
+        dispatch(checkLoginStatusAction());
     }, []);
 
     useEffect(() => {
@@ -128,7 +140,16 @@ function SnackBarWrapper({
                     <OfflineModal />
                     : null
             }
-            {children}
+
+            {
+                isCheckingLoginStatus ?
+                    <LandingPageDesign isCheckingLoginStatus={true} />
+                    :
+                    <PurpleGradientContainer childrenClassName="flexCenter">
+                        {children}
+                    </PurpleGradientContainer>
+            }
+
             <SnackBar
                 open={snackBarVisible}
                 msg={snackBarMsgState}
@@ -141,6 +162,8 @@ function SnackBarWrapper({
 
 const mapStateToProps = (state) => {
     return {
+        isCheckingLoginStatus: state.isCheckingLoginStatus,
+
         snackBarCount: state.snackBarCount,
         snackBarMsg: state.snackBarMsg,
         snackBarType: state.snackBarType,
@@ -160,4 +183,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, undefined)(SnackBarWrapper);
+export default connect(mapStateToProps, undefined)(RootWrapper);

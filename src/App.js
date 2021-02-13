@@ -3,15 +3,14 @@ import { Provider } from 'react-redux';
 
 import store from './redux/store';
 import Routes from './Routes';
-import SnackBarWrapper from './components/SnackBarWrapper';
-
+import RootWrapper from './RootWrapper';
 
 function App() {
     return (
         <Provider store={store}>
-            <SnackBarWrapper>
+            <RootWrapper>
                 <Routes />
-            </SnackBarWrapper>
+            </RootWrapper>
         </Provider>
     )
 }

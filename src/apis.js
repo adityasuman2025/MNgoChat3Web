@@ -1,41 +1,30 @@
-import axios from "axios";
-
-import {
-    AUTH_API_URL_ADDRESS,
-    NO_INTERNET_ERROR,
-} from "./constants"
+import { sendRequestToAPI } from "./utils";
+import { SOMETHING_WENT_WRONG_ERROR } from "./constants"
 
 export async function getUserDetails(logged_user_token) {
     try {
-        const requestAddress = AUTH_API_URL_ADDRESS + "get_user_details.php";
-        const response = await axios.post(requestAddress, {
-            logged_user_token
+        return await sendRequestToAPI("get_user_details.php", {
+            logged_user_token,
         });
-
-        return response.data;
     } catch {
-        return NO_INTERNET_ERROR;
+        return SOMETHING_WENT_WRONG_ERROR;
     }
 }
 
 export async function verifyLogin(username, password) {
     try {
-        const requestAddress = AUTH_API_URL_ADDRESS + "verify_user.php";
-        const response = await axios.post(requestAddress, {
+        return await sendRequestToAPI("verify_user.php", {
             username,
             password,
         });
-
-        return response.data;
     } catch {
-        return NO_INTERNET_ERROR;
+        return SOMETHING_WENT_WRONG_ERROR;
     }
 }
 
 export async function registerNewUser(username, name, email, password, passcode) {
     try {
-        const requestAddress = AUTH_API_URL_ADDRESS + "register_user.php";
-        const response = await axios.post(requestAddress, {
+        return await sendRequestToAPI("register_user.php", {
             username,
             name,
             email,
@@ -43,23 +32,18 @@ export async function registerNewUser(username, name, email, password, passcode)
             passcode,
             registeringFor: "ChatApp",
         });
-
-        return response.data;
     } catch {
-        return NO_INTERNET_ERROR;
+        return SOMETHING_WENT_WRONG_ERROR;
     }
 }
 
 export async function verifyPassCode(logged_user_token, passcode) {
     try {
-        const requestAddress = AUTH_API_URL_ADDRESS + "verify_passcode.php";
-        const response = await axios.post(requestAddress, {
+        return await sendRequestToAPI("verify_passcode.php", {
             logged_user_token,
             passcode,
         });
-
-        return response.data;
     } catch {
-        return NO_INTERNET_ERROR;
+        return SOMETHING_WENT_WRONG_ERROR;
     }
 }

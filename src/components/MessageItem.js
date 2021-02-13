@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import ReactTextFormat from 'react-text-format';
 import cx from "classnames";
 
 import replyIcon from "../images/reply.png";
@@ -17,29 +18,53 @@ export default function MessageItem({
 }) {
     const msgRef = useRef(null);
 
-    useEffect(() => {
-        if (msgIdToScrollTo === msg.messageId) {
-            msgRef.current && msgRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        }
-    }, [msgIdToScrollTo, msg.messageId]);
-
     const type = msg.type;
     const message = msg.message;
     const originalMessage = msg.originalMessage;
     const originalMessageType = msg.originalMessageType;
     const isMineMsg = msg.sentByUserToken === loggedUserToken;
 
-    function handleReplyIconClick(event) {
-        onReplyIconClick(event, msg)
+    useEffect(() => {
+        if (msgIdToScrollTo === msg.messageId) {
+            msgRef.current && msgRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+    }, [msgIdToScrollTo, msg.messageId]);
+
+    function customLinkDecorator(decoratedHref, decoratedText, linkTarget, key) {
+        return (
+            <a
+                key={key}
+                href={decoratedHref}
+                target="_blank"
+                rel='noreferrer'
+                className='messageItemLink'
+            >
+                {decoratedText}
+            </a>
+        )
+    }
+
+    function customPhoneDecorator(decoratedText, key) {
+        return (
+            <a
+                key={key}
+                href={"tel:" + decoratedText}
+                target="_blank"
+                rel='noreferrer'
+                className='messageItemLink'
+            >
+                {decoratedText}
+            </a>
+        )
     }
 
     return (
         <div className={"messageContainer"} ref={msgRef}>
             <div className={cx("message", { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken })}>
-                <div className={cx({ ["myMessage"]: isMineMsg }, { ["theirMessage"]: !isMineMsg })} onClick={() => onOriginalMsgClick(msg.originalMessageId)}>
+                <div className={cx({ ["myMessage"]: isMineMsg }, { ["theirMessage"]: !isMineMsg })}>
                     {
                         type === MSG_TYPE_REPLY ?
-                            <div className="replyMessageItem" >
+                            <div className="replyMessageItem" onClick={() => onOriginalMsgClick(msg.originalMessageId)}>
                                 {
                                     originalMessageType === MSG_TYPE_IMAGE ?
                                         <ImageWithLoader
@@ -59,13 +84,21 @@ export default function MessageItem({
                                 className="messageImg"
                                 onClick={(event) => onImageClick(event, message)}
                             />
-                            : message
+                            :
+                            <ReactTextFormat
+                                allowedFormats={['URL', 'Email', 'Phone']}
+                                linkDecorator={customLinkDecorator}
+                                emailDecorator={customLinkDecorator}
+                                phoneDecorator={customPhoneDecorator}
+                            >
+                                {message}
+                            </ReactTextFormat>
                     }
                     <img
                         alt="replyIcon"
                         className={cx({ ["myReplyIcon"]: isMineMsg }, { ["theirReplyIcon"]: !isMineMsg })}
                         src={replyIcon}
-                        onClick={handleReplyIconClick}
+                        onClick={(event) => onReplyIconClick(event, msg)}
                     />
                 </div>
             </div>

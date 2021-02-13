@@ -222,7 +222,7 @@ function ChatPageContent({
     }
 
     return (
-        <PurpleGradientContainer childrenClassName="homeContainer">
+        <div className="homeContainer">
             {
                 viewImg ?
                     <ImageViewer src={viewImg} onClose={() => setViewImg(null)} />
@@ -343,7 +343,7 @@ function ChatPageContent({
                         </>
                 }
             </form>
-        </PurpleGradientContainer >
+        </div>
     )
 }
 

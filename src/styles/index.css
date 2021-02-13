@@ -5,7 +5,7 @@ body {
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #35176d;
+    background-color: #22045a;
 }
 
 code {
@@ -286,7 +286,6 @@ code {
     margin: 10px;
     margin-bottom: 2px;
     color: #aaa8a8;
-    text-align: right;
 }
 
 .messageImg {
@@ -308,7 +307,7 @@ code {
     word-break: break-word;
     background: linear-gradient(45deg, var(--first), var(--second));
     border: 1px solid var(--first);
-    cursor: pointer;
+    text-align: right;
 }
 
 .theirMessage {
@@ -319,7 +318,11 @@ code {
     word-break: break-all;
     background: linear-gradient(45deg, var(--second), #24133f);
     border: 1px solid var(--first);
-    cursor: pointer;
+}
+
+.messageItemLink {
+    color: #964384;
+    text-decoration: none;
 }
 
 .replyMessageItem {
@@ -329,6 +332,8 @@ code {
     margin-bottom: 5px;
     border-radius: 5px;
     font-size: 13.2px;
+    text-align: left;
+    cursor: pointer;
 }
 
 .myReplyIcon {

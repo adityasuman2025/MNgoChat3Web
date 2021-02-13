@@ -1,10 +1,6 @@
-import {
-    getUserTokenOfTheSecondUser,
-    getUsernameOfTheSecondUser,
-    decryptText,
-} from "../../utils";
+import { getUserTokenOfTheSecondUser, getUsernameOfTheSecondUser, decryptText } from "../../utils";
 
-const defaultState = {
+const initialState = {
     snackBarCount: 0,
     snackBarMsg: null,
     snackBarType: "error",
@@ -56,8 +52,15 @@ const defaultState = {
     uploadImageError: null,
 }
 
-const rootReducer = (state = defaultState, { type, payload = {} }) => {
+const defaultState = initialState;
+
+const rootReducer = (state = initialState, { type, payload = {} }) => {
     switch (type) {
+        case 'RESET_REDUCER_STATE': {
+            console.log("RESET_REDUCER_STATE");
+            return defaultState;
+        }
+
         case 'SHOW_SNACKBAR': {
             return {
                 ...state,
@@ -68,6 +71,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'CHECK_LOGIN_STATUS': {
+            console.log("CHECK_LOGIN_STATUS");
             return {
                 ...state,
                 isCheckingLoginStatus: true,
@@ -77,6 +81,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'CHECK_LOGIN_STATUS_SUCCESS': {
+            console.log("CHECK_LOGIN_STATUS_SUCCESS");
             const userDetails = payload.userDetails;
             let isSomeoneLoggedIn = false;
             if (userDetails) {
@@ -91,6 +96,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'CHECK_LOGIN_STATUS_FAILURE': {
+            console.log("CHECK_LOGIN_STATUS_FAILURE");
             return {
                 ...state,
                 isCheckingLoginStatus: false,
@@ -99,6 +105,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
         }
 
         case 'LOGIN_USER': {
+            console.log("LOGIN_USER");
             return {
                 ...state,
                 isLoggingUser: true,
@@ -108,6 +115,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'LOGIN_USER_SUCCESS': {
+            console.log("LOGIN_USER_SUCCESS");
             const userDetails = payload.userDetails;
             let isSomeoneLoggedIn = false;
             if (userDetails) {
@@ -122,6 +130,7 @@ const rootReducer = (state = defaultState, { type, payload = {} }) => {
             }
         }
         case 'LOGIN_USER_FAILURE': {
+            console.log("LOGIN_USER_FAILURE");
             return {
                 ...state,
                 isLoggingUser: false,

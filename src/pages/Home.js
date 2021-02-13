@@ -1,50 +1,33 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from "react-router-dom";
 
-import LandingPageDesign from "../components/LandingPageDesign";
-import PurpleGradientContainer from "../components/PurpleGradientContainer";
 import VerifyPasscode from "../components/VerifyPasscode";
 import HomePageContent from "../components/HomePageContent";
+import LoadingAnimation from "../components/LoadingAnimation";
 
-import { checkLoginStatusAction } from "../redux/actions/index";
+import { redirectToLoginPage } from "../utils";
 
 function Home({
     isPasscodeVerified,
     isCheckingLoginStatus,
     isSomeoneLoggedIn,
     history,
-    dispatch,
 }) {
+    console.log("on home")
     isPasscodeVerified = true;
-    useEffect(() => {
-        dispatch(checkLoginStatusAction());
-    }, []);
-
-    function redirectToHomeOrLoginPage() {
-        if (!isCheckingLoginStatus) {
-            if (!isSomeoneLoggedIn) {
-                return <Redirect to="/login" />;
-            }
-        }
-    }
 
     return (
         <>
-            {redirectToHomeOrLoginPage()}
+            {redirectToLoginPage(isCheckingLoginStatus, isSomeoneLoggedIn)}
 
             {
-                isCheckingLoginStatus || !isSomeoneLoggedIn ?
-                    <LandingPageDesign isCheckingLoginStatus={isCheckingLoginStatus} />
+                isSomeoneLoggedIn ?
+                    isPasscodeVerified ?
+                        <HomePageContent history={history} />
+                        :
+                        <VerifyPasscode />
                     :
-                    <PurpleGradientContainer childrenClassName="flexCenter">
-                        {
-                            isPasscodeVerified ?
-                                <HomePageContent history={history} />
-                                :
-                                <VerifyPasscode />
-                        }
-                    </PurpleGradientContainer>
+                    <LoadingAnimation loading />
             }
         </>
     );

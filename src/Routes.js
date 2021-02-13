@@ -10,19 +10,20 @@ import NewChat from "./pages/NewChat";
 
 import NotFound from './pages/NotFound';
 
-const Routes = () => (
-    <BrowserRouter >
-        <Switch>
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/home" component={Home} />
-            <Route exact path="/chat/:chatRoomId" component={Chat} />
-            <Route exact path="/new-chat/:selectedUserDetails" component={NewChat} />
+function Routes() {
+    return (
+        <BrowserRouter >
+            <Switch>
+                <Route exact path="/" component={Landing} />
+                <Route exact path="/login" component={Login} />
+                <Route exact path="/register" component={Register} />
+                <Route exact path="/home" component={Home} />
+                <Route exact path="/chat/:chatRoomId" component={Chat} />
+                <Route exact path="/new-chat/:selectedUserDetails" component={NewChat} />
 
-            <Route path="*" component={NotFound} />
-        </Switch>
-    </BrowserRouter>
-);
-
+                <Route path="*" component={NotFound} />
+            </Switch>
+        </BrowserRouter>
+    );
+}
 export default Routes;

@@ -1,14 +1,11 @@
 import React, { useEffect } from "react";
 import { connect } from 'react-redux';
-import { Redirect } from "react-router-dom";
 
-import LandingPageDesign from "../components/LandingPageDesign";
+import LoadingAnimation from "../components/LoadingAnimation";
 import ChatPageContent from "../components/ChatPageContent";
 
-import {
-    checkLoginStatusAction,
-    getChatRoomDetailsAction
-} from "../redux/actions/index";
+import { getChatRoomDetailsAction } from "../redux/actions/index";
+import { redirectToLoginPage } from "../utils";
 
 function Chat({
     isCheckingLoginStatus,
@@ -23,31 +20,18 @@ function Chat({
     dispatch,
 }) {
     useEffect(() => {
-        dispatch(checkLoginStatusAction());
-    }, []);
-
-    //to get chat room details
-    useEffect(() => {
         if (isSomeoneLoggedIn) {
             dispatch(getChatRoomDetailsAction(chatRoomId));
         }
     }, [isSomeoneLoggedIn]);
 
-    function redirectToHomeOrLoginPage() {
-        if (!isCheckingLoginStatus) {
-            if (!isSomeoneLoggedIn) {
-                return <Redirect to="/login" />;
-            }
-        }
-    }
-
     return (
         <>
-            {redirectToHomeOrLoginPage()}
+            {redirectToLoginPage(isCheckingLoginStatus, isSomeoneLoggedIn)}
 
             {
-                isCheckingLoginStatus || (isGettingChatRoomDetails || !isChatRoomDetailsFetched) ?
-                    <LandingPageDesign isCheckingLoginStatus={isCheckingLoginStatus || isGettingChatRoomDetails} />
+                isGettingChatRoomDetails || !isChatRoomDetailsFetched ?
+                    <LoadingAnimation loading />
                     :
                     <ChatPageContent dispatch={dispatch} chatRoomId={chatRoomId} />
             }
