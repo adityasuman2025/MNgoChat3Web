@@ -13,7 +13,6 @@ function Home({
     isSomeoneLoggedIn,
     history,
 }) {
-    console.log("on home")
     isPasscodeVerified = true;
 
     return (

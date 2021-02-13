@@ -16,7 +16,6 @@ function Login({
     history,
     dispatch,
 }) {
-    console.log("on login");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 

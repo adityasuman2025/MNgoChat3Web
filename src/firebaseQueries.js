@@ -37,7 +37,6 @@ export async function doFirebaseAuth() {
 
     try {
         const auth = await firebase.auth().signInAnonymously();
-        console.log("doFirebaseAuth", auth)
         if (auth) {
             if (auth.user.uid) {
                 toReturn.statusCode = await 200;
@@ -52,7 +51,6 @@ export async function doFirebaseAuth() {
 }
 
 export async function checkUserExistsInFirebase(loggedUserToken) {
-    console.log("checkUserExistsInFirebase")
     let toReturn = { statusCode: 500, data: false, msg: "" };
 
     const usersDbRef = firebase.app().database().ref('users/' + loggedUserToken + "/userToken");
@@ -73,7 +71,6 @@ export async function checkUserExistsInFirebase(loggedUserToken) {
 }
 
 export async function createUserInFirebase(loggedUserToken, username) {
-    console.log("createUserInFirebase")
     let toReturn = { statusCode: 500, data: false, msg: "" };
 
     const usersDbRef = firebase.app().database().ref('users/');
@@ -103,7 +100,6 @@ export async function createUserInFirebase(loggedUserToken, username) {
 }
 
 export async function getUserChatRooms(dispatch) {
-    console.log("getUserChatRooms")
     const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken) {
         return
@@ -128,7 +124,6 @@ export async function getUserChatRooms(dispatch) {
 }
 
 export async function removeGetUserChatRoomsFirebaseQuery() {
-    console.log("removeGetUserChatRoomsFirebaseQuery")
     const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken) {
         return
@@ -139,7 +134,6 @@ export async function removeGetUserChatRoomsFirebaseQuery() {
 }
 
 export async function getAllUsers(dispatch) {
-    console.log("getAllUsers")
     const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken) {
         return
