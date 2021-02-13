@@ -7,7 +7,6 @@ import closeIcon from "../images/close.png";
 import userIcon from "../images/user.png";
 import sendIcon from "../images/send2.png";
 import uploadImgIcon from "../images/uploadImg.png";
-import PurpleGradientContainer from "./PurpleGradientContainer";
 import LoadingAnimation from "./LoadingAnimation";
 import ImageViewer from "./ImageViewer";
 import ImageWithLoader from "./ImageWithLoader";

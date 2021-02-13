@@ -4,7 +4,6 @@ import { Redirect } from "react-router-dom";
 
 import userIcon from "../images/user.png";
 import LoadingAnimation from "../components/LoadingAnimation";
-import PurpleGradientContainer from "../components/PurpleGradientContainer";
 import ActionButton from "../components/ActionButton";
 
 import { CHAT_ACTION_BOX_HEIGHT } from "../constants";
@@ -69,7 +68,7 @@ function NewChat({
                 (!secondUserDetails.secondUsername) || !isSomeoneLoggedIn ?
                     <LoadingAnimation loading />
                     :
-                    <PurpleGradientContainer childrenClassName="homeContainer">
+                    <div className="homeContainer">
                         <div
                             className="chatWindow"
                             style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
@@ -94,7 +93,7 @@ function NewChat({
                                 />
                             </div>
                         </div>
-                    </PurpleGradientContainer>
+                    </div>
             }
         </>
     );
