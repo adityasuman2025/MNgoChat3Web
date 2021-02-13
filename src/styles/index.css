@@ -13,6 +13,47 @@ code {
     monospace;
 }
 
+/*---------snack bar--------*/
+.snackBarContainer {
+    z-index: 99;
+    position: absolute;
+    bottom: 30px;
+    left: 0px;
+    right: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.snackBarContent {
+    text-align: center;
+    width: 400px;
+    word-wrap: break-word;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px black;
+    padding: 10px;
+    background-color: grey;
+}
+
+.snackBarText {
+    text-align: center;
+    font-size: 15px;
+    color: #f1f1f1;
+}
+
+.errorBox {
+    background-color: #da0b0b;
+}
+
+.successBox {
+    background-color: #00cc00;
+}
+
+.infoBox {
+    background-color: #00ace6;
+}
+/*---------snack bar--------*/
+
 .purpleGradientContainer {
     position: absolute;
     width: 100%;
@@ -598,5 +639,9 @@ code {
 
     .message img {
         max-height: 150px;
+    }
+
+    .snackBarContent {
+        width: 300px;
     }
 }

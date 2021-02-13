@@ -150,12 +150,17 @@ function RootWrapper({
                     </PurpleGradientContainer>
             }
 
-            <SnackBar
-                open={snackBarVisible}
-                msg={snackBarMsgState}
-                type={snackBarTypeState}
-                handleClose={handleSnackBarClose}
-            />
+            {
+                snackBarVisible ?
+                    <SnackBar
+                        open={snackBarVisible}
+                        msg={snackBarMsgState}
+                        type={snackBarTypeState}
+                        handleClose={handleSnackBarClose}
+                    />
+                    : null
+            }
+
         </>
     )
 }
