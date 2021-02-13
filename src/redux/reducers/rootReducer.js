@@ -261,8 +261,8 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
                 const displayNameUserActiveStatusTimeStamp = Date.parse(activeStatusOfAUser) / 1000;
                 const timeDiff = currentTimeStamp - displayNameUserActiveStatusTimeStamp;
 
-                //displaying online in 10s bandwidth
-                if (timeDiff <= 10) {
+                //displaying online in 14s bandwidth
+                if (timeDiff <= 14) {
                     activeStatusOfAUser = "online";
                 }
             }
@@ -339,8 +339,8 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
                 const displayNameUserActiveStatusTimeStamp = Date.parse(typeStatusOfAUser) / 1000;
                 const timeDiff = currentTimeStamp - displayNameUserActiveStatusTimeStamp;
 
-                //displaying online in 1s bandwidth
-                if (timeDiff <= 1) {
+                //displaying online in 2s bandwidth
+                if (timeDiff <= 2) {
                     typeStatusOfAUser = "typing...";
                 } else {
                     typeStatusOfAUser = null;
