@@ -9,12 +9,18 @@ export default function ImageWithLoader({
     onClick,
 }) {
     const [showLoader, setShowLoader] = useState(true);
+    const [isImageVisible, setIsImageVisible] = useState(false);
 
-    if (!src) return;
+    function displayImage() {
+        setShowLoader(false);
+        setIsImageVisible(true);
+    }
+
+    if (!src) return <></>;
     return (
         <>
             <LoadingAnimation loading={showLoader} loaderClassName={loaderClassName} />
-            <img src={src} className={className} onLoad={() => setShowLoader(false)} onClick={onClick} onError={() => setShowLoader(false)} />
+            <img src={src} className={className} style={{ display: isImageVisible ? "block" : "none" }} onLoad={displayImage} onClick={onClick} onError={() => setShowLoader(false)} />
         </>
     );
 }

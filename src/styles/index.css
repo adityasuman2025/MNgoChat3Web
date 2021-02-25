@@ -226,8 +226,8 @@ code {
 .homeBottomNavContainer {
     height: var(--bottomNavHeight);
     margin-bottom: var(--bottomNavMarginBottom);
-    box-shadow: 1px 1px 10px 1px #24133f;
-    background: #d8d8d8;
+    box-shadow: 1px 1px 3px 1px #24133f;
+    background: #35176d;
     border-radius: 10px 10px 0px 0px;
     display: flex;
     align-items: center;
@@ -238,7 +238,7 @@ code {
     height: 75%;
     margin: 0 10px;
     border-radius: 100%;
-    /* filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%); */
+    filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%);
     cursor: pointer;
 }
 
@@ -256,12 +256,13 @@ code {
     padding-left: 10px;
     padding-right: 10px;
     border-bottom: 2px solid #24133f;
-    background: #d8d8d8;
+    background: #35176d;
 }
 
 .homeTitle img {
     height: 27px;
     cursor: pointer;
+    filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%);
 }
 
 .homeContent {
@@ -278,6 +279,15 @@ code {
     cursor: pointer;
 }
 
+.listUserItem img {
+    width: 40px;
+    height: 40px;
+    box-shadow: 0px 0px 3px 0px black;
+    object-fit: cover;
+    border-radius: 100%;
+    margin-right: 5px;
+}
+
 .profileContainer {
     padding: 20px;
     display: flex;
@@ -291,6 +301,9 @@ code {
     width: 100px;
     border-radius: 100%;
     margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .editProfileIcon {
@@ -304,6 +317,9 @@ code {
 .userProfileImg {
    height: 100%;
    width: 100%;
+   border-radius: 100%;
+   object-fit: cover;
+   cursor: pointer;
 }
 
 .loggedUserName {
@@ -352,11 +368,6 @@ code {
 
 .unSeenMsgUser {
     background-color: rgb(177, 177, 177);
-}
-
-.listUserItem img {
-    height: 35px;
-    margin-right: 5px;
 }
 
 .chatWindow {

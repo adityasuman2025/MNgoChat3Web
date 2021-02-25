@@ -9,10 +9,12 @@ import ProfileIcon from "../images/profile.png";
 import EditIcon from "../images/edit.png";
 import logoutIcon from "../images/logout.png";
 import LoadingAnimation from "./LoadingAnimation";
-import ActionButton from "./ActionButton";
+import ImageViewer from "./ImageViewer";
+import ImageWithLoader from "./ImageWithLoader";
 
-import { BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN } from "../constants";
+import { BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, ALLOWED_IMAGE_TYPES } from "../constants";
 import { logout } from "../utils";
+import { showSnackBarAction } from "../redux/actions/index";
 import {
     setUserActiveStatus,
     getUserChatRooms,
@@ -29,7 +31,6 @@ function HomePageContent({
     isGettingAllUsers,
     allUsers = {},
     userAllChats = {},
-    userDetails,
     userDetails: {
         username: loggedUsername,
         name,
@@ -38,9 +39,11 @@ function HomePageContent({
     history,
     dispatch,
 }) {
-    console.log("userDetails", userDetails);
     const imageInputRef = useRef();
+
     const [title, setTitle] = useState(CHATS_TITLE);
+    const [viewImg, setViewImg] = useState(null);
+    const [userToProfileImgMapping, setUserToProfileImgMapping] = useState({});
 
     useEffect(() => {
         getUserChatRooms(dispatch);
@@ -57,6 +60,20 @@ function HomePageContent({
             clearInterval(setActiveStatusInterval);
         }
     }, []);
+
+    useEffect(() => {
+        if (allUsers) {
+            const usersProfileImg = {};
+            Object.keys(allUsers).map(function(userToken) {
+                const user = allUsers[userToken];
+                const displayName = user.username;
+                const profileImg = user.profileImg || userIcon;
+
+                usersProfileImg[displayName] = profileImg;
+            });
+            setUserToProfileImgMapping(usersProfileImg)
+        }
+    }, [allUsers]);
 
     function hanldeNavBtnClick(type) {
         if (type === CHATS_TITLE) {
@@ -108,12 +125,38 @@ function HomePageContent({
         imageInputRef.current && imageInputRef.current.click();
     }
 
+    function handleProfileImgClick(event, src) {
+        event.stopPropagation(); //to prevent trigger of parent onClick
+
+        if (src) {
+            setViewImg(src);
+        }
+    }
+
+    async function handleSelectImage(event) {
+        try {
+            if (event.target.files && event.target.files[0]) {
+                const selectedImg = event.target.files[0];
+                const selectedImgType = selectedImg.type;
+                if (ALLOWED_IMAGE_TYPES.includes(selectedImgType)) {
+                    console.log("selectedImg", selectedImg);
+                    // setChoosedImg(selectedImg);
+                } else {
+                    dispatch(showSnackBarAction("Only images are allowed"));
+                }
+            }
+        } catch (e) {
+            dispatch(showSnackBarAction("Fail to select image", e));
+        }
+    }
+
     function renderAllChats() {
         // unread msg chatRooms will be listed first
         const toRender = Object.keys(userAllChats).map(function(chatRoomId) {
             const userChat = userAllChats[chatRoomId];
             const unSeenMsgCount = parseInt(userChat.unSeenMsgCount) || 0;
             const displayName = userChat.displayName;
+            const userProfileImg = userToProfileImgMapping[displayName];
 
             if (unSeenMsgCount === 0) return;
             if (!displayName) return;
@@ -123,7 +166,7 @@ function HomePageContent({
                     className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
                     onClick={() => handleUserItemClick(chatRoomId, title)}
                 >
-                    <img alt="userIcon" src={userIcon} />
+                    <img alt="userIcon" src={userProfileImg} onClick={(e) => handleProfileImgClick(e, userProfileImg)} />
                     {displayName}
                 </div>
             )
@@ -133,6 +176,7 @@ function HomePageContent({
             const userChat = userAllChats[chatRoomId];
             const unSeenMsgCount = parseInt(userChat.unSeenMsgCount) || 0;
             const displayName = userChat.displayName;
+            const userProfileImg = userToProfileImgMapping[displayName];
 
             if (unSeenMsgCount !== 0) return;
             if (!displayName) return;
@@ -142,7 +186,7 @@ function HomePageContent({
                     className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
                     onClick={() => handleUserItemClick(chatRoomId)}
                 >
-                    <img alt="userIcon" src={userIcon} />
+                    <img alt="userIcon" src={userProfileImg} onClick={(e) => handleProfileImgClick(e, userProfileImg)} />
                     {displayName}
                 </div>
             )
@@ -160,6 +204,7 @@ function HomePageContent({
                 return Object.keys(allUsers).map(function(userToken) {
                     const user = allUsers[userToken];
                     const displayName = user.username;
+                    const userProfileImg = userToProfileImgMapping[displayName];
 
                     if (!displayName) return;
                     if (displayName !== loggedUsername) {
@@ -169,7 +214,7 @@ function HomePageContent({
                                 className="listUserItem"
                                 onClick={() => handleUserItemClick(user)}
                             >
-                                <img alt="userIcon" src={userIcon} />
+                                <img alt="userIcon" src={userProfileImg} onClick={(e) => handleProfileImgClick(e, userProfileImg)} />
                                 {displayName}
                             </div>
                         )
@@ -177,6 +222,7 @@ function HomePageContent({
                 });
                 break;
             case PROFILE_TITLE:
+                const profileImg = userToProfileImgMapping[loggedUsername];
                 return (
                     <div className="profileContainer">
                         <div className="userProfileImgBox">
@@ -185,13 +231,13 @@ function HomePageContent({
                                 style={{ display: "none" }}
                                 type="file"
                                 name="myImage"
-                                // onChange={handleSelectImage}
+                                onChange={handleSelectImage}
                                 accept="image/*"
                             />
-                            <img
-                                alt="userProfileImg"
+                            <ImageWithLoader
                                 className="userProfileImg"
-                                src={ProfileIcon}
+                                src={profileImg}
+                                onClick={(e) => handleProfileImgClick(e, profileImg)}
                             />
                             <img
                                 alt="editIcon"
@@ -201,17 +247,12 @@ function HomePageContent({
                             />
                         </div>
                         <div className="loggedUserName">{loggedUsername}</div>
-                        {/* <ActionButton
-                            dark
-                            className="uploadBtn"
-                            buttonText="Upload"
-                        /> */}
 
                         <div className="userDetailsContainer">
                             {
                                 name ?
                                     <div className="userDetailsText">
-                                        <span className="userDetailsTitle">Name: </span>
+                                        <span className="userDetailsTitle">name: </span>
                                         <span>{name}</span>
                                     </div>
                                     : null
@@ -219,7 +260,7 @@ function HomePageContent({
                             {
                                 email ?
                                     <div className="userDetailsText">
-                                        <span className="userDetailsTitle">Email: </span>
+                                        <span className="userDetailsTitle">email: </span>
                                         <span>{email}</span>
                                     </div>
                                     : null
@@ -264,12 +305,17 @@ function HomePageContent({
                 )
                 break;
             default:
-            // code block
         }
     }
 
     return (
         <div className="homeContainer">
+            {
+                viewImg ?
+                    <ImageViewer src={viewImg} onClose={() => setViewImg(null)} />
+                    : null
+            }
+
             <div
                 className="homeContentContainer"
                 style={{
@@ -278,7 +324,7 @@ function HomePageContent({
                 }}
             >
                 <div className="homeTitle">
-                    <div className="darkTitle">{title}</div>
+                    <div className="lightTitle">{title}</div>
                     <img alt="logoutIcon" src={logoutIcon} onClick={handleLogoutBtnClick} />
                 </div>
                 <div className="homeContent">
