@@ -38,6 +38,7 @@ const initialState = {
 
     isGettingChatRoomMessages: false,
     isInitialMessagesFetched: false,
+    isPaginatedMessagesFetched: false,
     isANewMessage: 0,
     chatRoomMessages: [],
 
@@ -317,6 +318,7 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
             return {
                 ...state,
                 isGettingChatRoomMessages: true,
+                isPaginatedMessagesFetched: false,
             }
         }
         case 'GET_PAGINATED_MESSAGES_SUCCESS': {
@@ -325,6 +327,7 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
             return {
                 ...state,
                 isGettingChatRoomMessages: false,
+                isPaginatedMessagesFetched: true,
                 chatRoomMessages: [
                     ...messages,
                     ...state.chatRoomMessages,

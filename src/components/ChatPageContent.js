@@ -40,6 +40,7 @@ import {
 function ChatPageContent({
     isGettingChatRoomMessages,
     isInitialMessagesFetched,
+    isPaginatedMessagesFetched,
     isUploadingImage,
     isANewMessage,
     chatRoomId,
@@ -104,6 +105,15 @@ function ChatPageContent({
 
         readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
     }, [isANewMessage]);
+
+    //when paginated messages are fetched then scrolling the chatContent div to 10px below from top
+    //so that scroll can be triggered easily to fetch another paginated msg
+    useEffect(() => {
+        if (isPaginatedMessagesFetched) {
+            var chatContentDiv = document.getElementById('chatContent');
+            chatContentDiv.scrollTop = 10;
+        }
+    }, [isPaginatedMessagesFetched]);
 
     function loadMoreMessages() {
         const messageIdOfTheFirstMessageInList = (chatRoomMessages[0] || {}).messageId;
@@ -331,7 +341,6 @@ function ChatPageContent({
                                             type="text"
                                             className="sendMsgTextInput"
                                             placeholder="type message"
-                                            autoFocus
                                             value={msgText}
                                             onChange={handleChangeMsgInput}
                                         />
@@ -350,6 +359,7 @@ const mapStateToProps = (state) => {
     return {
         isGettingChatRoomMessages: state.isGettingChatRoomMessages,
         isInitialMessagesFetched: state.isInitialMessagesFetched,
+        isPaginatedMessagesFetched: state.isPaginatedMessagesFetched,
         isUploadingImage: state.isUploadingImage,
         isANewMessage: state.isANewMessage,
         activeStatusOfAUser: state.activeStatusOfAUser,

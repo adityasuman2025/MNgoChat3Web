@@ -6,6 +6,11 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #22045a;
+    overscroll-behavior: contain; /* disables chrome's pull to refresh action */
+}
+
+html {
+    overscroll-behavior: contain; /* disables chrome's pull to refresh action */
 }
 
 code {
