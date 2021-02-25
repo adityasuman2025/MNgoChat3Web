@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import cx from "classnames";
 
 import userIcon from "../images/user.png";
 import allChats from "../images/allChats.png";
 import allUsersIcon from "../images/allUsers.png";
+import ProfileIcon from "../images/profile.png";
+import EditIcon from "../images/edit.png";
 import logoutIcon from "../images/logout.png";
 import LoadingAnimation from "./LoadingAnimation";
+import ActionButton from "./ActionButton";
 
 import { BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN } from "../constants";
 import { logout } from "../utils";
@@ -19,18 +22,24 @@ import {
 
 const CHATS_TITLE = "Chats";
 const USERS_TITLE = "Users";
+const PROFILE_TITLE = "Profile";
 
 function HomePageContent({
     isGettingUserAllChats,
     isGettingAllUsers,
     allUsers = {},
     userAllChats = {},
+    userDetails,
     userDetails: {
-        username: loggedUsername
+        username: loggedUsername,
+        name,
+        email,
     } = {},
     history,
     dispatch,
 }) {
+    console.log("userDetails", userDetails);
+    const imageInputRef = useRef();
     const [title, setTitle] = useState(CHATS_TITLE);
 
     useEffect(() => {
@@ -51,9 +60,11 @@ function HomePageContent({
 
     function hanldeNavBtnClick(type) {
         if (type === CHATS_TITLE) {
-            setTitle(CHATS_TITLE)
-        } else {
-            setTitle(USERS_TITLE)
+            setTitle(CHATS_TITLE);
+        } else if (type === USERS_TITLE) {
+            setTitle(USERS_TITLE);
+        } else if (type === PROFILE_TITLE) {
+            setTitle(PROFILE_TITLE);
         }
     }
 
@@ -91,6 +102,10 @@ function HomePageContent({
     async function handleLogoutBtnClick() {
         await logout(dispatch);
         window.location.reload();
+    }
+
+    function handleEditIconClick() {
+        imageInputRef.current && imageInputRef.current.click();
     }
 
     function renderAllChats() {
@@ -136,6 +151,123 @@ function HomePageContent({
         return toRender;
     }
 
+    function renderTabContent() {
+        switch (title) {
+            case CHATS_TITLE:
+                return renderAllChats();
+                break;
+            case USERS_TITLE:
+                return Object.keys(allUsers).map(function(userToken) {
+                    const user = allUsers[userToken];
+                    const displayName = user.username;
+
+                    if (!displayName) return;
+                    if (displayName !== loggedUsername) {
+                        return (
+                            <div
+                                key={userToken}
+                                className="listUserItem"
+                                onClick={() => handleUserItemClick(user)}
+                            >
+                                <img alt="userIcon" src={userIcon} />
+                                {displayName}
+                            </div>
+                        )
+                    }
+                });
+                break;
+            case PROFILE_TITLE:
+                return (
+                    <div className="profileContainer">
+                        <div className="userProfileImgBox">
+                            <input
+                                ref={imageInputRef}
+                                style={{ display: "none" }}
+                                type="file"
+                                name="myImage"
+                                // onChange={handleSelectImage}
+                                accept="image/*"
+                            />
+                            <img
+                                alt="userProfileImg"
+                                className="userProfileImg"
+                                src={ProfileIcon}
+                            />
+                            <img
+                                alt="editIcon"
+                                className="editProfileIcon"
+                                src={EditIcon}
+                                onClick={handleEditIconClick}
+                            />
+                        </div>
+                        <div className="loggedUserName">{loggedUsername}</div>
+                        {/* <ActionButton
+                            dark
+                            className="uploadBtn"
+                            buttonText="Upload"
+                        /> */}
+
+                        <div className="userDetailsContainer">
+                            {
+                                name ?
+                                    <div className="userDetailsText">
+                                        <span className="userDetailsTitle">Name: </span>
+                                        <span>{name}</span>
+                                    </div>
+                                    : null
+                            }
+                            {
+                                email ?
+                                    <div className="userDetailsText">
+                                        <span className="userDetailsTitle">Email: </span>
+                                        <span>{email}</span>
+                                    </div>
+                                    : null
+                            }
+                        </div>
+                        <div className="divider" />
+
+                        <div className="appDetailsContainer">
+                            <div className="userDetailsText">
+                                <span className="userDetailsTitle">version: </span>
+                                <span>3.0</span>
+                            </div>
+                            <div className="userDetailsText">
+                                <span className="userDetailsTitle">release date: </span>
+                                <span>15 January 2021</span>
+                            </div>
+                            <div className="userDetailsText">
+                                <span className="userDetailsTitle">latest release: </span>
+                                <span>1 March 2021</span>
+                            </div>
+                            <div className="userDetailsText">
+                                <span className="userDetailsTitle">first release: </span>
+                                <span>16 July 2018</span>
+                            </div>
+                            <div className="userDetailsText">
+                                <span className="userDetailsTitle">developer: </span>
+                                <span>Aditya Suman</span>
+                            </div>
+                            <div className="userDetailsText">
+                                <span className="userDetailsTitle">contact: </span>
+                                <span>aditya@mngo.in</span>
+                            </div>
+                            <div className="userDetailsText">
+                                <span className="userDetailsTitle">technologies used: </span>
+                                <span>React.js, Redux, Firebase</span>
+                            </div>
+                        </div>
+                        <div className="divider" />
+
+                        <div className="appDetailsContainer">© 2018-21 This property belongs to Aditya Suman</div>
+                    </div>
+                )
+                break;
+            default:
+            // code block
+        }
+    }
+
     return (
         <div className="homeContainer">
             <div
@@ -154,31 +286,7 @@ function HomePageContent({
                         isGettingUserAllChats || isGettingAllUsers ?
                             <LoadingAnimation dark loading />
                             :
-                            <div>
-                                {
-                                    title === CHATS_TITLE ?
-                                        renderAllChats()
-                                        :
-                                        Object.keys(allUsers).map(function(userToken) {
-                                            const user = allUsers[userToken];
-                                            const displayName = user.username;
-
-                                            if (!displayName) return;
-                                            if (displayName !== loggedUsername) {
-                                                return (
-                                                    <div
-                                                        key={userToken}
-                                                        className="listUserItem"
-                                                        onClick={() => handleUserItemClick(user)}
-                                                    >
-                                                        <img alt="userIcon" src={userIcon} />
-                                                        {displayName}
-                                                    </div>
-                                                )
-                                            }
-                                        })
-                                }
-                            </div>
+                            <div>{renderTabContent()}</div>
                     }
                 </div>
             </div>
@@ -202,6 +310,13 @@ function HomePageContent({
                     alt="allUsers"
                     src={allUsersIcon}
                     onClick={() => hanldeNavBtnClick(USERS_TITLE)}
+                />
+
+                <img
+                    className={cx("bottomTabIcons", { ["selectedBottomTabIcon"]: title === PROFILE_TITLE })}
+                    alt="profile"
+                    src={ProfileIcon}
+                    onClick={() => hanldeNavBtnClick(PROFILE_TITLE)}
                 />
             </div>
         </div>
