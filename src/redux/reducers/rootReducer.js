@@ -401,8 +401,6 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
             }
         }
 
-
-
         default: return state
     }
 }

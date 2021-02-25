@@ -14,12 +14,14 @@ import ImageWithLoader from "./ImageWithLoader";
 
 import { BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, ALLOWED_IMAGE_TYPES } from "../constants";
 import { logout } from "../utils";
-import { showSnackBarAction } from "../redux/actions/index";
+import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
 import {
     setUserActiveStatus,
     getUserChatRooms,
     getAllUsers,
     removeGetUserChatRoomsFirebaseQuery,
+    uploadImageInFirebase,
+    setProfileImageOfAUser,
 } from "../firebaseQueries";
 
 const CHATS_TITLE = "Chats";
@@ -29,6 +31,7 @@ const PROFILE_TITLE = "Profile";
 function HomePageContent({
     isGettingUserAllChats,
     isGettingAllUsers,
+    isUploadingImage,
     allUsers = {},
     userAllChats = {},
     userDetails: {
@@ -139,8 +142,24 @@ function HomePageContent({
                 const selectedImg = event.target.files[0];
                 const selectedImgType = selectedImg.type;
                 if (ALLOWED_IMAGE_TYPES.includes(selectedImgType)) {
-                    console.log("selectedImg", selectedImg);
-                    // setChoosedImg(selectedImg);
+                    const imageName = loggedUsername;
+                    await uploadImageInFirebase(dispatch, selectedImg, imageName, "profileImage/")
+                        .then((snapshot) => {
+                            snapshot.getDownloadURL()
+                                .then(async (downloadURL) => {
+                                    if (downloadURL) {
+                                        await setProfileImageOfAUser(downloadURL);
+                                        setUserToProfileImgMapping({
+                                            ...userToProfileImgMapping,
+                                            [loggedUsername]: downloadURL,
+                                        });
+                                    }
+                                    dispatch(uploadImageInFirebaseSuccessAction());
+                                });
+                        })
+                        .catch((error) => {
+                            dispatch(uploadImageInFirebaseFailureAction({ msg: "Fail to upload image" }));
+                        });
                 } else {
                     dispatch(showSnackBarAction("Only images are allowed"));
                 }
@@ -234,11 +253,18 @@ function HomePageContent({
                                 onChange={handleSelectImage}
                                 accept="image/*"
                             />
-                            <ImageWithLoader
-                                className="userProfileImg"
-                                src={profileImg}
-                                onClick={(e) => handleProfileImgClick(e, profileImg)}
-                            />
+
+                            {
+                                isUploadingImage ?
+                                    <LoadingAnimation loading />
+                                    :
+                                    <ImageWithLoader
+                                        className="userProfileImg"
+                                        src={profileImg}
+                                        onClick={(e) => handleProfileImgClick(e, profileImg)}
+                                    />
+                            }
+
                             <img
                                 alt="editIcon"
                                 className="editProfileIcon"
@@ -373,6 +399,7 @@ const mapStateToProps = (state) => {
     return {
         isGettingUserAllChats: state.isGettingUserAllChats,
         isGettingAllUsers: state.isGettingAllUsers,
+        isUploadingImage: state.isUploadingImage,
         allUsers: state.allUsers,
         userAllChats: state.userAllChats,
         userDetails: state.userDetails,

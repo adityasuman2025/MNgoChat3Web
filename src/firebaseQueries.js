@@ -434,7 +434,7 @@ export async function startANewChatRoom(params) {
     dispatch(startANewChatRoomSuccessAction({ data: { chatRoomId } }));
 }
 
-export async function uploadImageInFirebase(dispatch, imageFile) {
+export async function uploadImageInFirebase(dispatch, imageFile, uploadImageName, uploadFolder) {
     const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken || !imageFile) return;
 
@@ -445,13 +445,23 @@ export async function uploadImageInFirebase(dispatch, imageFile) {
         if (!compressedImg) return;
 
         const timeStamp = Math.floor(Date.now());
-        const imageName = timeStamp + "_" + loggedUserToken.substring(0, 3) + ".png";
+        const imageName = (uploadImageName || (timeStamp + "_" + loggedUserToken.substring(0, 3))) + ".png";
 
         //putting image in firebase
-        const storageRef = firebase.app().storage().ref().child("image/" + imageName);
+        const storageRef = firebase.app().storage().ref().child((uploadFolder || "image/") + imageName);
         await storageRef.put(compressedImg);
         return storageRef;
     } catch {
         dispatch(uploadImageInFirebaseFailureAction({ msg: "Fail to upload image" }));
     }
+}
+
+export async function setProfileImageOfAUser(profileImageUrl) {
+    const loggedUserToken = getLoggedUserToken();
+    if (!loggedUserToken || !profileImageUrl) return;
+
+    const userRef = firebase.app().database().ref('users/' + loggedUserToken + "/profileImg");
+    await userRef
+        .set(profileImageUrl)
+        .catch(error => { });
 }

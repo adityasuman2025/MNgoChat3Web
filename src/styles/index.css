@@ -282,7 +282,7 @@ code {
 .listUserItem img {
     width: 40px;
     height: 40px;
-    box-shadow: 0px 0px 3px 0px black;
+    box-shadow: 0px 0px 3px 0px grey;
     object-fit: cover;
     border-radius: 100%;
     margin-right: 5px;
@@ -297,9 +297,10 @@ code {
 
 .userProfileImgBox {
     position: relative;
-    height: 100px;
-    width: 100px;
+    height: 130px;
+    width: 130px;
     border-radius: 100%;
+    box-shadow: 0px 0px 5px 0px grey;
     margin: auto;
     display: flex;
     align-items: center;
