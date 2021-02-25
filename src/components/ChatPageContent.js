@@ -4,7 +4,6 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 
 import closeIcon from "../images/close.png";
-import userIcon from "../images/user.png";
 import sendIcon from "../images/send2.png";
 import uploadImgIcon from "../images/uploadImg.png";
 import LoadingAnimation from "./LoadingAnimation";
@@ -35,6 +34,7 @@ import {
     setUserTypeStatus,
     getTypeStatusOfAUser,
     uploadImageInFirebase,
+    getProfileImageOfAUser,
 } from "../firebaseQueries";
 
 function ChatPageContent({
@@ -46,6 +46,7 @@ function ChatPageContent({
     chatRoomId,
     activeStatusOfAUser,
     typeStatusOfAUser,
+    secondUserProfileImage,
     chatRoomDetails: {
         usernameOfSecondUser,
         userTokenOfSecondUser,
@@ -85,6 +86,7 @@ function ChatPageContent({
         }, 1000); //getting user typings status in 1 s
         //other users need to compare their local time with that user lastTypedTime to get his typing status
 
+        getProfileImageOfAUser(dispatch, userTokenOfSecondUser);
         return () => {
             removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId);
             clearInterval(setActiveStatusInterval);
@@ -248,7 +250,7 @@ function ChatPageContent({
                 }}
             >
                 <div className="chatTitle">
-                    <img alt="userIcon" src={userIcon} />
+                    <img alt="userIcon" src={secondUserProfileImage} onClick={(e) => handleImageClick(e, secondUserProfileImage)} />
                     <div>
                         <div className="lightTitle">{usernameOfSecondUser}</div>
                         <div className="onlineStatus">
@@ -364,6 +366,7 @@ const mapStateToProps = (state) => {
         isANewMessage: state.isANewMessage,
         activeStatusOfAUser: state.activeStatusOfAUser,
         typeStatusOfAUser: state.typeStatusOfAUser,
+        secondUserProfileImage: state.secondUserProfileImage,
         chatRoomDetails: state.chatRoomDetails,
         chatRoomMessages: state.chatRoomMessages,
     }

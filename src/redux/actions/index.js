@@ -233,3 +233,11 @@ export const uploadImageInFirebaseFailureAction = (payload) => async (dispatch) 
         dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE_FAILURE', payload });
     }
 }
+
+
+export const getProfileImageOfAUserAction = (payload) => async (dispatch) => {
+    dispatch({ type: 'GET_PROFILE_IMAGE_OF_A_USER', payload });
+}
+export const getProfileImageOfAUserSuccessAction = (payload) => async (dispatch) => {
+    dispatch({ type: 'GET_PROFILE_IMAGE_OF_A_USER_SUCCESS', payload });
+}

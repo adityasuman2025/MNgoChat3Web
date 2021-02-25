@@ -1,3 +1,4 @@
+import userIcon from "../../images/user.png";
 import { getUserTokenOfTheSecondUser, getUsernameOfTheSecondUser, decryptText } from "../../utils";
 
 const initialState = {
@@ -51,6 +52,8 @@ const initialState = {
 
     isUploadingImage: false,
     uploadImageError: null,
+
+    secondUserProfileImage: userIcon,
 }
 
 const defaultState = initialState;
@@ -398,6 +401,20 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
                 ...state,
                 isUploadingImage: true,
                 uploadImageError: payload.msg,
+            }
+        }
+
+        case 'GET_PROFILE_IMAGE_OF_A_USER': {
+            return {
+                ...state,
+                secondUserProfileImage: userIcon,
+            }
+        }
+
+        case 'GET_PROFILE_IMAGE_OF_A_USER_SUCCESS': {
+            return {
+                ...state,
+                secondUserProfileImage: payload.data || userIcon,
             }
         }
 

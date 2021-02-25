@@ -385,9 +385,12 @@ code {
 }
 
 .chatTitle img {
-    height: 30px;
+    height: 35px;
+    width: 35px;
+    object-fit: cover;
+    border-radius: 100%;
     margin-right: 10px;
-    filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%);
+    cursor: pointer;
 }
 
 .lightTitle {

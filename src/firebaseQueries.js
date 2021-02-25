@@ -30,6 +30,9 @@ import {
 
     uploadImageInFirebaseAction,
     uploadImageInFirebaseFailureAction,
+
+    getProfileImageOfAUserAction,
+    getProfileImageOfAUserSuccessAction,
 } from "./redux/actions/index";
 
 export async function doFirebaseAuth() {
@@ -463,5 +466,23 @@ export async function setProfileImageOfAUser(profileImageUrl) {
     const userRef = firebase.app().database().ref('users/' + loggedUserToken + "/profileImg");
     await userRef
         .set(profileImageUrl)
+        .catch(error => { });
+}
+
+export async function getProfileImageOfAUser(dispatch, userToken) {
+    const loggedUserToken = getLoggedUserToken();
+    if (!loggedUserToken || !userToken) return;
+
+    dispatch(getProfileImageOfAUserAction());
+
+    const userProfileImgRef = firebase.app().database().ref('users/' + userToken + "/profileImg");
+    userProfileImgRef
+        .once('value')
+        .then(async resp => {
+            const response = resp.val();
+            if (response) {
+                dispatch(getProfileImageOfAUserSuccessAction({ data: response }));
+            }
+        })
         .catch(error => { });
 }
