@@ -31,7 +31,7 @@ function Chat({
 
             {
                 !isSomeoneLoggedIn || isGettingChatRoomDetails || !isChatRoomDetailsFetched ?
-                    <LoadingAnimation loading />
+                    <LoadingAnimation dark loading />
                     :
                     <ChatPageContent dispatch={dispatch} chatRoomId={chatRoomId} />
             }

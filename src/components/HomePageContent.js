@@ -12,7 +12,7 @@ import LoadingAnimation from "./LoadingAnimation";
 import ImageViewer from "./ImageViewer";
 import ImageWithLoader from "./ImageWithLoader";
 
-import { BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, ALLOWED_IMAGE_TYPES } from "../constants";
+import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, ALLOWED_IMAGE_TYPES } from "../constants";
 import { logout } from "../utils";
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
 import {
@@ -186,7 +186,7 @@ function HomePageContent({
                     onClick={() => handleUserItemClick(chatRoomId, title)}
                 >
                     <img alt="userIcon" src={userProfileImg} onClick={(e) => handleProfileImgClick(e, userProfileImg)} />
-                    {displayName}
+                    <div className="listUserItemTitle">{displayName}</div>
                 </div>
             )
         });
@@ -206,7 +206,7 @@ function HomePageContent({
                     onClick={() => handleUserItemClick(chatRoomId)}
                 >
                     <img alt="userIcon" src={userProfileImg} onClick={(e) => handleProfileImgClick(e, userProfileImg)} />
-                    {displayName}
+                    <div className="listUserItemTitle">{displayName}</div>
                 </div>
             )
         }));
@@ -218,7 +218,6 @@ function HomePageContent({
         switch (title) {
             case CHATS_TITLE:
                 return renderAllChats();
-                break;
             case USERS_TITLE:
                 return Object.keys(allUsers).map(function(userToken) {
                     const user = allUsers[userToken];
@@ -234,12 +233,11 @@ function HomePageContent({
                                 onClick={() => handleUserItemClick(user)}
                             >
                                 <img alt="userIcon" src={userProfileImg} onClick={(e) => handleProfileImgClick(e, userProfileImg)} />
-                                {displayName}
+                                <div className="listUserItemTitle">{displayName}</div>
                             </div>
                         )
                     }
                 });
-                break;
             case PROFILE_TITLE:
                 const profileImg = userToProfileImgMapping[loggedUsername];
                 return (
@@ -256,7 +254,7 @@ function HomePageContent({
 
                             {
                                 isUploadingImage ?
-                                    <LoadingAnimation loading />
+                                    <LoadingAnimation dark loading />
                                     :
                                     <ImageWithLoader
                                         className="userProfileImg"
@@ -329,7 +327,6 @@ function HomePageContent({
                         <div className="appDetailsContainer">© 2018-21 This property belongs to Aditya Suman</div>
                     </div>
                 )
-                break;
             default:
         }
     }
@@ -349,11 +346,17 @@ function HomePageContent({
                     "--bottomNavMarginBottom": BOTTOM_NAV_BOTTOM_MARGIN,
                 }}
             >
-                <div className="homeTitle">
+                <div
+                    className="homeTitle"
+                    style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
+                >
                     <div className="lightTitle">{title}</div>
                     <img alt="logoutIcon" src={logoutIcon} onClick={handleLogoutBtnClick} />
                 </div>
-                <div className="homeContent">
+                <div
+                    className="homeContent"
+                    style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
+                >
                     {
                         isGettingUserAllChats || isGettingAllUsers ?
                             <LoadingAnimation dark loading />

@@ -66,7 +66,7 @@ function NewChat({
 
             {
                 (!secondUserDetails.secondUsername) || !isSomeoneLoggedIn ?
-                    <LoadingAnimation loading />
+                    <LoadingAnimation dark loading />
                     :
                     <div className="homeContainer">
                         <div

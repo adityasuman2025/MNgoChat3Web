@@ -5,7 +5,7 @@ body {
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #22045a;
+    background-color: #24133f;
     overscroll-behavior: contain; /* disables chrome's pull to refresh action */
 }
 
@@ -63,7 +63,8 @@ code {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: linear-gradient(45deg, var(--first), var(--second));
+    /* background: linear-gradient(45deg, var(--first), var(--second)); */
+    background: linear-gradient(45deg, #24133f, var(--second));
     overflow-y: scroll;
 }
 
@@ -119,8 +120,8 @@ code {
 }
 
 .loadingAnimation {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
 }
 
 .darkLoader {
@@ -213,21 +214,18 @@ code {
 
 .homeContainer {
     height: 100%;
-    width: 60%;
-    margin: auto;
+    width: 100%;
 }
 
 .homeContentContainer {
     height: calc(100% - var(--bottomNavHeight) - var(--bottomNavMarginBottom));
-    background: #c9c9c9;
-    border-radius: 0px 0px 10px 10px;
 }
 
 .homeBottomNavContainer {
     height: var(--bottomNavHeight);
     margin-bottom: var(--bottomNavMarginBottom);
     box-shadow: 1px 1px 3px 1px #24133f;
-    background: #35176d;
+    background: linear-gradient(45deg, #24133f, var(--second));
     border-radius: 10px 10px 0px 0px;
     display: flex;
     align-items: center;
@@ -236,56 +234,68 @@ code {
 
 .bottomTabIcons {
     height: 75%;
-    margin: 0 10px;
+    margin: 0 15px;
     border-radius: 100%;
     filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%);
     cursor: pointer;
 }
 
 .selectedBottomTabIcon {
-    background-color: white;
-    /* filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%); */
-    /* filter: invert(8%) sepia(16%) saturate(6916%) hue-rotate(245deg) brightness(98%) contrast(99%); */
+    filter: invert(23%) sepia(99%) saturate(1833%) hue-rotate(269deg) brightness(82%) contrast(86%);
 }
 
 .homeTitle {
-    height: 50px;
+    height: var(--titleBarHeight);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding-left: 10px;
     padding-right: 10px;
-    border-bottom: 2px solid #24133f;
-    background: #35176d;
+    background: linear-gradient(45deg, #8d35ad, #24133f);
 }
 
 .homeTitle img {
-    height: 27px;
+    height: 25px;
     cursor: pointer;
     filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%);
+    /* filter: invert(23%) sepia(99%) saturate(1833%) hue-rotate(269deg) brightness(82%) contrast(86%); //pink */
 }
 
 .homeContent {
-    height: calc(100% - 50px);
-    overflow-y: scroll;
+    min-height: calc(100% -  var(--titleBarHeight));
+    max-height: calc(100% -  var(--titleBarHeight));
+    background: linear-gradient(45deg, #24133f, var(--second));
+    overflow-y: auto;
 }
 
 .listUserItem {
     display: flex;
-    padding: 5px 10px;
+    margin: 7px 10px;
     align-items: center;
-    border-bottom: 1px solid grey;
-    border-radius: 3px;
     cursor: pointer;
+    color: #bcbaba;
+}
+
+.listUserItemTitle {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    height: 40px;
+    border-bottom: 1px solid grey;
 }
 
 .listUserItem img {
-    width: 40px;
-    height: 40px;
-    box-shadow: 0px 0px 3px 0px grey;
+    width: 37px;
+    height: 37px;
+    box-shadow: 0px 0px 1px 0px grey;
     object-fit: cover;
     border-radius: 100%;
-    margin-right: 5px;
+    margin-right: 8px;
+}
+
+.unSeenMsgUser {
+    font-weight: 600;
+    color: #8d35ad;
 }
 
 .profileContainer {
@@ -300,7 +310,7 @@ code {
     height: 130px;
     width: 130px;
     border-radius: 100%;
-    box-shadow: 0px 0px 5px 0px grey;
+    box-shadow: 0px 0px 1px 0px grey;
     margin: auto;
     display: flex;
     align-items: center;
@@ -313,6 +323,7 @@ code {
     right: 0px;
     width: 17px;
     cursor: pointer;
+    filter: invert(87%) sepia(5%) saturate(69%) hue-rotate(314deg) brightness(88%) contrast(84%);
 }
 
 .userProfileImg {
@@ -327,7 +338,7 @@ code {
     margin: 10px 0;
     font-weight: 600;
     font-size: 18px;
-    color: #35176d;
+    color: #964384;
 }
 
 .uploadBtn {
@@ -345,12 +356,14 @@ code {
     margin: 5px 0;
     display: flex;
     align-items: center;
+    /* color: grey; */
+    color: #bcbaba;
 }
 
 .userDetailsTitle {
     margin-right: 5px;
     font-weight: 600;
-    color: #35176d;
+    color: #964384;
 }
 
 .divider {
@@ -365,10 +378,8 @@ code {
     margin: 20px 10px;
     text-align: left;
     font-size: 15px;
-}
-
-.unSeenMsgUser {
-    background-color: rgb(177, 177, 177);
+    /* color: grey; */
+    color: #bcbaba;
 }
 
 .chatWindow {
@@ -376,12 +387,11 @@ code {
 }
 
 .chatTitle {
-    height: 45px;
+    height: var(--titleBarHeight);
     display: flex;
     align-items: center;
     padding-left: 10px;
-    background: #24133f;
-    background: linear-gradient(45deg, #24133f, var(--second));
+    background: linear-gradient(45deg, #8d35ad, #24133f);
 }
 
 .chatTitle img {
@@ -394,7 +404,7 @@ code {
 }
 
 .lightTitle {
-    font-weight: 500;
+    font-weight: 600;
     font-size: 18px;
     letter-spacing: 0.1;
     color: #d8d8d8;
@@ -406,9 +416,9 @@ code {
 }
 
 .chatContent {
-    min-height: calc(100% - 46px);
-    max-height: calc(100% - 46px);
-    overflow-y: scroll;
+    min-height: calc(100% -  var(--titleBarHeight));
+    max-height: calc(100% -  var(--titleBarHeight));
+    overflow-y: auto;
     background: linear-gradient(45deg, #24133f, var(--second));
 }
 
@@ -683,8 +693,8 @@ code {
     }
 
     .loadingAnimation {
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
     }
 
     .formInputField {
@@ -699,28 +709,12 @@ code {
         width: 150px;
         height: 150px;
     }
-
-    .homeContainer {
-        width: 80%;
-    }
 }
 
 @media screen and (max-width: 500px) {
     .greyGradientContainer {
         width: calc(var(--width) - 52px);
         height: calc(var(--height) - 52px);
-    }
-
-    .homeContainer {
-        width: 100%;
-    }
-
-    .homeContentContainer {
-        height: calc(100% - var(--bottomNavHeight) - var(--bottomNavMarginBottom) + 10px);
-    }
-
-    .homeBottomNavContainer {
-        height: calc(var(--bottomNavHeight) - 10px);
     }
 
     .sendMsgTextInput {

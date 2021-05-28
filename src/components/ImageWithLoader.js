@@ -19,7 +19,7 @@ export default function ImageWithLoader({
     if (!src) return <></>;
     return (
         <>
-            <LoadingAnimation loading={showLoader} loaderClassName={loaderClassName} />
+            <LoadingAnimation dark loading={showLoader} loaderClassName={loaderClassName} />
             <img src={src} className={className} style={{ display: isImageVisible ? "block" : "none" }} onLoad={displayImage} onClick={onClick} onError={() => setShowLoader(false)} />
         </>
     );

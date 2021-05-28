@@ -26,7 +26,7 @@ function Home({
                         :
                         <VerifyPasscode />
                     :
-                    <LoadingAnimation loading />
+                    <LoadingAnimation dark loading />
             }
         </>
     );

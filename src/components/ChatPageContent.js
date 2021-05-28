@@ -15,6 +15,7 @@ import dayjs from "../dayjs";
 import { getLoggedUserToken } from "../utils";
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
 import {
+    TITLE_BAR_HEIGHT,
     CHAT_ACTION_BOX_HEIGHT,
     REPLY_PREVIEW_BOX_HEIGHT,
     CHAT_ACTION_WITH_REPLY_PREVIEW_BOX_HEIGHT,
@@ -249,7 +250,10 @@ function ChatPageContent({
                             : CHAT_ACTION_BOX_HEIGHT
                 }}
             >
-                <div className="chatTitle">
+                <div
+                    className="chatTitle"
+                    style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
+                >
                     <img alt="userIcon" src={secondUserProfileImage} onClick={(e) => handleImageClick(e, secondUserProfileImage)} />
                     <div>
                         <div className="lightTitle">{usernameOfSecondUser}</div>
@@ -268,7 +272,11 @@ function ChatPageContent({
                     </div>
                 </div>
 
-                <div id="chatContent" className="chatContent">
+                <div
+                    id="chatContent"
+                    className="chatContent"
+                    style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
+                >
                     <InfiniteScroll
                         hasMore={true}
                         inverse={true}
@@ -278,7 +286,7 @@ function ChatPageContent({
                         next={loadMoreMessages}
                     >
                         <>
-                            <LoadingAnimation loading={isGettingChatRoomMessages} className="chatWindowLoader" />
+                            <LoadingAnimation dark loading={isGettingChatRoomMessages} className="chatWindowLoader" />
                             {renderMessages()}
                         </>
                     </InfiniteScroll>
@@ -311,7 +319,7 @@ function ChatPageContent({
             >
                 {
                     isUploadingImage ?
-                        <LoadingAnimation loading={isUploadingImage} />
+                        <LoadingAnimation dark loading={isUploadingImage} />
                         :
                         <>
                             {
