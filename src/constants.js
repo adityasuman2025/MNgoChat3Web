@@ -21,11 +21,44 @@ export const IMAGE_COMPRESSION_OPTIONS = {
 };
 export const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg"];
 export const PAGINATION_MESSAGE_COUNT = 20;
+export const APP_DETAILS = {
+    details: [
+        {
+            key: "version",
+            value: "3.1",
+        },
+        {
+            key: "release date",
+            value: "15 January 2021",
+        },
+        {
+            key: "latest release",
+            value: "1 June 2021",
+        },
+        {
+            key: "first release",
+            value: "6 July 2018",
+        },
+        {
+            key: "developer",
+            value: "Aditya Suman",
+        },
+        {
+            key: "contact",
+            value: "aditya@mngo.in",
+        },
+        {
+            key: "technologies used",
+            value: "React.js, Redux, Firebase",
+        }
+    ],
+    copyright: "© 2018-21 This property belongs to Aditya Suman",
+};
 
 
 //error variables
 export const SOMETHING_WENT_WRONG_ERROR = { statusCode: 500, msg: "Something went wrong" };
-export const NO_INTERNET_ERROR = { statusCode: 600, msg: "Internet Connection Failed" };
+export const NO_INTERNET_ERROR = { statusCode: 600, msg: "API Connection Failed" };
 
 //color variables
 export const THEME_PURPLE = "#35176d";

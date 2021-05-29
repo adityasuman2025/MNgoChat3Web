@@ -12,7 +12,7 @@ import LoadingAnimation from "./LoadingAnimation";
 import ImageViewer from "./ImageViewer";
 import ImageWithLoader from "./ImageWithLoader";
 
-import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, ALLOWED_IMAGE_TYPES } from "../constants";
+import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, ALLOWED_IMAGE_TYPES, APP_DETAILS, } from "../constants";
 import { logout } from "../utils";
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
 import {
@@ -272,7 +272,7 @@ function HomePageContent({
                         </div>
                         <div className="loggedUserName">{loggedUsername}</div>
 
-                        <div className="userDetailsContainer">
+                        <div className="appDetailsContainer">
                             {
                                 name ?
                                     <div className="userDetailsText">
@@ -293,38 +293,18 @@ function HomePageContent({
                         <div className="divider" />
 
                         <div className="appDetailsContainer">
-                            <div className="userDetailsText">
-                                <span className="userDetailsTitle">version: </span>
-                                <span>3.0</span>
-                            </div>
-                            <div className="userDetailsText">
-                                <span className="userDetailsTitle">release date: </span>
-                                <span>15 January 2021</span>
-                            </div>
-                            <div className="userDetailsText">
-                                <span className="userDetailsTitle">latest release: </span>
-                                <span>1 March 2021</span>
-                            </div>
-                            <div className="userDetailsText">
-                                <span className="userDetailsTitle">first release: </span>
-                                <span>16 July 2018</span>
-                            </div>
-                            <div className="userDetailsText">
-                                <span className="userDetailsTitle">developer: </span>
-                                <span>Aditya Suman</span>
-                            </div>
-                            <div className="userDetailsText">
-                                <span className="userDetailsTitle">contact: </span>
-                                <span>aditya@mngo.in</span>
-                            </div>
-                            <div className="userDetailsText">
-                                <span className="userDetailsTitle">technologies used: </span>
-                                <span>React.js, Redux, Firebase</span>
-                            </div>
+                            {
+                                APP_DETAILS.details.map(detail => (
+                                    <div className="userDetailsText">
+                                        <span className="userDetailsTitle">{detail.key}: </span>
+                                        <span>{detail.value}</span>
+                                    </div>
+                                ))
+                            }
                         </div>
                         <div className="divider" />
 
-                        <div className="appDetailsContainer">© 2018-21 This property belongs to Aditya Suman</div>
+                        <div className="appDetailsContainer">{APP_DETAILS.copyright}</div>
                     </div>
                 )
             default:
