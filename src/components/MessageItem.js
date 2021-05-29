@@ -30,6 +30,15 @@ export default function MessageItem({
         }
     }, [msgIdToScrollTo, msg.messageId]);
 
+    function handleMsgItemClick(event) {
+        if (event.detail === 1) {
+            // console.log("single click")
+        } else if (event.detail === 2) {
+            // console.log("double click")
+            onReplyIconClick(event, msg)
+        }
+    }
+
     function customLinkDecorator(decoratedHref, decoratedText, linkTarget, key) {
         return (
             <a
@@ -59,8 +68,8 @@ export default function MessageItem({
     }
 
     return (
-        <div className={"messageContainer"} ref={msgRef}>
-            <div className={cx("message", { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken })}>
+        <div className={"messageContainer"} ref={msgRef} onClick={handleMsgItemClick}>
+            <div className={cx("message", { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken })} >
                 <div className={cx({ ["myMessage"]: isMineMsg }, { ["theirMessage"]: !isMineMsg })}>
                     {
                         type === MSG_TYPE_REPLY ?

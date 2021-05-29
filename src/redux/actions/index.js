@@ -189,8 +189,10 @@ export const getMessagesOfAChatRoomSuccessAction = (payload) => async (dispatch)
         dispatch({ type: 'GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS', payload });
     }
 }
-export const getMessagesOfAChatRoomAllSuccessAction = (payload) => async (dispatch) => {
-    dispatch({ type: 'GET_MESSAGES_OF_A_CHAT_ROOM_ALL_SUCCESS', payload });
+export const getANewMessageOfAChatRoomSuccessAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_A_NEW_MESSAGE_OF_A_CHAT_ROOM_SUCCESS', payload });
+    }
 }
 
 export const getPaginatedMessagesAction = (payload) => async (dispatch) => {

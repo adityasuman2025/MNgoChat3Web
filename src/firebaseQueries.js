@@ -17,7 +17,7 @@ import {
 
     getMessagesOfAChatRoomAction,
     getMessagesOfAChatRoomSuccessAction,
-    getMessagesOfAChatRoomAllSuccessAction,
+    getANewMessageOfAChatRoomSuccessAction,
 
     getPaginatedMessagesAction,
     getPaginatedMessagesSuccessAction,
@@ -232,15 +232,27 @@ export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
         .then(resp => {
             let isFirstFetch = true;
             const chatMessages = resp.val();
-            for (const id in chatMessages) {
-                const message = chatMessages[id];
-                dispatch(getMessagesOfAChatRoomSuccessAction({ data: message }));
+            const messages = [];
+            if (chatMessages) {
+                for (const messageId in chatMessages) {
+                    const messageItem = chatMessages[messageId];
+                    const message = messageItem.message;
+                    messageItem.message = decryptText(message);
+
+                    const originalMessage = messageItem.originalMessage;
+                    if (originalMessage) {
+                        messageItem.originalMessage = decryptText(originalMessage);
+                    }
+
+                    messages.push(messageItem);
+                }
             }
+            dispatch(getMessagesOfAChatRoomSuccessAction({ data: messages }));
+
             if (isEmpty(chatMessages)) {
                 isFirstFetch = false;
             }
 
-            dispatch(getMessagesOfAChatRoomAllSuccessAction());
             chatRoomMessagesDbRef
                 .endAt()
                 .limitToLast(1)
@@ -250,7 +262,7 @@ export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
                             isFirstFetch = false;
                         } else {
                             const chatMessages = resp.val();
-                            dispatch(getMessagesOfAChatRoomSuccessAction({ data: chatMessages, isANewMessage: true }));
+                            dispatch(getANewMessageOfAChatRoomSuccessAction({ data: chatMessages, isANewMessage: true }));
                         }
                     },
                     error => { });
@@ -313,13 +325,13 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUs
     }
 
     const timeStamp = Math.floor(Date.now());
-    const messageId = timeStamp + "_by_" + sentByUserToken.substring(0, 5);
+    const messageId = timeStamp + "_by_" + sentByUserToken.substring(0, 3);
     const toSet = {
         messageId,
         message: encryptedMsg,
         sentByUserToken,
         type,
-        time: dayjs().format("HH:mm:ssZ"),
+        time: dayjs().format(),
     };
     if (originalMessage) {
         const encryptedOrgMessage = encryptText(originalMessage.message);

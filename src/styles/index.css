@@ -255,7 +255,7 @@ code {
 }
 
 .homeTitle img {
-    height: 25px;
+    height: 55%;
     cursor: pointer;
     filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%);
     /* filter: invert(23%) sepia(99%) saturate(1833%) hue-rotate(269deg) brightness(82%) contrast(86%); //pink */
@@ -281,7 +281,7 @@ code {
     align-items: center;
     flex: 1;
     height: 40px;
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid #35176d;
 }
 
 .listUserItem img {
@@ -395,8 +395,8 @@ code {
 }
 
 .chatTitle img {
-    height: 35px;
-    width: 35px;
+    height: calc(var(--titleBarHeight) - 10px);
+    width: calc(var(--titleBarHeight) - 10px);
     object-fit: cover;
     border-radius: 100%;
     margin-right: 10px;
@@ -420,6 +420,28 @@ code {
     max-height: calc(100% -  var(--titleBarHeight));
     overflow-y: auto;
     background: linear-gradient(45deg, #24133f, var(--second));
+}
+
+.dividerDate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: gray;
+    /* color: #3d197f; */
+    font-size: 12px;
+    margin: 20px 10px;
+    text-align: center;
+}
+
+.dividerText {
+    width: 80px;
+}
+
+.dividerLine {
+    width: 30%;
+    /* margin: auto; */
+    height: 1px;
+    background-color: #35176d;
 }
 
 .messageContainer {
@@ -479,7 +501,7 @@ code {
     border-radius: 5px;
     font-size: 13.2px;
     text-align: left;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
 
 .myReplyIcon {

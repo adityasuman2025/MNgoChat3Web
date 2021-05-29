@@ -13,6 +13,7 @@ export const PROJECT_NAME = "MNgo Chat";
 export const LOGGED_USER_TOKEN_COOKIE_NAME = "mngoChatLoggenUserToken";
 export const MSG_TYPE_IMAGE = "image";
 export const MSG_TYPE_REPLY = "reply";
+export const STANDARD_DATE_FORMAT = "DD-MM-YYYY";
 export const DEFAULT_DATE = "1999-03-03T";
 export const IMAGE_COMPRESSION_OPTIONS = {
     maxSizeMB: 0.1,
@@ -78,7 +79,7 @@ export const GRADIENT_GREY_LIGHT = DARK_GREY; //"#6c519c";
 export const GRADIENT_GREY_DARK = LIGHT_GREY; //"#3f2177";
 
 //style variables
-export const TITLE_BAR_HEIGHT = "50px";
+export const TITLE_BAR_HEIGHT = "47px";
 export const BOTTOM_NAV_HEIGHT = "50px";
 export const BOTTOM_NAV_BOTTOM_MARGIN = "0px";
 export const CHAT_ACTION_BOX_HEIGHT = "50px";

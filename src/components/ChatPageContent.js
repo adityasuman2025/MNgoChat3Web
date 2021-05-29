@@ -22,6 +22,7 @@ import {
     MSG_TYPE_IMAGE,
     MSG_TYPE_REPLY,
     ALLOWED_IMAGE_TYPES,
+    STANDARD_DATE_FORMAT,
     DEFAULT_DATE,
 } from "../constants";
 import {
@@ -37,6 +38,9 @@ import {
     uploadImageInFirebase,
     getProfileImageOfAUser,
 } from "../firebaseQueries";
+
+const TODAY = dayjs().format(STANDARD_DATE_FORMAT);
+const YESTERDAY = dayjs().subtract(1, "day").format(STANDARD_DATE_FORMAT);
 
 function ChatPageContent({
     isGettingChatRoomMessages,
@@ -208,6 +212,8 @@ function ChatPageContent({
     function renderMessages() {
         const loggedUserToken = getLoggedUserToken();
 
+        let lastDividerDate = null;
+
         const messageIds = [];
         const toRender = chatRoomMessages.map(function(msg, index) {
             if (typeof msg !== "object") return;
@@ -216,17 +222,45 @@ function ChatPageContent({
             if (messageIds.includes(messageId)) return; //to avoid repetition of messages
             messageIds.push(messageId);
 
+            let dateHTML = [];
+            const date = dayjs(msg.time).format(STANDARD_DATE_FORMAT);
+            if (lastDividerDate !== date && date !== "Invalid Date") {
+                dateHTML.push(
+                    <div className="dividerDate">
+                        <div className="dividerLine" />
+                        <div className="dividerText">
+                            {
+                                date === TODAY ?
+                                    "today"
+                                    : date === YESTERDAY ?
+                                        "yesterday"
+                                        : date
+                            }
+                        </div>
+                        <div className="dividerLine" />
+                    </div>
+                );
+                lastDividerDate = date;
+            }
+
             return (
-                <MessageItem
-                    key={messageId + index}
-                    loggedUserToken={loggedUserToken}
-                    formattedTime={dayjs(DEFAULT_DATE + msg.time).format("LT")}
-                    msgIdToScrollTo={msgIdToScrollTo}
-                    msg={msg}
-                    onImageClick={handleImageClick}
-                    onReplyIconClick={handleReplyIconClick}
-                    onOriginalMsgClick={handleOriginalMsgClick}
-                />
+                <>
+                    {dateHTML}
+                    <MessageItem
+                        key={messageId + index}
+                        loggedUserToken={loggedUserToken}
+                        formattedTime={
+                            dayjs(msg.time).format("LT") === "Invalid Date" ?
+                                dayjs(DEFAULT_DATE + msg.time).format("LT")
+                                : dayjs(msg.time).format("LT")
+                        }
+                        msgIdToScrollTo={msgIdToScrollTo}
+                        msg={msg}
+                        onImageClick={handleImageClick}
+                        onReplyIconClick={handleReplyIconClick}
+                        onOriginalMsgClick={handleOriginalMsgClick}
+                    />
+                </>
             )
         });
 

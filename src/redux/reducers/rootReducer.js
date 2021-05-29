@@ -286,6 +286,15 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
             }
         }
         case 'GET_MESSAGES_OF_A_CHAT_ROOM_SUCCESS': {
+            const messages = payload.data || [];
+            return {
+                ...state,
+                isGettingChatRoomMessages: false,
+                isInitialMessagesFetched: true,
+                chatRoomMessages: messages,
+            }
+        }
+        case 'GET_A_NEW_MESSAGE_OF_A_CHAT_ROOM_SUCCESS': {
             const messageItem = payload.data || {};
             const newMessage = payload.isANewMessage || false;
             const message = messageItem.message;
@@ -307,13 +316,6 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
                     ...state.chatRoomMessages,
                     messageItem,
                 ],
-            }
-        }
-        case 'GET_MESSAGES_OF_A_CHAT_ROOM_ALL_SUCCESS': {
-            return {
-                ...state,
-                isGettingChatRoomMessages: false,
-                isInitialMessagesFetched: true,
             }
         }
 
