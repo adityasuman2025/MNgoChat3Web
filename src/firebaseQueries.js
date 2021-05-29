@@ -24,6 +24,9 @@ import {
 
     getTypeStatusOfAUserSuccessAction,
 
+    getUnreadMsgCountOfTheSecondUserAction,
+    getUnreadMsgCountOfTheSecondUserSuccessAction,
+
     startANewChatRoomAction,
     startANewChatRoomSuccessAction,
     startANewChatRoomFailureAction,
@@ -160,7 +163,7 @@ export async function getAllUsers(dispatch) {
         });
 }
 
-export async function setUserActiveStatus(activeStatus) {
+export async function setUserActiveStatus() {
     const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken) {
         return
@@ -348,6 +351,33 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUs
         .child("unSeenMsgCount")
         .set(firebase.database.ServerValue.increment(1))
         .catch(error => { })
+}
+
+export async function getUnreadMsgCountOfTheSecondUser(dispatch, chatRoomId, secondUserToken) {
+    const loggedUserToken = getLoggedUserToken();
+    if (!loggedUserToken || !chatRoomId || !secondUserToken) {
+        return;
+    }
+
+    dispatch(getUnreadMsgCountOfTheSecondUserAction());
+    const sencondUserChatRoomRef = firebase.app().database().ref('users/' + secondUserToken + "/userChatRooms/" + chatRoomId);
+    sencondUserChatRoomRef
+        .child("unSeenMsgCount")
+        .on('value',
+            resp => {
+                const response = resp.val();
+                dispatch(getUnreadMsgCountOfTheSecondUserSuccessAction({ data: response }));
+            },
+            error => { });
+}
+
+export async function removeGetUnreadMsgCountOfTheSecondUserFirebaseQuery(chatRoomId, secondUserToken) {
+    if (!chatRoomId || !secondUserToken) {
+        return;
+    }
+
+    const sencondUserChatRoomRef = firebase.app().database().ref('users/' + secondUserToken + "/userChatRooms/" + chatRoomId);
+    sencondUserChatRoomRef.off();
 }
 
 export async function readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId) {

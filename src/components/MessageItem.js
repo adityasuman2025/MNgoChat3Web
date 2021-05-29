@@ -1,14 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import ReactTextFormat from 'react-text-format';
 import cx from "classnames";
-
 import replyIcon from "../images/reply.png";
 import ImageWithLoader from "./ImageWithLoader";
-
+import { getLoggedUserToken } from "../utils";
 import { MSG_TYPE_IMAGE, MSG_TYPE_REPLY } from "../constants";
 
 export default function MessageItem({
-    loggedUserToken,
+    isSeen,
     formattedTime,
     msgIdToScrollTo,
     msg,
@@ -16,6 +15,7 @@ export default function MessageItem({
     onReplyIconClick,
     onOriginalMsgClick,
 }) {
+    const loggedUserToken = getLoggedUserToken();
     const msgRef = useRef(null);
 
     const type = msg.type;
@@ -31,10 +31,8 @@ export default function MessageItem({
     }, [msgIdToScrollTo, msg.messageId]);
 
     function handleMsgItemClick(event) {
-        if (event.detail === 1) {
-            // console.log("single click")
-        } else if (event.detail === 2) {
-            // console.log("double click")
+        //double click triggers reply action
+        if (event.detail === 2) {
             onReplyIconClick(event, msg)
         }
     }
@@ -111,7 +109,10 @@ export default function MessageItem({
                     />
                 </div>
             </div>
-            <div className="messageTime">{formattedTime}</div>
+            <div className="messageTime">
+                {formattedTime}
+                {isMineMsg && isSeen ? <div className="seenText">seen</div> : null}
+            </div>
         </div>
     );
 }

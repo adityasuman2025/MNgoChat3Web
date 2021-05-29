@@ -210,6 +210,13 @@ export const getTypeStatusOfAUserSuccessAction = (payload) => async (dispatch) =
     }
 }
 
+export const getUnreadMsgCountOfTheSecondUserAction = () => async (dispatch) => {
+    dispatch({ type: 'GET_UNREAD_MSG_COUNT_OF_THE_SECOND_USER' });
+}
+export const getUnreadMsgCountOfTheSecondUserSuccessAction = (payload) => async (dispatch) => {
+    dispatch({ type: 'GET_UNREAD_MSG_COUNT_OF_THE_SECOND_USER_SUCCESS', payload });
+}
+
 export const startANewChatRoomAction = () => async (dispatch) => {
     dispatch({ type: 'START_A_NEW_CHAT_ROOM' });
 }

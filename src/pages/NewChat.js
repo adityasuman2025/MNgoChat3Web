@@ -6,7 +6,7 @@ import userIcon from "../images/user.png";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ActionButton from "../components/ActionButton";
 
-import { CHAT_ACTION_BOX_HEIGHT } from "../constants";
+import { TITLE_BAR_HEIGHT, CHAT_ACTION_BOX_HEIGHT } from "../constants";
 import { showSnackBarAction } from "../redux/actions/index";
 import { startANewChatRoom } from "../firebaseQueries";
 import { redirectToLoginPage } from "../utils";
@@ -73,25 +73,31 @@ function NewChat({
                             className="chatWindow"
                             style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
                         >
-                            <div className="chatTitle">
+                            <div
+                                className="chatTitle"
+                                style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
+                            >
                                 <img alt="userIcon" src={userIcon} />
-                                <div>
-                                    <div className="lightTitle">{secondUserDetails.secondUsername}</div>
-                                </div>
+                                <div className="lightTitle">{secondUserDetails.secondUsername}</div>
                             </div>
 
-                            <div id="chatContent" className="chatContent"></div>
                             <div
-                                className="chatActionBox"
-                                style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
-                            >
-                                <ActionButton
-                                    dark={false}
-                                    showLoader={isStartingANewChatRoom}
-                                    buttonText="Start Chat"
-                                    onClick={handleStartBtnClick}
-                                />
-                            </div>
+                                id="chatContent"
+                                className="chatContent"
+                                style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
+                            />
+
+                        </div>
+                        <div
+                            className="chatActionBox"
+                            style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
+                        >
+                            <ActionButton
+                                dark={false}
+                                showLoader={isStartingANewChatRoom}
+                                buttonText="Start Chat"
+                                onClick={handleStartBtnClick}
+                            />
                         </div>
                     </div>
             }

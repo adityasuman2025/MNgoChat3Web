@@ -59,6 +59,20 @@ code {
 }
 /*---------snack bar--------*/
 
+.imageWithLoaderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.imageWithLoaderImg {
+    width: 100%;
+    height: 100%;
+    object-position: top;
+    object-fit: cover;
+}
+
 .purpleGradientContainer {
     position: absolute;
     width: 100%;
@@ -457,8 +471,10 @@ code {
 }
 
 .messageImg {
-    max-width: 100%;
-    max-height: 200px;
+    overflow: hidden;
+    width: 200px;
+    height: 200px;
+    /* min-height: 200px; */
     border-radius: 5px;
     cursor: pointer;
 }
@@ -531,10 +547,18 @@ code {
 }
 
 .messageTime {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     color: #aaa8a8;
     font-size: 9.5px;
     margin: 0 10px 10px 0px;
     text-align: right;
+}
+
+.seenText {
+    margin-left: 5px;
+    color: #00cc00;
 }
 
 .chatActionBox {
@@ -606,6 +630,7 @@ code {
 
 .replyMsgPreviewImg {
     max-height: 100%;
+    max-width: 200px;
 }
 
 .imageViewer {
@@ -618,7 +643,6 @@ code {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* background-color: rgba(0,0,0, 0.4); */
 }
 
 .imageViewerBg {
@@ -629,8 +653,8 @@ code {
     right: 0;
     bottom: 0;
     background: rgba(24, 24, 24, 0.8);
-    filter: blur(8px);
-    -webkit-filter: blur(8px);
+    /* filter: blur(8px);
+    -webkit-filter: blur(8px); */
 }
 
 .imageViewerCloseIcon {
@@ -746,10 +770,6 @@ code {
     .warningModal img {
         z-index: 102;
         width: 130px;
-    }
-
-    .message img {
-        max-height: 150px;
     }
 
     .snackBarContent {

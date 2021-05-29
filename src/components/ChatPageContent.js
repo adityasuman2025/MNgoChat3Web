@@ -12,7 +12,6 @@ import ImageWithLoader from "./ImageWithLoader";
 import MessageItem from "./MessageItem";
 
 import dayjs from "../dayjs";
-import { getLoggedUserToken } from "../utils";
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
 import {
     TITLE_BAR_HEIGHT,
@@ -35,6 +34,8 @@ import {
     readingNewMessagesOfTheLoggedUserForThatChatRoom,
     setUserTypeStatus,
     getTypeStatusOfAUser,
+    getUnreadMsgCountOfTheSecondUser,
+    removeGetUnreadMsgCountOfTheSecondUserFirebaseQuery,
     uploadImageInFirebase,
     getProfileImageOfAUser,
 } from "../firebaseQueries";
@@ -49,6 +50,7 @@ function ChatPageContent({
     isUploadingImage,
     isANewMessage,
     chatRoomId,
+    unreadMsgCountOfTheSecondUser,
     activeStatusOfAUser,
     typeStatusOfAUser,
     secondUserProfileImage,
@@ -75,6 +77,7 @@ function ChatPageContent({
     //getting active status of the 2nd user and setting active status of the logged user
     useEffect(() => {
         getMessagesOfAChatRoom(dispatch, chatRoomId);
+        getUnreadMsgCountOfTheSecondUser(dispatch, chatRoomId, userTokenOfSecondUser);
         getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
         setUserActiveStatus(true);
         getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
@@ -94,6 +97,7 @@ function ChatPageContent({
         getProfileImageOfAUser(dispatch, userTokenOfSecondUser);
         return () => {
             removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId);
+            removeGetUnreadMsgCountOfTheSecondUserFirebaseQuery(chatRoomId, userTokenOfSecondUser)
             clearInterval(setActiveStatusInterval);
             clearInterval(getTypeStatusInterval);
             readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
@@ -210,17 +214,11 @@ function ChatPageContent({
     }
 
     function renderMessages() {
-        const loggedUserToken = getLoggedUserToken();
-
         let lastDividerDate = null;
 
-        const messageIds = [];
+        const chatRoomMessagesCount = chatRoomMessages.length;
         const toRender = chatRoomMessages.map(function(msg, index) {
             if (typeof msg !== "object") return;
-
-            const messageId = msg.messageId;
-            if (messageIds.includes(messageId)) return; //to avoid repetition of messages
-            messageIds.push(messageId);
 
             let dateHTML = [];
             const date = dayjs(msg.time).format(STANDARD_DATE_FORMAT);
@@ -247,8 +245,8 @@ function ChatPageContent({
                 <>
                     {dateHTML}
                     <MessageItem
-                        key={messageId + index}
-                        loggedUserToken={loggedUserToken}
+                        key={msg.messageId + index}
+                        isSeen={unreadMsgCountOfTheSecondUser < chatRoomMessagesCount - index}
                         formattedTime={
                             dayjs(msg.time).format("LT") === "Invalid Date" ?
                                 dayjs(DEFAULT_DATE + msg.time).format("LT")
@@ -337,7 +335,7 @@ function ChatPageContent({
                                 <ImageWithLoader
                                     className="replyMsgPreviewImg"
                                     src={selectedMsgForReply.message}
-                                    onClick={() => handleImageClick(selectedMsgForReply.message)}
+                                    onClick={(event) => handleImageClick(event, selectedMsgForReply.message)}
                                 />
                                 :
                                 <div className="replyMsgPreviewMsg" title={selectedMsgForReply.message}>{selectedMsgForReply.message}</div>
@@ -406,6 +404,7 @@ const mapStateToProps = (state) => {
         isPaginatedMessagesFetched: state.isPaginatedMessagesFetched,
         isUploadingImage: state.isUploadingImage,
         isANewMessage: state.isANewMessage,
+        unreadMsgCountOfTheSecondUser: state.unreadMsgCountOfTheSecondUser,
         activeStatusOfAUser: state.activeStatusOfAUser,
         typeStatusOfAUser: state.typeStatusOfAUser,
         secondUserProfileImage: state.secondUserProfileImage,

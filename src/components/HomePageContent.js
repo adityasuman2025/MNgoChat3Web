@@ -13,7 +13,7 @@ import ImageViewer from "./ImageViewer";
 import ImageWithLoader from "./ImageWithLoader";
 
 import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, ALLOWED_IMAGE_TYPES, APP_DETAILS, } from "../constants";
-import { logout } from "../utils";
+import { getLoggedUserToken, logout } from "../utils";
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
 import {
     setUserActiveStatus,
@@ -142,7 +142,7 @@ function HomePageContent({
                 const selectedImg = event.target.files[0];
                 const selectedImgType = selectedImg.type;
                 if (ALLOWED_IMAGE_TYPES.includes(selectedImgType)) {
-                    const imageName = loggedUsername;
+                    const imageName = loggedUsername.substring(0, 3) + "_" + getLoggedUserToken().substring(0, 3);
                     await uploadImageInFirebase(dispatch, selectedImg, imageName, "profileImage/")
                         .then((snapshot) => {
                             snapshot.getDownloadURL()

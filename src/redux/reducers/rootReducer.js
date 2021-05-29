@@ -45,6 +45,8 @@ const initialState = {
 
     typeStatusOfAUser: null,
 
+    unreadMsgCountOfTheSecondUser: 0,
+
     isStartingANewChatRoom: false,
     isANewChatRoomStarted: false,
     startNewChatRoomError: null,
@@ -357,6 +359,20 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
             return {
                 ...state,
                 typeStatusOfAUser,
+            }
+        }
+
+        case 'GET_UNREAD_MSG_COUNT_OF_THE_SECOND_USER': {
+            return {
+                ...state,
+                unreadMsgCountOfTheSecondUser: 0,
+            }
+        }
+        case 'GET_UNREAD_MSG_COUNT_OF_THE_SECOND_USER_SUCCESS': {
+            let unreadMsgCountOfTheSecondUser = payload.data || 0;
+            return {
+                ...state,
+                unreadMsgCountOfTheSecondUser,
             }
         }
 
