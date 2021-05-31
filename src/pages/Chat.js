@@ -6,7 +6,6 @@ import ChatPageContent from "../components/Chat/ChatPageContent";
 import { redirectToLoginPage, decryptText } from "../utils";
 
 import { showSnackBarAction } from "../redux/actions/index";
-
 function Chat({
     isSomeoneLoggedIn,
     dispatch,

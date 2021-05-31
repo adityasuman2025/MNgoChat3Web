@@ -4,7 +4,7 @@ import cx from "classnames";
 import allChats from "../../images/allChats.png";
 import allUsersIcon from "../../images/allUsers.png";
 import ProfileIcon from "../../images/profile.png";
-import { BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE } from "../../constants";
+import { BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE, BOTTOM_BAR_GRADIENT } from "../../constants";
 
 export default function HomeBottomNav({
     selectedTab,
@@ -16,6 +16,7 @@ export default function HomeBottomNav({
             style={{
                 "--bottomNavHeight": BOTTOM_NAV_HEIGHT,
                 "--bottomNavMarginBottom": BOTTOM_NAV_BOTTOM_MARGIN,
+                background: BOTTOM_BAR_GRADIENT,
             }}
         >
             <img

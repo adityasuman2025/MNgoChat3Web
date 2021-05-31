@@ -8,11 +8,11 @@ import HomeBottomNav from "./HomeBottomNav";
 import UserListItem from "./UserListItem";
 import HomeProfileTab from "./HomeProfileTab";
 import { encryptText, getLoggedUserToken, logout } from "../../utils";
-import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE, ALLOWED_IMAGE_TYPES } from "../../constants";
+import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, TITLE_BAR_GRADIENT, BOTTOM_NAV_BOTTOM_MARGIN, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE, ALLOWED_IMAGE_TYPES } from "../../constants";
 
 import {
     showSnackBarAction,
-    updateUserToProfileImgMapping,
+    updateUserToProfileImgMappingAction,
     uploadImageInFirebaseSuccessAction,
     uploadImageInFirebaseFailureAction,
 } from "../../redux/actions/index";
@@ -82,7 +82,7 @@ function HomePageContent({
                                 .then(async (downloadURL) => {
                                     if (downloadURL) {
                                         await setProfileImageOfAUser(downloadURL);
-                                        dispatch(updateUserToProfileImgMapping({
+                                        dispatch(updateUserToProfileImgMappingAction({
                                             username: loggedUsername,
                                             newImageUrl: downloadURL,
                                         }));
@@ -214,7 +214,7 @@ function HomePageContent({
                     "--bottomNavMarginBottom": BOTTOM_NAV_BOTTOM_MARGIN,
                 }}
             >
-                <div className="homeTitle" style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}>
+                <div className="homeTitle" style={{ "--titleBarHeight": TITLE_BAR_HEIGHT, background: TITLE_BAR_GRADIENT }}>
                     <div className="lightTitle">{title}</div>
                     <img alt="logoutIcon" src={logoutIcon} onClick={handleLogoutBtnClick} />
                 </div>

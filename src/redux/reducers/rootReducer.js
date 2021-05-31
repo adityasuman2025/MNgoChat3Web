@@ -86,6 +86,14 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
             }
         }
 
+        case 'RESET_DATA_OF_A_CHAT_ROOM': {
+            return {
+                ...state,
+                activeStatusOfAUser: null,
+                chatRoomMessages: [],
+            }
+        }
+
         case 'CHECK_LOGIN_STATUS': {
             return {
                 ...state,

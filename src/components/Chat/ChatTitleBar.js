@@ -2,7 +2,7 @@ import React from "react";
 import dayjs from "../../dayjs";
 
 import userIcon from "../../images/user.png";
-import { TITLE_BAR_HEIGHT } from "../../constants";
+import { TITLE_BAR_HEIGHT, TITLE_BAR_GRADIENT } from "../../constants";
 
 export default function ChatTitleBar({
     name,
@@ -17,10 +17,7 @@ export default function ChatTitleBar({
     }
 
     return (
-        <div
-            className="chatTitle"
-            style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
-        >
+        <div className="chatTitle" style={{ "--titleBarHeight": TITLE_BAR_HEIGHT, background: TITLE_BAR_GRADIENT }}>
             <img alt="userIcon" src={profileImg} onClick={handleImageClick} />
             <div>
                 <div className="lightTitle">{name}</div>

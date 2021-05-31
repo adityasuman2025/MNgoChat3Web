@@ -69,13 +69,19 @@ export const THEME_PURPLE = "#35176d";
 export const THEME_DARK_PURPLE = "#24133f";
 export const THEME_EXTRA_DARK = "#22045a";
 
+export const SECONDARY_PURPLE = "#8d35ad";
+
 export const EXTRA_DARK_GREY = "grey";
 export const DARK_GREY = "lightgrey";
 export const LIGHT_GREY = "#d8d8d8";
 
 export const THEME_GRADIENT = 'linear-gradient(45deg, ' + THEME_DARK_PURPLE + ',' + THEME_EXTRA_DARK + ')';
 export const GREY_GRADIENT = 'linear-gradient(45deg, ' + DARK_GREY + ',' + LIGHT_GREY + ')';
-
+export const MY_MESSAGE_GRADIENT = 'linear-gradient(45deg, ' + THEME_PURPLE + ',' + THEME_EXTRA_DARK + ')';
+export const THEIR_MESSAGE_GRADIENT = 'linear-gradient(45deg, ' + THEME_DARK_PURPLE + ',' + THEME_PURPLE + ')';
+export const BOTTOM_BAR_GRADIENT = 'linear-gradient(45deg, ' + THEME_DARK_PURPLE + ',' + THEME_EXTRA_DARK + ')';
+export const MESSAGE_INPUT_GRADIENT = 'linear-gradient(45deg, ' + THEME_PURPLE + ',' + THEME_EXTRA_DARK + ')';
+export const TITLE_BAR_GRADIENT = 'linear-gradient(45deg, ' + SECONDARY_PURPLE + ',' + THEME_DARK_PURPLE + ')';
 
 //style variables
 export const TITLE_BAR_HEIGHT = "47px";

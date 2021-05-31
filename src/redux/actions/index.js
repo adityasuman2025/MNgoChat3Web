@@ -20,8 +20,12 @@ export const showSnackBarAction = (msg, type) => async (dispatch) => {
     dispatch({ type: 'SHOW_SNACKBAR', payload: { msg, type } });
 }
 
-export const updateUserToProfileImgMapping = (payload) => async (dispatch) => {
+export const updateUserToProfileImgMappingAction = (payload) => async (dispatch) => {
     dispatch({ type: 'UPDATE_USER_TO_PROFILE_IMAGE_MAPPING', payload });
+}
+
+export const resetDataOfAChatRoomAction = () => async (dispatch) => {
+    dispatch({ type: 'RESET_DATA_OF_A_CHAT_ROOM' });
 }
 
 export const checkLoginStatusAction = () => async (dispatch) => {

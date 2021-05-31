@@ -1,12 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import ReactTextFormat from 'react-text-format';
 import cx from "classnames";
-import replyIcon from "../images/reply.png";
-import ImageWithLoader from "./ImageWithLoader";
-import { getLoggedUserToken } from "../utils";
-import { MSG_TYPE_IMAGE, MSG_TYPE_REPLY } from "../constants";
+import ImageWithLoader from "../ImageWithLoader";
+import { getLoggedUserToken } from "../../utils";
+import { MSG_TYPE_IMAGE, MSG_TYPE_REPLY, MY_MESSAGE_GRADIENT, THEIR_MESSAGE_GRADIENT } from "../../constants";
 
-export default function MessageItem({
+export default function ChatMessageItem({
     isSeen,
     formattedTime,
     msgIdToScrollTo,
@@ -66,9 +65,24 @@ export default function MessageItem({
     }
 
     return (
-        <div className={"messageContainer"} ref={msgRef} onClick={handleMsgItemClick}>
-            <div className={cx("message", { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken })} >
-                <div className={cx({ ["myMessage"]: isMineMsg }, { ["theirMessage"]: !isMineMsg })}>
+        <div className="messageContainer" ref={msgRef} onClick={handleMsgItemClick}>
+            <div className={cx("messageContent", { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken })} >
+                <div
+                    className={"message"}
+                    style={
+                        isMineMsg ?
+                            {
+                                background: MY_MESSAGE_GRADIENT,
+                                textAlign: "right",
+                            }
+                            :
+                            {
+                                background: THEIR_MESSAGE_GRADIENT,
+                                borderRadius: "25px",
+                                borderTopLeftRadius: "0px",
+                            }
+                    }
+                >
                     {
                         type === MSG_TYPE_REPLY ?
                             <div className="replyMessageItem" onClick={() => onOriginalMsgClick(msg.originalMessageId)}>
@@ -101,12 +115,7 @@ export default function MessageItem({
                                 {message}
                             </ReactTextFormat>
                     }
-                    <img
-                        alt="replyIcon"
-                        className={cx({ ["myReplyIcon"]: isMineMsg }, { ["theirReplyIcon"]: !isMineMsg })}
-                        src={replyIcon}
-                        onClick={(event) => onReplyIconClick(event, msg)}
-                    />
+
                 </div>
             </div>
             <div className="messageTime">
