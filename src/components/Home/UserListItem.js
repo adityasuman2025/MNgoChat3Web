@@ -1,6 +1,8 @@
 import React from "react";
 import cx from "classnames";
 
+import userIcon from "../../images/user.png";
+
 export default function HomeBottomNav({
     userData,
     userData: {
@@ -28,7 +30,7 @@ export default function HomeBottomNav({
             className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
             onClick={handleOnClick}
         >
-            <img alt="userIcon" src={userProfileImg} onClick={handleProfileImgClick} />
+            <img alt="userIcon" src={userProfileImg || userIcon} onClick={handleProfileImgClick} />
             <div className="listUserItemTitle">{displayName || username}</div>
         </div>
     )

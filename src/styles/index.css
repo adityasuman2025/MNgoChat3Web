@@ -318,7 +318,9 @@ code {
     font-weight: 600;
     color: #8d35ad;
 }
+/*------- home page-----------*/
 
+/*------- home profile tab-----------*/
 .profileContainer {
     padding: 20px;
     display: flex;
@@ -402,6 +404,7 @@ code {
     /* color: grey; */
     color: #bcbaba;
 }
+/*------- home profile tab-----------*/
 
 .chatWindow {
     height: calc(100% - var(--actionBoxHeight));

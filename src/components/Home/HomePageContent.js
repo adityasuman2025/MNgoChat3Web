@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import cx from "classnames";
 
-import userIcon from "../../images/user.png";
-import EditIcon from "../../images/edit.png";
 import logoutIcon from "../../images/logout.png";
 import LoadingAnimation from "../LoadingAnimation";
 import ImageViewer from "../ImageViewer";
-import ImageWithLoader from "../ImageWithLoader";
 import HomeBottomNav from "./HomeBottomNav";
 import UserListItem from "./UserListItem";
+import HomeProfileTab from "./HomeProfileTab";
 import { getLoggedUserToken, logout } from "../../utils";
-import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, ALLOWED_IMAGE_TYPES, APP_DETAILS, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE } from "../../constants";
+import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE, ALLOWED_IMAGE_TYPES } from "../../constants";
 
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../../redux/actions/index";
 import {
@@ -38,8 +35,6 @@ function HomePageContent({
     history,
     dispatch,
 }) {
-    const imageInputRef = useRef();
-
     const [title, setTitle] = useState(CHATS_TITLE);
     const [viewImg, setViewImg] = useState(null);
     const [userToProfileImgMapping, setUserToProfileImgMapping] = useState({});
@@ -66,7 +61,7 @@ function HomePageContent({
             Object.keys(allUsers).map(function(userToken) {
                 const user = allUsers[userToken];
                 const displayName = user.username;
-                const profileImg = user.profileImg || userIcon;
+                const profileImg = user.profileImg;
 
                 usersProfileImg[displayName] = profileImg;
             });
@@ -81,10 +76,6 @@ function HomePageContent({
 
     function handleNavBtnClick(type) {
         setTitle(type);
-    }
-
-    function handleEditIconClick() {
-        imageInputRef.current && imageInputRef.current.click();
     }
 
     async function handleSelectImage(event) {
@@ -209,73 +200,16 @@ function HomePageContent({
             case USERS_TITLE:
                 return renderUsersList();
             case PROFILE_TITLE:
-                const profileImg = userToProfileImgMapping[loggedUsername];
                 return (
-                    <div className="profileContainer">
-                        <div className="userProfileImgBox">
-                            <input
-                                ref={imageInputRef}
-                                style={{ display: "none" }}
-                                type="file"
-                                name="myImage"
-                                onChange={handleSelectImage}
-                                accept="image/*"
-                            />
-
-                            {
-                                isUploadingImage ?
-                                    <LoadingAnimation dark loading />
-                                    :
-                                    <ImageWithLoader
-                                        className="userProfileImg"
-                                        src={profileImg}
-                                        onClick={(e) => handleProfileImgClick(e, profileImg)}
-                                    />
-                            }
-
-                            <img
-                                alt="editIcon"
-                                className="editProfileIcon"
-                                src={EditIcon}
-                                onClick={handleEditIconClick}
-                            />
-                        </div>
-                        <div className="loggedUserName">{loggedUsername}</div>
-
-                        <div className="appDetailsContainer">
-                            {
-                                name ?
-                                    <div className="userDetailsText">
-                                        <span className="userDetailsTitle">name: </span>
-                                        <span>{name}</span>
-                                    </div>
-                                    : null
-                            }
-                            {
-                                email ?
-                                    <div className="userDetailsText">
-                                        <span className="userDetailsTitle">email: </span>
-                                        <span>{email}</span>
-                                    </div>
-                                    : null
-                            }
-                        </div>
-                        <div className="divider" />
-
-                        <div className="appDetailsContainer">
-                            {
-                                APP_DETAILS.details.map(detail => (
-                                    <div className="userDetailsText">
-                                        <span className="userDetailsTitle">{detail.key}: </span>
-                                        <span>{detail.value}</span>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                        <div className="divider" />
-
-                        <div className="appDetailsContainer">{APP_DETAILS.copyright}</div>
-                    </div>
+                    <HomeProfileTab
+                        isUploadingImage={isUploadingImage}
+                        loggedUsername={loggedUsername}
+                        name={name}
+                        email={email}
+                        profileImg={userToProfileImgMapping[loggedUsername]}
+                        onProfileImgClick={handleProfileImgClick}
+                        onImageSelect={handleSelectImage}
+                    />
                 )
             default:
         }
