@@ -1,7 +1,7 @@
 import React from "react";
 import cx from "classnames";
 
-import { GRADIENT_PURPLE_LIGHT, GRADIENT_PURPLE_DARK, } from "../constants";
+import { THEME_GRADIENT } from "../constants";
 
 function PurpleGradientContainer({
     childrenClassName,
@@ -10,7 +10,7 @@ function PurpleGradientContainer({
     return (
         <div
             className="purpleGradientContainer"
-            style={{ "--first": GRADIENT_PURPLE_LIGHT, "--second": GRADIENT_PURPLE_DARK }}
+            style={{ backgroundImage: THEME_GRADIENT }}
         >
             <div className={cx("purpleContainerChildren", childrenClassName)}>
                 {children}

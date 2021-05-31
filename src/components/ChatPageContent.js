@@ -15,9 +15,9 @@ import dayjs from "../dayjs";
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
 import {
     TITLE_BAR_HEIGHT,
-    CHAT_ACTION_BOX_HEIGHT,
+    BOTTOM_NAV_HEIGHT,
     REPLY_PREVIEW_BOX_HEIGHT,
-    CHAT_ACTION_WITH_REPLY_PREVIEW_BOX_HEIGHT,
+    BOTTOM_NAV_WITH_REPLY_PREVIEW_BOX_HEIGHT,
     MSG_TYPE_IMAGE,
     MSG_TYPE_REPLY,
     ALLOWED_IMAGE_TYPES,
@@ -278,8 +278,8 @@ function ChatPageContent({
                 style={{
                     "--actionBoxHeight":
                         selectedMsgForReply ?
-                            CHAT_ACTION_WITH_REPLY_PREVIEW_BOX_HEIGHT
-                            : CHAT_ACTION_BOX_HEIGHT
+                            BOTTOM_NAV_WITH_REPLY_PREVIEW_BOX_HEIGHT
+                            : BOTTOM_NAV_HEIGHT
                 }}
             >
                 <div
@@ -345,8 +345,8 @@ function ChatPageContent({
             }
 
             <form
-                className="chatActionBox"
-                style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
+                className="chatBottomNavContainer"
+                style={{ "--actionBoxHeight": BOTTOM_NAV_HEIGHT }}
                 onSubmit={handleSendMsgBtnClick}
             >
                 {

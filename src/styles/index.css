@@ -59,27 +59,16 @@ code {
 }
 /*---------snack bar--------*/
 
-.imageWithLoaderContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.imageWithLoaderImg {
-    width: 100%;
-    height: 100%;
-    object-position: top;
-    object-fit: cover;
-}
-
+/*------- gradient container-----------*/
 .purpleGradientContainer {
     position: absolute;
     width: 100%;
     height: 100%;
-    /* background: linear-gradient(45deg, var(--first), var(--second)); */
-    background: linear-gradient(45deg, #24133f, var(--second));
     overflow-y: scroll;
+}
+
+.purpleContainerChildren {
+    position: relative;
 }
 
 .greyGradientContainer {
@@ -89,7 +78,6 @@ code {
     width: var(--width);
     height: var(--height);
     border-radius: 1000px;
-    background: linear-gradient(45deg, var(--first), var(--second));
 }
 
 .greyGradientContainer2 {
@@ -104,11 +92,6 @@ code {
 
 .greyGradientContainer4 {
     margin-top: -20px;
-    /* margin-right: 50px; */
-}
-
-.purpleContainerChildren {
-    position: relative;
 }
 
 .flexCenter {
@@ -119,6 +102,17 @@ code {
     justify-content: center;
     flex-direction: column;
     overflow-y: scroll;
+}
+/*------- gradient container-----------*/
+
+/*------- login/signup page and general components-----------*/
+.loadingAnimation {
+    width: 40px;
+    height: 40px;
+}
+
+.darkLoader {
+    filter: invert(13%) sepia(44%) saturate(3773%) hue-rotate(250deg) brightness(75%) contrast(120%);
 }
 
 .logoImg {
@@ -131,15 +125,6 @@ code {
     font-size: 20px;
     letter-spacing: 0.1;
     color: #d8d8d8;
-}
-
-.loadingAnimation {
-    width: 40px;
-    height: 40px;
-}
-
-.darkLoader {
-    filter: invert(13%) sepia(44%) saturate(3773%) hue-rotate(250deg) brightness(75%) contrast(120%);
 }
 
 .formContainer {
@@ -219,6 +204,20 @@ code {
     border-radius: 25px;
 }
 
+.imageWithLoaderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.imageWithLoaderImg {
+    width: 100%;
+    height: 100%;
+    object-position: top;
+    object-fit: cover;
+}
+
 .darkTitle {
     font-weight: 700;
     font-size: 20px;
@@ -226,6 +225,15 @@ code {
     color: #35176d;
 }
 
+.lightTitle {
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.1;
+    color: #d8d8d8;
+}
+/*------- login/signup page and general components-----------*/
+
+/*------- home page-----------*/
 .homeContainer {
     height: 100%;
     width: 100%;
@@ -233,6 +241,29 @@ code {
 
 .homeContentContainer {
     height: calc(100% - var(--bottomNavHeight) - var(--bottomNavMarginBottom));
+}
+
+.homeTitle {
+    height: var(--titleBarHeight);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: linear-gradient(45deg, #8d35ad, #24133f);
+}
+
+.homeTitle img {
+    height: 55%;
+    cursor: pointer;
+    filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%);
+    /* filter: invert(23%) sepia(99%) saturate(1833%) hue-rotate(269deg) brightness(82%) contrast(86%); //pink */
+}
+
+.homeContent {
+    min-height: calc(100% -  var(--titleBarHeight));
+    max-height: calc(100% -  var(--titleBarHeight));
+    overflow-y: auto;
 }
 
 .homeBottomNavContainer {
@@ -256,30 +287,6 @@ code {
 
 .selectedBottomTabIcon {
     filter: invert(23%) sepia(99%) saturate(1833%) hue-rotate(269deg) brightness(82%) contrast(86%);
-}
-
-.homeTitle {
-    height: var(--titleBarHeight);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: 10px;
-    padding-right: 10px;
-    background: linear-gradient(45deg, #8d35ad, #24133f);
-}
-
-.homeTitle img {
-    height: 55%;
-    cursor: pointer;
-    filter: invert(99%) sepia(0%) saturate(28%) hue-rotate(201deg) brightness(89%) contrast(92%);
-    /* filter: invert(23%) sepia(99%) saturate(1833%) hue-rotate(269deg) brightness(82%) contrast(86%); //pink */
-}
-
-.homeContent {
-    min-height: calc(100% -  var(--titleBarHeight));
-    max-height: calc(100% -  var(--titleBarHeight));
-    background: linear-gradient(45deg, #24133f, var(--second));
-    overflow-y: auto;
 }
 
 .listUserItem {
@@ -417,13 +424,6 @@ code {
     cursor: pointer;
 }
 
-.lightTitle {
-    font-weight: 600;
-    font-size: 18px;
-    letter-spacing: 0.1;
-    color: #d8d8d8;
-}
-
 .onlineStatus {
     color: #aaa8a8;
     font-size: 10px;
@@ -433,7 +433,6 @@ code {
     min-height: calc(100% -  var(--titleBarHeight));
     max-height: calc(100% -  var(--titleBarHeight));
     overflow-y: auto;
-    background: linear-gradient(45deg, #24133f, var(--second));
 }
 
 .dividerDate {
@@ -561,7 +560,7 @@ code {
     color: #00cc00;
 }
 
-.chatActionBox {
+.chatBottomNavContainer {
     height: var(--actionBoxHeight);
     display: flex;
     align-items: center;
@@ -652,7 +651,7 @@ code {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(24, 24, 24, 0.8);
+    background-color: rgba(24, 24, 24, 0.8);
     /* filter: blur(8px);
     -webkit-filter: blur(8px); */
 }

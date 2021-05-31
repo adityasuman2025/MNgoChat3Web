@@ -6,7 +6,7 @@ import userIcon from "../images/user.png";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ActionButton from "../components/ActionButton";
 
-import { TITLE_BAR_HEIGHT, CHAT_ACTION_BOX_HEIGHT } from "../constants";
+import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT } from "../constants";
 import { showSnackBarAction } from "../redux/actions/index";
 import { startANewChatRoom } from "../firebaseQueries";
 import { redirectToLoginPage } from "../utils";
@@ -71,7 +71,7 @@ function NewChat({
                     <div className="homeContainer">
                         <div
                             className="chatWindow"
-                            style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
+                            style={{ "--actionBoxHeight": BOTTOM_NAV_HEIGHT }}
                         >
                             <div
                                 className="chatTitle"
@@ -89,8 +89,8 @@ function NewChat({
 
                         </div>
                         <div
-                            className="chatActionBox"
-                            style={{ "--actionBoxHeight": CHAT_ACTION_BOX_HEIGHT }}
+                            className="chatBottomNavContainer"
+                            style={{ "--actionBoxHeight": BOTTOM_NAV_HEIGHT }}
                         >
                             <ActionButton
                                 dark={false}

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import VerifyPasscode from "../components/VerifyPasscode";
-import HomePageContent from "../components/HomePageContent";
+import HomePageContent from "../components/Home/HomePageContent";
 import LoadingAnimation from "../components/LoadingAnimation";
 
 import { redirectToLoginPage } from "../utils";

@@ -1,7 +1,7 @@
 import React from "react";
 import cx from "classnames";
 
-import { GRADIENT_GREY_LIGHT, GRADIENT_GREY_DARK } from "../constants";
+import { GREY_GRADIENT } from "../constants";
 
 function GreyGradientContainer({
     className,
@@ -13,8 +13,7 @@ function GreyGradientContainer({
         <div
             className={cx("greyGradientContainer", className)}
             style={{
-                "--first": GRADIENT_GREY_LIGHT,
-                "--second": GRADIENT_GREY_DARK,
+                background: GREY_GRADIENT,
                 "--width": width,
                 "--height": height,
             }}

@@ -56,6 +56,9 @@ export const APP_DETAILS = {
     copyright: "© 2018-21 This property belongs to Aditya Suman",
 };
 
+export const CHATS_TITLE = "Chats";
+export const USERS_TITLE = "Users";
+export const PROFILE_TITLE = "Profile";
 
 //error variables
 export const SOMETHING_WENT_WRONG_ERROR = { statusCode: 500, msg: "Something went wrong" };
@@ -64,24 +67,19 @@ export const NO_INTERNET_ERROR = { statusCode: 600, msg: "API Connection Failed"
 //color variables
 export const THEME_PURPLE = "#35176d";
 export const THEME_DARK_PURPLE = "#24133f";
-
-export const DARK_PURPLE = "#22045a";
-export const LIGHT_PURPLE = THEME_PURPLE;
+export const THEME_EXTRA_DARK = "#22045a";
 
 export const EXTRA_DARK_GREY = "grey";
 export const DARK_GREY = "lightgrey";
 export const LIGHT_GREY = "#d8d8d8";
 
-export const GRADIENT_PURPLE_LIGHT = LIGHT_PURPLE;
-export const GRADIENT_PURPLE_DARK = DARK_PURPLE;
+export const THEME_GRADIENT = 'linear-gradient(45deg, ' + THEME_DARK_PURPLE + ',' + THEME_EXTRA_DARK + ')';
+export const GREY_GRADIENT = 'linear-gradient(45deg, ' + DARK_GREY + ',' + LIGHT_GREY + ')';
 
-export const GRADIENT_GREY_LIGHT = DARK_GREY; //"#6c519c";
-export const GRADIENT_GREY_DARK = LIGHT_GREY; //"#3f2177";
 
 //style variables
 export const TITLE_BAR_HEIGHT = "47px";
 export const BOTTOM_NAV_HEIGHT = "50px";
 export const BOTTOM_NAV_BOTTOM_MARGIN = "0px";
-export const CHAT_ACTION_BOX_HEIGHT = "50px";
 export const REPLY_PREVIEW_BOX_HEIGHT = "50px";
-export const CHAT_ACTION_WITH_REPLY_PREVIEW_BOX_HEIGHT = "100px";
+export const BOTTOM_NAV_WITH_REPLY_PREVIEW_BOX_HEIGHT = "100px";

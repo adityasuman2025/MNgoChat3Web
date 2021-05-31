@@ -2,19 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import cx from "classnames";
 
-import userIcon from "../images/user.png";
-import allChats from "../images/allChats.png";
-import allUsersIcon from "../images/allUsers.png";
-import ProfileIcon from "../images/profile.png";
-import EditIcon from "../images/edit.png";
-import logoutIcon from "../images/logout.png";
-import LoadingAnimation from "./LoadingAnimation";
-import ImageViewer from "./ImageViewer";
-import ImageWithLoader from "./ImageWithLoader";
+import userIcon from "../../images/user.png";
+import EditIcon from "../../images/edit.png";
+import logoutIcon from "../../images/logout.png";
+import LoadingAnimation from "../LoadingAnimation";
+import ImageViewer from "../ImageViewer";
+import ImageWithLoader from "../ImageWithLoader";
+import HomeBottomNav from "./HomeBottomNav";
+import UserListItem from "./UserListItem";
+import { getLoggedUserToken, logout } from "../../utils";
+import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, ALLOWED_IMAGE_TYPES, APP_DETAILS, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE } from "../../constants";
 
-import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, ALLOWED_IMAGE_TYPES, APP_DETAILS, } from "../constants";
-import { getLoggedUserToken, logout } from "../utils";
-import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
+import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../../redux/actions/index";
 import {
     setUserActiveStatus,
     getUserChatRooms,
@@ -22,11 +21,8 @@ import {
     removeGetUserChatRoomsFirebaseQuery,
     uploadImageInFirebase,
     setProfileImageOfAUser,
-} from "../firebaseQueries";
+} from "../../firebaseQueries";
 
-const CHATS_TITLE = "Chats";
-const USERS_TITLE = "Users";
-const PROFILE_TITLE = "Profile";
 
 function HomePageContent({
     isGettingUserAllChats,
@@ -78,62 +74,17 @@ function HomePageContent({
         }
     }, [allUsers]);
 
-    function hanldeNavBtnClick(type) {
-        if (type === CHATS_TITLE) {
-            setTitle(CHATS_TITLE);
-        } else if (type === USERS_TITLE) {
-            setTitle(USERS_TITLE);
-        } else if (type === PROFILE_TITLE) {
-            setTitle(PROFILE_TITLE);
-        }
-    }
-
-    function handleUserItemClick(data) {
-        if (!data) return;
-
-        if (title === CHATS_TITLE) {
-            history.push("chat/" + data); //data = chatRoomId
-        } else {
-            const selectedUsername = data.username;
-            const selectedUserToken = data.userToken;
-            if (selectedUsername && selectedUserToken) {
-                try {
-                    for (const chatRoomId in userAllChats) {
-                        const userChatRoom = userAllChats[chatRoomId];
-                        const secondUserToken = userChatRoom.secondUserToken;
-
-                        //if that user is already present in all-chats of loggedUser
-                        //then redirecting him to the chat page of that chatRoomId
-                        if (selectedUserToken === secondUserToken) {
-                            history.push("chat/" + chatRoomId);
-                            return;
-                        }
-                    }
-
-                    // if that user is not present in all-chats of loggedUser
-                    // then redirecting him to the new-chat page for that secondUserToken (other userToken)
-                    const selectedUserDetails = { name: selectedUsername, token: selectedUserToken };
-                    history.push("new-chat/" + JSON.stringify(selectedUserDetails));
-                } catch { }
-            }
-        }
-    }
-
     async function handleLogoutBtnClick() {
         await logout(dispatch);
         window.location.reload();
     }
 
-    function handleEditIconClick() {
-        imageInputRef.current && imageInputRef.current.click();
+    function handleNavBtnClick(type) {
+        setTitle(type);
     }
 
-    function handleProfileImgClick(event, src) {
-        event.stopPropagation(); //to prevent trigger of parent onClick
-
-        if (src) {
-            setViewImg(src);
-        }
+    function handleEditIconClick() {
+        imageInputRef.current && imageInputRef.current.click();
     }
 
     async function handleSelectImage(event) {
@@ -169,75 +120,94 @@ function HomePageContent({
         }
     }
 
-    function renderAllChats() {
-        // unread msg chatRooms will be listed first
-        const toRender = Object.keys(userAllChats).map(function(chatRoomId) {
-            const userChat = userAllChats[chatRoomId];
-            const unSeenMsgCount = parseInt(userChat.unSeenMsgCount) || 0;
-            const displayName = userChat.displayName;
-            const userProfileImg = userToProfileImgMapping[displayName];
+    function handleUserItemClick(data) {
+        if (!data) return;
 
-            if (unSeenMsgCount === 0) return;
-            if (!displayName) return;
-            return (
-                <div
-                    key={chatRoomId}
-                    className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
-                    onClick={() => handleUserItemClick(chatRoomId, title)}
-                >
-                    <img alt="userIcon" src={userProfileImg} onClick={(e) => handleProfileImgClick(e, userProfileImg)} />
-                    <div className="listUserItemTitle">{displayName}</div>
-                </div>
-            )
+        if (title === CHATS_TITLE) {
+            history.push("chat/" + data); //data = chatRoomId
+        } else {
+            const selectedUsername = data.username;
+            const selectedUserToken = data.userToken;
+            if (selectedUsername && selectedUserToken) {
+                try {
+                    for (const chatRoomId in userAllChats) {
+                        const userChatRoom = userAllChats[chatRoomId];
+                        const secondUserToken = userChatRoom.secondUserToken;
+
+                        //if that user is already present in all-chats of loggedUser
+                        //then redirecting him to the chat page of that chatRoomId
+                        if (selectedUserToken === secondUserToken) {
+                            history.push("chat/" + chatRoomId);
+                            return;
+                        }
+                    }
+
+                    // if that user is not present in all-chats of loggedUser
+                    // then redirecting him to the new-chat page for that secondUserToken (other userToken)
+                    const selectedUserDetails = { name: selectedUsername, token: selectedUserToken };
+                    history.push("new-chat/" + JSON.stringify(selectedUserDetails));
+                } catch { }
+            }
+        }
+    }
+
+    function handleProfileImgClick(event, src) {
+        event.stopPropagation(); //to prevent trigger of parent onClick
+
+        if (src) {
+            setViewImg(src);
+        }
+    }
+
+    function renderUsersList() {
+        const unReadChats = [];
+        const readChats = [];
+        Object.keys(title === CHATS_TITLE ? userAllChats : allUsers).map(function(chatRoomId, index) {
+            const userToken = chatRoomId;  //chatRoomId is userToken in-case of allUsers (USERS_TITLE)
+            const userData = title === CHATS_TITLE ? userAllChats[chatRoomId] : allUsers[userToken];
+            const unSeenMsgCount = parseInt(userData.unSeenMsgCount) || 0;
+            const displayName = userData.displayName || userData.username;
+
+            if (!displayName || displayName === loggedUsername) return;
+
+            if (unSeenMsgCount === 0) {
+                readChats.push(
+                    <UserListItem
+                        key={chatRoomId + index}
+                        userData={userData}
+                        userToProfileImgMapping={userToProfileImgMapping}
+                        onClick={handleUserItemClick}
+                        onImageClick={handleProfileImgClick}
+                    />
+                )
+            } else {
+                unReadChats.push(
+                    <UserListItem
+                        key={chatRoomId + index}
+                        userData={userData}
+                        userToProfileImgMapping={userToProfileImgMapping}
+                        onClick={handleUserItemClick}
+                        onImageClick={handleProfileImgClick}
+                    />
+                )
+            }
         });
 
-        toRender.push(Object.keys(userAllChats).map(function(chatRoomId) {
-            const userChat = userAllChats[chatRoomId];
-            const unSeenMsgCount = parseInt(userChat.unSeenMsgCount) || 0;
-            const displayName = userChat.displayName;
-            const userProfileImg = userToProfileImgMapping[displayName];
-
-            if (unSeenMsgCount !== 0) return;
-            if (!displayName) return;
-            return (
-                <div
-                    key={chatRoomId}
-                    className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
-                    onClick={() => handleUserItemClick(chatRoomId)}
-                >
-                    <img alt="userIcon" src={userProfileImg} onClick={(e) => handleProfileImgClick(e, userProfileImg)} />
-                    <div className="listUserItemTitle">{displayName}</div>
-                </div>
-            )
-        }));
-
-        return toRender;
+        // unread msg chatRooms will be listed first
+        return (
+            <>
+                { unReadChats}
+                { readChats}
+            </>
+        );
     }
 
     function renderTabContent() {
         switch (title) {
             case CHATS_TITLE:
-                return renderAllChats();
+                return renderUsersList();
             case USERS_TITLE:
-                return Object.keys(allUsers).map(function(userToken) {
-                    const user = allUsers[userToken];
-                    const displayName = user.username;
-                    const userProfileImg = userToProfileImgMapping[displayName];
-
-                    if (!displayName) return;
-                    if (displayName !== loggedUsername) {
-                        return (
-                            <div
-                                key={userToken}
-                                className="listUserItem"
-                                onClick={() => handleUserItemClick(user)}
-                            >
-                                <img alt="userIcon" src={userProfileImg} onClick={(e) => handleProfileImgClick(e, userProfileImg)} />
-                                <div className="listUserItemTitle">{displayName}</div>
-                            </div>
-                        )
-                    }
-                });
+                return renderUsersList();
             case PROFILE_TITLE:
                 const profileImg = userToProfileImgMapping[loggedUsername];
                 return (
@@ -313,11 +283,7 @@ function HomePageContent({
 
     return (
         <div className="homeContainer">
-            {
-                viewImg ?
-                    <ImageViewer src={viewImg} onClose={() => setViewImg(null)} />
-                    : null
-            }
+            {viewImg ? <ImageViewer src={viewImg} onClose={() => setViewImg(null)} /> : null}
 
             <div
                 className="homeContentContainer"
@@ -326,17 +292,11 @@ function HomePageContent({
                     "--bottomNavMarginBottom": BOTTOM_NAV_BOTTOM_MARGIN,
                 }}
             >
-                <div
-                    className="homeTitle"
-                    style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
-                >
+                <div className="homeTitle" style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}>
                     <div className="lightTitle">{title}</div>
                     <img alt="logoutIcon" src={logoutIcon} onClick={handleLogoutBtnClick} />
                 </div>
-                <div
-                    className="homeContent"
-                    style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
-                >
+                <div className="homeContent" style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}>
                     {
                         isGettingUserAllChats || isGettingAllUsers ?
                             <LoadingAnimation dark loading />
@@ -346,34 +306,7 @@ function HomePageContent({
                 </div>
             </div>
 
-            <div
-                className="homeBottomNavContainer"
-                style={{
-                    "--bottomNavHeight": BOTTOM_NAV_HEIGHT,
-                    "--bottomNavMarginBottom": BOTTOM_NAV_BOTTOM_MARGIN,
-                }}
-            >
-                <img
-                    className={cx("bottomTabIcons", { ["selectedBottomTabIcon"]: title === CHATS_TITLE })}
-                    alt="allChats"
-                    src={allChats}
-                    onClick={() => hanldeNavBtnClick(CHATS_TITLE)}
-                />
-
-                <img
-                    className={cx("bottomTabIcons", { ["selectedBottomTabIcon"]: title === USERS_TITLE })}
-                    alt="allUsers"
-                    src={allUsersIcon}
-                    onClick={() => hanldeNavBtnClick(USERS_TITLE)}
-                />
-
-                <img
-                    className={cx("bottomTabIcons", { ["selectedBottomTabIcon"]: title === PROFILE_TITLE })}
-                    alt="profile"
-                    src={ProfileIcon}
-                    onClick={() => hanldeNavBtnClick(PROFILE_TITLE)}
-                />
-            </div>
+            <HomeBottomNav selectedTab={title} onNavBtnClick={handleNavBtnClick} />
         </div>
     );
 }
