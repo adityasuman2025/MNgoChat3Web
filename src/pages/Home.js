@@ -3,13 +3,11 @@ import { connect } from 'react-redux';
 
 import VerifyPasscode from "../components/VerifyPasscode";
 import HomePageContent from "../components/Home/HomePageContent";
-import LoadingAnimation from "../components/LoadingAnimation";
 
 import { redirectToLoginPage } from "../utils";
 
 function Home({
     isPasscodeVerified,
-    isCheckingLoginStatus,
     isSomeoneLoggedIn,
     history,
 }) {
@@ -17,16 +15,13 @@ function Home({
 
     return (
         <>
-            {redirectToLoginPage(isCheckingLoginStatus, isSomeoneLoggedIn)}
+            {!isSomeoneLoggedIn ? redirectToLoginPage() : null}
 
             {
-                isSomeoneLoggedIn ?
-                    isPasscodeVerified ?
-                        <HomePageContent history={history} />
-                        :
-                        <VerifyPasscode />
+                isPasscodeVerified ?
+                    <HomePageContent history={history} />
                     :
-                    <LoadingAnimation dark loading />
+                    <VerifyPasscode />
             }
         </>
     );
@@ -35,7 +30,6 @@ function Home({
 const mapStateToProps = (state) => {
     return {
         isPasscodeVerified: state.isPasscodeVerified,
-        isCheckingLoginStatus: state.isCheckingLoginStatus,
         isSomeoneLoggedIn: state.isSomeoneLoggedIn,
     }
 }

@@ -6,7 +6,7 @@ import PurpleGradientContainer from "../components/PurpleGradientContainer";
 import GreyGradientContainer from "../components/GreyGradientContainer";
 
 export default function LandingPageDesign({
-    isCheckingLoginStatus,
+    isLoading,
 }) {
     return (
         <PurpleGradientContainer childrenClassName="flexCenter">
@@ -32,7 +32,7 @@ export default function LandingPageDesign({
                 width="100px"
                 height="100px"
             >
-                <LoadingAnimation dark={true} loading={isCheckingLoginStatus} />
+                <LoadingAnimation dark loading={isLoading} />
             </GreyGradientContainer>
         </PurpleGradientContainer>
     )

@@ -1,39 +1,48 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 
 import LoadingAnimation from "../components/LoadingAnimation";
-import ChatPageContent from "../components/ChatPageContent";
+import ChatPageContent from "../components/Chat/ChatPageContent";
+import { redirectToLoginPage, decryptText } from "../utils";
 
-import { getChatRoomDetailsAction } from "../redux/actions/index";
-import { redirectToLoginPage } from "../utils";
+import { showSnackBarAction } from "../redux/actions/index";
 
 function Chat({
-    isCheckingLoginStatus,
     isSomeoneLoggedIn,
-    isGettingChatRoomDetails,
-    isChatRoomDetailsFetched,
-    match: {
-        params: {
-            chatRoomId,
-        } = {}
-    } = {},
     dispatch,
 }) {
+    const [isLoading, setIsLoading] = useState(true);
+    const [selectedUserDetails, setSelectedUserDetails] = useState({});
+
     useEffect(() => {
-        if (isSomeoneLoggedIn) {
-            dispatch(getChatRoomDetailsAction(chatRoomId));
+        try {
+            const fullUrl = (window.location.href).split("chat/");
+            const encryptedSelectedUserDetails = fullUrl[1];
+            const urlUserDetails = JSON.parse(decryptText(encryptedSelectedUserDetails));
+            if (urlUserDetails.chatRoomId && urlUserDetails.token && urlUserDetails.name) {
+                setSelectedUserDetails(urlUserDetails);
+                setIsLoading(false);
+            } else {
+                dispatch(showSnackBarAction("Invalid user selected"));
+            }
+        } catch (e) {
+            dispatch(showSnackBarAction("Invalid user selected"));
         }
-    }, [isSomeoneLoggedIn]);
+    }, []);
 
     return (
         <>
-            {redirectToLoginPage(isCheckingLoginStatus, isSomeoneLoggedIn)}
+            {!isSomeoneLoggedIn ? redirectToLoginPage() : null}
 
             {
-                !isSomeoneLoggedIn || isGettingChatRoomDetails || !isChatRoomDetailsFetched ?
-                    <LoadingAnimation dark loading />
+                isLoading ? <LoadingAnimation dark loading />
                     :
-                    <ChatPageContent dispatch={dispatch} chatRoomId={chatRoomId} />
+                    <ChatPageContent
+                        chatRoomId={selectedUserDetails.chatRoomId}
+                        selectedUserName={selectedUserDetails.name}
+                        selectedUserToken={selectedUserDetails.token}
+                        selectedUserProfileImg={selectedUserDetails.profileImg}
+                    />
             }
         </>
     );
@@ -41,10 +50,7 @@ function Chat({
 
 const mapStateToProps = (state) => {
     return {
-        isCheckingLoginStatus: state.isCheckingLoginStatus,
         isSomeoneLoggedIn: state.isSomeoneLoggedIn,
-        isGettingChatRoomDetails: state.isGettingChatRoomDetails,
-        isChatRoomDetailsFetched: state.isChatRoomDetailsFetched,
     }
 }
 

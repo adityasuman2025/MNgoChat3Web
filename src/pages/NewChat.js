@@ -2,17 +2,16 @@ import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
 import { Redirect } from "react-router-dom";
 
-import userIcon from "../images/user.png";
 import LoadingAnimation from "../components/LoadingAnimation";
 import ActionButton from "../components/ActionButton";
-
-import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT } from "../constants";
+import ImageViewer from "../components/ImageViewer";
+import ChatTitleBar from "../components/Chat/ChatTitleBar";
+import { BOTTOM_NAV_HEIGHT } from "../constants";
 import { showSnackBarAction } from "../redux/actions/index";
 import { startANewChatRoom } from "../firebaseQueries";
-import { redirectToLoginPage } from "../utils";
+import { redirectToLoginPage, encryptText, decryptText } from "../utils";
 
 function NewChat({
-    isCheckingLoginStatus,
     isSomeoneLoggedIn,
     isStartingANewChatRoom,
     isANewChatRoomStarted,
@@ -22,71 +21,71 @@ function NewChat({
     userDetails: {
         username: loggedUsername
     } = {},
-    match: {
-        params: {
-            selectedUserDetails,
-        } = {}
-    } = {},
     dispatch,
 }) {
+    const [isLoading, setIsLoading] = useState(true);
+    const [selectedUserDetails, setSelectedUserDetails] = useState({});
+
     const [redirectToChat, setRedirectToChat] = useState(false);
-    const [secondUserDetails, setSecondUserDetails] = useState({});
+    const [viewImg, setViewImg] = useState(null);
 
     useEffect(() => {
-        if (isSomeoneLoggedIn) {
-            try {
-                const selectedUserDetailsObj = JSON.parse(selectedUserDetails);
-                const secondUsername = selectedUserDetailsObj.name;
-                const secondUserToken = selectedUserDetailsObj.token;
-                if (secondUsername && secondUserToken) {
-                    setSecondUserDetails({ secondUserToken, secondUsername });
-                } else {
-                    dispatch(showSnackBarAction("Invalid user selected"));
-                }
-            } catch (e) {
+        try {
+            const fullUrl = (window.location.href).split("new-chat/");
+            const encryptedSelectedUserDetails = fullUrl[1];
+            const urlUserDetails = JSON.parse(decryptText(encryptedSelectedUserDetails));
+            if (urlUserDetails.token && urlUserDetails.name) {
+                setSelectedUserDetails(urlUserDetails);
+                setIsLoading(false);
+            } else {
                 dispatch(showSnackBarAction("Invalid user selected"));
             }
+        } catch (e) {
+            dispatch(showSnackBarAction("Invalid user selected"));
         }
-    }, [isSomeoneLoggedIn]);
+    }, []);
 
     useEffect(() => {
         if (isANewChatRoomStarted && chatRoomId) {
+            const userDetails = selectedUserDetails;
+            userDetails.chatRoomId = chatRoomId;
+            setSelectedUserDetails(userDetails);
             setRedirectToChat(true);
         }
     }, [isANewChatRoomStarted]);
 
     function handleStartBtnClick() {
-        startANewChatRoom({ dispatch, loggedUsername, ...secondUserDetails });
+        startANewChatRoom({ dispatch, loggedUsername, secondUserToken: selectedUserDetails.token, secondUsername: selectedUserDetails.name });
+    }
+
+    function handleImageClick(event, src) {
+        event.stopPropagation(); //to prevent trigger of parent onClick
+
+        if (src) {
+            setViewImg(src);
+        }
     }
 
     return (
         <>
-            {redirectToChat ? <Redirect to={"/chat/" + chatRoomId} /> : null}
-            {redirectToLoginPage(isCheckingLoginStatus, isSomeoneLoggedIn)}
+            {!isSomeoneLoggedIn ? redirectToLoginPage() : null}
+            {redirectToChat ? <Redirect to={"/chat/" + encryptText(JSON.stringify(selectedUserDetails))} /> : null}
+
+            {viewImg ? <ImageViewer src={viewImg} onClose={() => setViewImg(null)} /> : null}
 
             {
-                (!secondUserDetails.secondUsername) || !isSomeoneLoggedIn ?
-                    <LoadingAnimation dark loading />
+                isLoading ? <LoadingAnimation dark loading />
                     :
                     <div className="homeContainer">
                         <div
                             className="chatWindow"
                             style={{ "--actionBoxHeight": BOTTOM_NAV_HEIGHT }}
                         >
-                            <div
-                                className="chatTitle"
-                                style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
-                            >
-                                <img alt="userIcon" src={userIcon} />
-                                <div className="lightTitle">{secondUserDetails.secondUsername}</div>
-                            </div>
-
-                            <div
-                                id="chatContent"
-                                className="chatContent"
-                                style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
+                            <ChatTitleBar
+                                name={selectedUserDetails.name}
+                                profileImg={selectedUserDetails.profileImg}
+                                onImageClick={handleImageClick}
                             />
-
                         </div>
                         <div
                             className="chatBottomNavContainer"
@@ -107,7 +106,6 @@ function NewChat({
 
 const mapStateToProps = (state) => {
     return {
-        isCheckingLoginStatus: state.isCheckingLoginStatus,
         isSomeoneLoggedIn: state.isSomeoneLoggedIn,
         isStartingANewChatRoom: state.isStartingANewChatRoom,
         isANewChatRoomStarted: state.isANewChatRoomStarted,

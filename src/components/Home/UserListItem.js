@@ -4,12 +4,13 @@ import cx from "classnames";
 import userIcon from "../../images/user.png";
 
 export default function HomeBottomNav({
-    userData,
     userData: {
         chatRoomId,
         unSeenMsgCount = 0,
         displayName,
         username, //in-case of allUsers (USERS_TITLE) username will come but not displayName
+        secondUserToken,
+        userToken,
     } = {},
     userToProfileImgMapping = {},
     onClick,
@@ -18,7 +19,12 @@ export default function HomeBottomNav({
     const userProfileImg = userToProfileImgMapping[displayName || username];
 
     function handleOnClick() {
-        onClick(chatRoomId || userData);
+        onClick({
+            chatRoomId,
+            name: displayName || username,
+            token: secondUserToken || userToken,
+            profileImg: userProfileImg,
+        });
     }
 
     function handleProfileImgClick(event) {

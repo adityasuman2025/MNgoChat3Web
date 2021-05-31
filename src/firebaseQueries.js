@@ -33,9 +33,6 @@ import {
 
     uploadImageInFirebaseAction,
     uploadImageInFirebaseFailureAction,
-
-    getProfileImageOfAUserAction,
-    getProfileImageOfAUserSuccessAction,
 } from "./redux/actions/index";
 
 export async function doFirebaseAuth() {
@@ -175,30 +172,6 @@ export async function setUserActiveStatus() {
         .update({
             "lastActive": dayjs().format(), //iso format
         });
-}
-
-export async function getChatRoomDetails(chatRoomId) {
-    let toReturn = { statusCode: 500, data: false, msg: "Selected chat does not exist" };
-
-    const data = {};
-    const chatRoomDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId);
-    await chatRoomDbRef
-        .child("members")
-        .once('value')
-        .then(async resp => {
-            const response = resp.val();
-            if (response) {
-                data.members = response;
-                toReturn.statusCode = 200;
-                toReturn.data = data;
-                toReturn.msg = "";
-            }
-        })
-        .catch(error => {
-            toReturn.msg = error.message;
-        });
-
-    return toReturn;
 }
 
 export async function getActiveStatusOfAUser(dispatch, userToken) {
@@ -508,23 +481,5 @@ export async function setProfileImageOfAUser(profileImageUrl) {
     const userRef = firebase.app().database().ref('users/' + loggedUserToken + "/profileImg");
     await userRef
         .set(profileImageUrl)
-        .catch(error => { });
-}
-
-export async function getProfileImageOfAUser(dispatch, userToken) {
-    const loggedUserToken = getLoggedUserToken();
-    if (!loggedUserToken || !userToken) return;
-
-    dispatch(getProfileImageOfAUserAction());
-
-    const userProfileImgRef = firebase.app().database().ref('users/' + userToken + "/profileImg");
-    userProfileImgRef
-        .once('value')
-        .then(async resp => {
-            const response = resp.val();
-            if (response) {
-                dispatch(getProfileImageOfAUserSuccessAction({ data: response }));
-            }
-        })
         .catch(error => { });
 }

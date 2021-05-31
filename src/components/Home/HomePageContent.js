@@ -7,10 +7,15 @@ import ImageViewer from "../ImageViewer";
 import HomeBottomNav from "./HomeBottomNav";
 import UserListItem from "./UserListItem";
 import HomeProfileTab from "./HomeProfileTab";
-import { getLoggedUserToken, logout } from "../../utils";
+import { encryptText, getLoggedUserToken, logout } from "../../utils";
 import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_BOTTOM_MARGIN, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE, ALLOWED_IMAGE_TYPES } from "../../constants";
 
-import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../../redux/actions/index";
+import {
+    showSnackBarAction,
+    updateUserToProfileImgMapping,
+    uploadImageInFirebaseSuccessAction,
+    uploadImageInFirebaseFailureAction,
+} from "../../redux/actions/index";
 import {
     setUserActiveStatus,
     getUserChatRooms,
@@ -26,6 +31,7 @@ function HomePageContent({
     isGettingAllUsers,
     isUploadingImage,
     allUsers = {},
+    userToProfileImgMapping = {},
     userAllChats = {},
     userDetails: {
         username: loggedUsername,
@@ -37,15 +43,14 @@ function HomePageContent({
 }) {
     const [title, setTitle] = useState(CHATS_TITLE);
     const [viewImg, setViewImg] = useState(null);
-    const [userToProfileImgMapping, setUserToProfileImgMapping] = useState({});
 
     useEffect(() => {
         getUserChatRooms(dispatch);
         getAllUsers(dispatch);
-        setUserActiveStatus(true);
+        setUserActiveStatus();
 
         const setActiveStatusInterval = setInterval(function() {
-            setUserActiveStatus(true);
+            setUserActiveStatus();
         }, 10000); //setting user lastActive time every 10 seconds
         //other users need to compare their local time with that user lastActiveTime to get his active status
 
@@ -54,20 +59,6 @@ function HomePageContent({
             clearInterval(setActiveStatusInterval);
         }
     }, []);
-
-    useEffect(() => {
-        if (allUsers) {
-            const usersProfileImg = {};
-            Object.keys(allUsers).map(function(userToken) {
-                const user = allUsers[userToken];
-                const displayName = user.username;
-                const profileImg = user.profileImg;
-
-                usersProfileImg[displayName] = profileImg;
-            });
-            setUserToProfileImgMapping(usersProfileImg)
-        }
-    }, [allUsers]);
 
     async function handleLogoutBtnClick() {
         await logout(dispatch);
@@ -91,10 +82,10 @@ function HomePageContent({
                                 .then(async (downloadURL) => {
                                     if (downloadURL) {
                                         await setProfileImageOfAUser(downloadURL);
-                                        setUserToProfileImgMapping({
-                                            ...userToProfileImgMapping,
-                                            [loggedUsername]: downloadURL,
-                                        });
+                                        dispatch(updateUserToProfileImgMapping({
+                                            username: loggedUsername,
+                                            newImageUrl: downloadURL,
+                                        }));
                                     }
                                     dispatch(uploadImageInFirebaseSuccessAction());
                                 });
@@ -113,31 +104,14 @@ function HomePageContent({
 
     function handleUserItemClick(data) {
         if (!data) return;
+        if (!Object.keys(data).length) return;
 
-        if (title === CHATS_TITLE) {
-            history.push("chat/" + data); //data = chatRoomId
-        } else {
-            const selectedUsername = data.username;
-            const selectedUserToken = data.userToken;
-            if (selectedUsername && selectedUserToken) {
-                try {
-                    for (const chatRoomId in userAllChats) {
-                        const userChatRoom = userAllChats[chatRoomId];
-                        const secondUserToken = userChatRoom.secondUserToken;
-
-                        //if that user is already present in all-chats of loggedUser
-                        //then redirecting him to the chat page of that chatRoomId
-                        if (selectedUserToken === secondUserToken) {
-                            history.push("chat/" + chatRoomId);
-                            return;
-                        }
-                    }
-
-                    // if that user is not present in all-chats of loggedUser
-                    // then redirecting him to the new-chat page for that secondUserToken (other userToken)
-                    const selectedUserDetails = { name: selectedUsername, token: selectedUserToken };
-                    history.push("new-chat/" + JSON.stringify(selectedUserDetails));
-                } catch { }
+        if (data.name && data.token) {
+            const urlParam = encryptText(JSON.stringify(data));
+            if (data.chatRoomId) {
+                history.push("chat/" + urlParam);
+            } else {
+                history.push("new-chat/" + urlParam);
             }
         }
     }
@@ -158,7 +132,7 @@ function HomePageContent({
             const userData = title === CHATS_TITLE ? userAllChats[chatRoomId] : allUsers[userToken];
             const unSeenMsgCount = parseInt(userData.unSeenMsgCount) || 0;
             const displayName = userData.displayName || userData.username;
-
+            // console.log('userData', userData)
             if (!displayName || displayName === loggedUsername) return;
 
             if (unSeenMsgCount === 0) {
@@ -251,6 +225,7 @@ const mapStateToProps = (state) => {
         isGettingAllUsers: state.isGettingAllUsers,
         isUploadingImage: state.isUploadingImage,
         allUsers: state.allUsers,
+        userToProfileImgMapping: state.userToProfileImgMapping,
         userAllChats: state.userAllChats,
         userDetails: state.userDetails,
     }

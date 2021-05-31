@@ -1,5 +1,5 @@
 import userIcon from "../../images/user.png";
-import { getUserTokenOfTheSecondUser, getUsernameOfTheSecondUser, decryptText } from "../../utils";
+import { decryptText } from "../../utils";
 
 const initialState = {
     snackBarCount: 0,
@@ -29,11 +29,7 @@ const initialState = {
     isGettingAllUsers: false,
     getAllUsersError: null,
     allUsers: {},
-
-    isGettingChatRoomDetails: false,
-    isChatRoomDetailsFetched: false,
-    getChatRoomDetailsError: null,
-    chatRoomDetails: {},
+    userToProfileImgMapping: {},
 
     activeStatusOfAUser: null,
 
@@ -72,6 +68,21 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
                 snackBarCount: state.snackBarCount + 1,
                 snackBarMsg: payload.msg || null,
                 snackBarType: payload.type || "error",
+            }
+        }
+
+        case 'UPDATE_USER_TO_PROFILE_IMAGE_MAPPING': {
+            const userToProfileImgMapping = state.userToProfileImgMapping;
+
+            const username = payload.username;
+            const newImageUrl = payload.newImageUrl;
+            if (username && newImageUrl) {
+                userToProfileImgMapping[username] = newImageUrl;
+            }
+
+            return {
+                ...state,
+                userToProfileImgMapping
             }
         }
 
@@ -215,10 +226,21 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
             }
         }
         case 'GET_ALL_USERS_SUCCESS': {
+            const allUsers = payload.data || {};
+
+            const userToProfileImgMapping = {};
+            Object.keys(allUsers).map(function(userToken) {
+                const user = allUsers[userToken];
+                const displayName = user.username;
+                const profileImg = user.profileImg;
+
+                userToProfileImgMapping[displayName] = profileImg;
+            });
             return {
                 ...state,
                 isGettingAllUsers: false,
-                allUsers: payload.data || {},
+                allUsers,
+                userToProfileImgMapping,
             }
         }
         case 'GET_ALL_USERS_FAILURE': {
@@ -226,37 +248,6 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
                 ...state,
                 isGettingAllUsers: false,
                 getAllUsersError: payload.msg,
-            }
-        }
-
-        case 'GET_CHAT_ROOM_DETAILS': {
-            return {
-                ...state,
-                isGettingChatRoomDetails: true,
-                isChatRoomDetailsFetched: false,
-                getChatRoomDetailsError: null,
-                chatRoomDetails: {},
-            }
-        }
-        case 'GET_CHAT_ROOM_DETAILS_SUCCESS': {
-            const data = payload.data || {};
-            const members = data.members;
-
-            return {
-                ...state,
-                isGettingChatRoomDetails: false,
-                isChatRoomDetailsFetched: true,
-                chatRoomDetails: {
-                    usernameOfSecondUser: getUsernameOfTheSecondUser(members),
-                    userTokenOfSecondUser: getUserTokenOfTheSecondUser(members),
-                },
-            }
-        }
-        case 'GET_CHAT_ROOM_DETAILS_FAILURE': {
-            return {
-                ...state,
-                isGettingChatRoomDetails: false,
-                getChatRoomDetailsError: payload.msg,
             }
         }
 

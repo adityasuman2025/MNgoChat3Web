@@ -3,16 +3,17 @@ import { connect } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 
-import closeIcon from "../images/close.png";
-import sendIcon from "../images/send2.png";
-import uploadImgIcon from "../images/uploadImg.png";
-import LoadingAnimation from "./LoadingAnimation";
-import ImageViewer from "./ImageViewer";
-import ImageWithLoader from "./ImageWithLoader";
-import MessageItem from "./MessageItem";
+import closeIcon from "../../images/close.png";
+import sendIcon from "../../images/send2.png";
+import uploadImgIcon from "../../images/uploadImg.png";
+import LoadingAnimation from "../LoadingAnimation";
+import ImageViewer from "../ImageViewer";
+import ImageWithLoader from "../ImageWithLoader";
+import ChatTitleBar from "./ChatTitleBar";
+import MessageItem from "../MessageItem";
 
-import dayjs from "../dayjs";
-import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../redux/actions/index";
+import dayjs from "../../dayjs";
+import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../../redux/actions/index";
 import {
     TITLE_BAR_HEIGHT,
     BOTTOM_NAV_HEIGHT,
@@ -23,7 +24,7 @@ import {
     ALLOWED_IMAGE_TYPES,
     STANDARD_DATE_FORMAT,
     DEFAULT_DATE,
-} from "../constants";
+} from "../../constants";
 import {
     setUserActiveStatus,
     getActiveStatusOfAUser,
@@ -37,8 +38,7 @@ import {
     getUnreadMsgCountOfTheSecondUser,
     removeGetUnreadMsgCountOfTheSecondUserFirebaseQuery,
     uploadImageInFirebase,
-    getProfileImageOfAUser,
-} from "../firebaseQueries";
+} from "../../firebaseQueries";
 
 const TODAY = dayjs().format(STANDARD_DATE_FORMAT);
 const YESTERDAY = dayjs().subtract(1, "day").format(STANDARD_DATE_FORMAT);
@@ -50,14 +50,12 @@ function ChatPageContent({
     isUploadingImage,
     isANewMessage,
     chatRoomId,
+    selectedUserName,
+    selectedUserToken,
+    selectedUserProfileImg,
     unreadMsgCountOfTheSecondUser,
     activeStatusOfAUser,
     typeStatusOfAUser,
-    secondUserProfileImage,
-    chatRoomDetails: {
-        usernameOfSecondUser,
-        userTokenOfSecondUser,
-    } = {},
     chatRoomMessages = [],
     dispatch,
 }) {
@@ -76,28 +74,27 @@ function ChatPageContent({
     //to get messages of the room
     //getting active status of the 2nd user and setting active status of the logged user
     useEffect(() => {
+        getActiveStatusOfAUser(dispatch, selectedUserToken);
         getMessagesOfAChatRoom(dispatch, chatRoomId);
-        getUnreadMsgCountOfTheSecondUser(dispatch, chatRoomId, userTokenOfSecondUser);
-        getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
-        setUserActiveStatus(true);
-        getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
+        getUnreadMsgCountOfTheSecondUser(dispatch, chatRoomId, selectedUserToken);
         readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
+        setUserActiveStatus();
+        getTypeStatusOfAUser(dispatch, chatRoomId, selectedUserToken);
 
         const setActiveStatusInterval = setInterval(function() {
-            getActiveStatusOfAUser(dispatch, userTokenOfSecondUser);
-            setUserActiveStatus(true);
+            getActiveStatusOfAUser(dispatch, selectedUserToken);
+            setUserActiveStatus();
         }, 10000); //setting user lastActive time every 10 seconds
         // other users need to compare their local time with that user lastActiveTime to get his active status
 
         const getTypeStatusInterval = setInterval(function() {
-            getTypeStatusOfAUser(dispatch, chatRoomId, userTokenOfSecondUser);
+            getTypeStatusOfAUser(dispatch, chatRoomId, selectedUserToken);
         }, 1000); //getting user typings status in 1 s
         //other users need to compare their local time with that user lastTypedTime to get his typing status
 
-        getProfileImageOfAUser(dispatch, userTokenOfSecondUser);
         return () => {
             removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId);
-            removeGetUnreadMsgCountOfTheSecondUserFirebaseQuery(chatRoomId, userTokenOfSecondUser)
+            removeGetUnreadMsgCountOfTheSecondUserFirebaseQuery(chatRoomId, selectedUserToken)
             clearInterval(setActiveStatusInterval);
             clearInterval(getTypeStatusInterval);
             readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
@@ -140,7 +137,7 @@ function ChatPageContent({
                     snapshot.getDownloadURL()
                         .then((downloadURL) => {
                             if (downloadURL) {
-                                sendMessageInAChatRoom(chatRoomId, downloadURL, MSG_TYPE_IMAGE, userTokenOfSecondUser);
+                                sendMessageInAChatRoom(chatRoomId, downloadURL, MSG_TYPE_IMAGE, selectedUserToken);
                                 setChoosedImg(null);
                             }
                             dispatch(uploadImageInFirebaseSuccessAction());
@@ -154,9 +151,9 @@ function ChatPageContent({
                 setMsgText("");
                 if (selectedMsgForReply) {
                     setSelectedMsgForReply(null);
-                    await sendMessageInAChatRoom(chatRoomId, msgText, MSG_TYPE_REPLY, userTokenOfSecondUser, selectedMsgForReply);
+                    await sendMessageInAChatRoom(chatRoomId, msgText, MSG_TYPE_REPLY, selectedUserToken, selectedMsgForReply);
                 } else {
-                    await sendMessageInAChatRoom(chatRoomId, msgText, "text", userTokenOfSecondUser);
+                    await sendMessageInAChatRoom(chatRoomId, msgText, "text", selectedUserToken);
                 }
             }
         }
@@ -267,11 +264,7 @@ function ChatPageContent({
 
     return (
         <div className="homeContainer">
-            {
-                viewImg ?
-                    <ImageViewer src={viewImg} onClose={() => setViewImg(null)} />
-                    : null
-            }
+            {viewImg ? <ImageViewer src={viewImg} onClose={() => setViewImg(null)} /> : null}
 
             <div
                 className="chatWindow"
@@ -282,27 +275,13 @@ function ChatPageContent({
                             : BOTTOM_NAV_HEIGHT
                 }}
             >
-                <div
-                    className="chatTitle"
-                    style={{ "--titleBarHeight": TITLE_BAR_HEIGHT }}
-                >
-                    <img alt="userIcon" src={secondUserProfileImage} onClick={(e) => handleImageClick(e, secondUserProfileImage)} />
-                    <div>
-                        <div className="lightTitle">{usernameOfSecondUser}</div>
-                        <div className="onlineStatus">
-                            {
-                                typeStatusOfAUser ?
-                                    typeStatusOfAUser
-                                    :
-                                    activeStatusOfAUser ?
-                                        activeStatusOfAUser !== "online" ?
-                                            dayjs(activeStatusOfAUser).format("lll")
-                                            : "online"
-                                        : ""
-                            }
-                        </div>
-                    </div>
-                </div>
+                <ChatTitleBar
+                    name={selectedUserName}
+                    profileImg={selectedUserProfileImg}
+                    typeStatus={typeStatusOfAUser}
+                    activeStatus={activeStatusOfAUser}
+                    onImageClick={handleImageClick}
+                />
 
                 <div
                     id="chatContent"
@@ -407,8 +386,6 @@ const mapStateToProps = (state) => {
         unreadMsgCountOfTheSecondUser: state.unreadMsgCountOfTheSecondUser,
         activeStatusOfAUser: state.activeStatusOfAUser,
         typeStatusOfAUser: state.typeStatusOfAUser,
-        secondUserProfileImage: state.secondUserProfileImage,
-        chatRoomDetails: state.chatRoomDetails,
         chatRoomMessages: state.chatRoomMessages,
     }
 }

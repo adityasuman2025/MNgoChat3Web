@@ -24,7 +24,6 @@ function RootWrapper({
     verifyPasscodeError,
     getUserAllChatsError,
     getAllUsersError,
-    getChatRoomDetailsError,
     startNewChatRoomError,
     uploadImageError,
 
@@ -106,12 +105,6 @@ function RootWrapper({
     }, [getAllUsersError]);
 
     useEffect(() => {
-        if (getChatRoomDetailsError) {
-            makeSnackBar(getChatRoomDetailsError);
-        }
-    }, [getChatRoomDetailsError]);
-
-    useEffect(() => {
         if (startNewChatRoomError) {
             makeSnackBar(startNewChatRoomError);
         }
@@ -143,7 +136,7 @@ function RootWrapper({
 
             {
                 isCheckingLoginStatus ?
-                    <LandingPageDesign isCheckingLoginStatus={true} />
+                    <LandingPageDesign isLoading={true} />
                     :
                     <PurpleGradientContainer childrenClassName="flexCenter">
                         {children}
@@ -182,7 +175,6 @@ const mapStateToProps = (state) => {
         verifyPasscodeError: state.verifyPasscodeError,
         getUserAllChatsError: state.getUserAllChatsError,
         getAllUsersError: state.getAllUsersError,
-        getChatRoomDetailsError: state.getChatRoomDetailsError,
         startNewChatRoomError: state.startNewChatRoomError,
         uploadImageError: state.uploadImageError,
     }

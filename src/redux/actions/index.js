@@ -10,15 +10,18 @@ import {
     doFirebaseAuth,
     checkUserExistsInFirebase,
     createUserInFirebase,
-    getChatRoomDetails,
 } from "../../firebaseQueries";
+
+export const resetReducerStateAction = () => async (dispatch) => {
+    dispatch({ type: 'RESET_REDUCER_STATE' });
+}
 
 export const showSnackBarAction = (msg, type) => async (dispatch) => {
     dispatch({ type: 'SHOW_SNACKBAR', payload: { msg, type } });
 }
 
-export const resetReducerStateAction = () => async (dispatch) => {
-    dispatch({ type: 'RESET_REDUCER_STATE' });
+export const updateUserToProfileImgMapping = (payload) => async (dispatch) => {
+    dispatch({ type: 'UPDATE_USER_TO_PROFILE_IMAGE_MAPPING', payload });
 }
 
 export const checkLoginStatusAction = () => async (dispatch) => {
@@ -147,32 +150,6 @@ export const getAllUsersFailureAction = (payload) => async (dispatch) => {
     }
 }
 
-export const getChatRoomDetailsAction = (chatRoomId) => async (dispatch) => {
-    dispatch({ type: 'GET_CHAT_ROOM_DETAILS' });
-
-    try {
-        const loggedUserToken = getLoggedUserToken();
-
-        const firebaseResponse = await getChatRoomDetails(chatRoomId);
-        if (firebaseResponse.statusCode === 200) {
-            const members = firebaseResponse.data.members;
-            if (members) {
-                if (loggedUserToken in members) {
-                    dispatch({ type: 'GET_CHAT_ROOM_DETAILS_SUCCESS', payload: firebaseResponse });
-                } else {
-                    dispatch({ type: 'GET_CHAT_ROOM_DETAILS_FAILURE', payload: { msg: "This chat does not belong to you" } });
-                }
-            } else {
-                dispatch({ type: 'GET_CHAT_ROOM_DETAILS_FAILURE', payload: { msg: "This chat does not belong to you" } });
-            }
-        } else {
-            dispatch({ type: 'GET_CHAT_ROOM_DETAILS_FAILURE', payload: firebaseResponse });
-        }
-    } catch {
-        dispatch({ type: 'GET_CHAT_ROOM_DETAILS_FAILURE', payload: SOMETHING_WENT_WRONG_ERROR });
-    }
-}
-
 export const getActiveStatusOfAUserSuccessAction = (payload) => async (dispatch) => {
     if (payload) {
         dispatch({ type: 'GET_ACTIVE_STATUS_OF_A_USER_SUCCESS', payload });
@@ -241,12 +218,4 @@ export const uploadImageInFirebaseFailureAction = (payload) => async (dispatch) 
     if (payload) {
         dispatch({ type: 'UPLOAD_IMAGE_IN_FIREBASE_FAILURE', payload });
     }
-}
-
-
-export const getProfileImageOfAUserAction = (payload) => async (dispatch) => {
-    dispatch({ type: 'GET_PROFILE_IMAGE_OF_A_USER', payload });
-}
-export const getProfileImageOfAUserSuccessAction = (payload) => async (dispatch) => {
-    dispatch({ type: 'GET_PROFILE_IMAGE_OF_A_USER_SUCCESS', payload });
 }

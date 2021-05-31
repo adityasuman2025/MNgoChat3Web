@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 
+import userIcon from "../../images/user.png";
 import LoadingAnimation from "../LoadingAnimation";
 import ImageWithLoader from "../ImageWithLoader";
 import EditIcon from "../../images/edit.png";
@@ -10,7 +11,7 @@ export default function HomeProfileTab({
     loggedUsername,
     name,
     email,
-    profileImg,
+    profileImg = userIcon,
     onProfileImgClick,
     onImageSelect,
 }) {
@@ -43,7 +44,7 @@ export default function HomeProfileTab({
                         <ImageWithLoader
                             className="userProfileImg"
                             src={profileImg}
-                            onClick={(e) => handleProfileImgClick(e, profileImg)}
+                            onClick={handleProfileImgClick}
                         />
                 }
 

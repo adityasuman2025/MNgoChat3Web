@@ -89,48 +89,6 @@ export function getLoggedUserToken() {
     return getCookieValue(LOGGED_USER_TOKEN_COOKIE_NAME);
 }
 
-export function getUserTokenOfTheSecondUser(members) {
-    if (!members) {
-        return null
-    }
-    let userTokenOfSecondUser = null;
-
-    const loggedUserToken = getLoggedUserToken();
-    if (Object.keys(members).length === 2) {
-        try {
-            for (const userToken in members) {
-                if (userToken !== loggedUserToken) {
-                    userTokenOfSecondUser = userToken;
-                    break;
-                }
-            }
-        } catch { }
-    }
-
-    return userTokenOfSecondUser;
-}
-
-export function getUsernameOfTheSecondUser(members) {
-    if (!members) {
-        return null
-    }
-    let usernameOfSecondUser = null;
-
-    const loggedUserToken = getLoggedUserToken();
-    if (Object.keys(members).length === 2) {
-        try {
-            for (const userToken in members) {
-                if (userToken !== loggedUserToken) {
-                    usernameOfSecondUser = members[userToken].name;
-                    break;
-                }
-            }
-        } catch { }
-    }
-
-    return usernameOfSecondUser;
-}
-
 export function isEmpty(obj) {
 
     // null and undefined are "empty"
@@ -166,12 +124,8 @@ export function redirectToHomeOrLoginPage(isCheckingLoginStatus, isSomeoneLogged
     }
 }
 
-export function redirectToLoginPage(isCheckingLoginStatus, isSomeoneLoggedIn) {
-    if (!isCheckingLoginStatus) {
-        if (!isSomeoneLoggedIn) {
-            return <Redirect to="/login" />;
-        }
-    }
+export function redirectToLoginPage() {
+    return <Redirect to="/login" />;
 }
 
 export async function logout(dispatch) {
