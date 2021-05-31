@@ -5,7 +5,6 @@ import userIcon from "../../images/user.png";
 
 export default function HomeBottomNav({
     userData: {
-        chatRoomId,
         unSeenMsgCount = 0,
         displayName,
         username, //in-case of allUsers (USERS_TITLE) username will come but not displayName
@@ -20,7 +19,6 @@ export default function HomeBottomNav({
 
     function handleOnClick() {
         onClick({
-            chatRoomId,
             name: displayName || username,
             token: secondUserToken || userToken,
             profileImg: userProfileImg,

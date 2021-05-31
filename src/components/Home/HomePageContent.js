@@ -107,12 +107,26 @@ function HomePageContent({
         if (!Object.keys(data).length) return;
 
         if (data.name && data.token) {
-            const urlParam = encryptText(JSON.stringify(data));
-            if (data.chatRoomId) {
-                history.push("chat/" + urlParam);
-            } else {
+            try {
+                let urlParam = encryptText(JSON.stringify(data));
+                for (const chatRoomId in userAllChats) {
+                    const userChatRoom = userAllChats[chatRoomId];
+                    const secondUserToken = userChatRoom.secondUserToken;
+
+                    //if that user is already present in all-chats of loggedUser
+                    //then redirecting him to the chat page of that chatRoomId
+                    if (data.token === secondUserToken) {
+                        data.chatRoomId = chatRoomId;
+                        urlParam = encryptText(JSON.stringify(data));
+                        history.push("chat/" + urlParam);
+                        return;
+                    }
+                }
+
+                // if that user is not present in all-chats of loggedUser
+                // then redirecting him to the new-chat page for that secondUserToken (other userToken)
                 history.push("new-chat/" + urlParam);
-            }
+            } catch { }
         }
     }
 
