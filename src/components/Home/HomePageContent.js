@@ -7,7 +7,8 @@ import ImageViewer from "../ImageViewer";
 import HomeBottomNav from "./HomeBottomNav";
 import UserListItem from "./UserListItem";
 import HomeProfileTab from "./HomeProfileTab";
-import { encryptText, getLoggedUserToken, logout } from "../../utils";
+import { getLoggedUserToken, logout } from "../../utils";
+import { encryptText } from "../../encryptionUtil";
 import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, TITLE_BAR_GRADIENT, BOTTOM_NAV_BOTTOM_MARGIN, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE, ALLOWED_IMAGE_TYPES } from "../../constants";
 
 import {
@@ -21,10 +22,9 @@ import {
     getUserChatRooms,
     getAllUsers,
     removeGetUserChatRoomsFirebaseQuery,
-    uploadImageInFirebase,
     setProfileImageOfAUser,
 } from "../../firebaseQueries";
-
+import { uploadImageInFirebase } from "../../firebaseUpload";
 
 function HomePageContent({
     isGettingUserAllChats,

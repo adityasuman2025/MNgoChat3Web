@@ -1,8 +1,6 @@
-import { enc, AES } from "crypto-js";
 import { Redirect } from "react-router-dom";
 import Cookies from "universal-cookie";
-
-import { ENCRYPTION_KEY } from "./encryptionConstants";
+import logoImg from "./images/logo.png";
 import { COOKIE_EXPIRATION_TIME, LOGGED_USER_TOKEN_COOKIE_NAME, AUTH_API_URL_ADDRESS, NO_INTERNET_ERROR } from "./constants";
 const cookies = new Cookies();
 
@@ -28,27 +26,6 @@ export function makeCookie(key, value) {
     } catch {
         return false;
     }
-}
-
-export function encryptText(text) {
-    try {
-        const encryptedValue = AES.encrypt(text, ENCRYPTION_KEY).toString();
-        return encryptedValue;
-    } catch {
-        return null;
-    }
-}
-
-export function decryptText(enryptedValue) {
-    let value = null;
-    try {
-        const decrypted = AES.decrypt(enryptedValue, ENCRYPTION_KEY);
-        value = enc.Utf8.stringify(decrypted);
-    } catch {
-        return null;
-    }
-
-    return value;
 }
 
 export async function sendRequestToAPI(endpoint, body) {
@@ -114,13 +91,11 @@ export function isEmpty(obj) {
     return true;
 }
 
-export function redirectToHomeOrLoginPage(isCheckingLoginStatus, isSomeoneLoggedIn) {
-    if (!isCheckingLoginStatus) {
-        if (isSomeoneLoggedIn) {
-            return <Redirect to="/home" />;
-        } else {
-            return <Redirect to="/login" />;
-        }
+export function redirectToHomeOrLoginPage(isSomeoneLoggedIn) {
+    if (isSomeoneLoggedIn) {
+        return <Redirect to="/home" />;
+    } else {
+        return <Redirect to="/login" />;
     }
 }
 
@@ -128,6 +103,10 @@ export function redirectToLoginPage() {
     return <Redirect to="/login" />;
 }
 
-export async function logout(dispatch) {
+export function getLogoImg() {
+    return logoImg;
+}
+
+export async function logout() {
     await cookies.remove(LOGGED_USER_TOKEN_COOKIE_NAME, { path: "/", expires: COOKIE_EXPIRATION_TIME });
-};
+}

@@ -9,7 +9,8 @@ import ChatTitleBar from "../components/Chat/ChatTitleBar";
 import { BOTTOM_NAV_HEIGHT } from "../constants";
 import { showSnackBarAction } from "../redux/actions/index";
 import { startANewChatRoom } from "../firebaseQueries";
-import { redirectToLoginPage, encryptText, decryptText } from "../utils";
+import { redirectToLoginPage } from "../utils";
+import { encryptText, decryptText } from "../encryptionUtil";
 
 function NewChat({
     isSomeoneLoggedIn,

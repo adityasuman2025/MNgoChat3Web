@@ -3,6 +3,7 @@ import ReactTextFormat from 'react-text-format';
 import cx from "classnames";
 import ImageWithLoader from "../ImageWithLoader";
 import { getLoggedUserToken } from "../../utils";
+import { decryptText } from "../../encryptionUtil";
 import { MSG_TYPE_IMAGE, MSG_TYPE_REPLY, MY_MESSAGE_GRADIENT, THEIR_MESSAGE_GRADIENT } from "../../constants";
 
 export default function ChatMessageItem({
@@ -18,8 +19,8 @@ export default function ChatMessageItem({
     const msgRef = useRef(null);
 
     const type = msg.type;
-    const message = msg.message;
-    const originalMessage = msg.originalMessage;
+    const message = decryptText(msg.message);
+    const originalMessage = decryptText(msg.originalMessage);
     const originalMessageType = msg.originalMessageType;
     const isMineMsg = msg.sentByUserToken === loggedUserToken;
 

@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from "react-router-dom";
-
-import logoImg from "../images/logo.png";
 import ActionButton from "../components/ActionButton";
-
 import { PROJECT_NAME } from "../constants";
 import {
     validateUsername,
     validateName,
     validateEmail,
     validateNumber,
+    redirectToLoginPage,
+    getLogoImg,
 } from "../utils";
 import { showSnackBarAction, registerUserAction } from "../redux/actions/index";
 
@@ -27,12 +25,12 @@ function Register({
     const [passcode, setPasscode] = useState("");
     const [confPasscode, setConfPasscode] = useState("");
 
-    const [redirectToLoginPage, setRedirectToLoginPage] = useState(false);
+    const [redirectToLogin, setRedirectToLogin] = useState(false);
     const [btnClicked, setBtnClicked] = useState(false);
 
     useEffect(() => {
         if (isUserRegistered && btnClicked) {
-            setRedirectToLoginPage(true);
+            setRedirectToLogin(true);
         }
     }, [isUserRegistered]);
 
@@ -82,12 +80,12 @@ function Register({
 
     return (
         <>
-            {redirectToLoginPage ? <Redirect to="/login" /> : null}
+            {redirectToLogin ? redirectToLoginPage() : null}
 
             <img
                 className="logoImg"
                 alt="logoImg"
-                src={logoImg}
+                src={getLogoImg()}
             />
             <div className="logoTitle">{PROJECT_NAME}</div>
 

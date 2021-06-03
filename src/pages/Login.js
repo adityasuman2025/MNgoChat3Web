@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 
-import logoImg from "../images/logo.png";
 import ActionButton from "../components/ActionButton";
 import SignInUpButton from "../components/SignInUpButton";
 
 import { PROJECT_NAME } from "../constants";
 import { showSnackBarAction, loginUserAction } from "../redux/actions/index";
-import { redirectToHomeOrLoginPage } from "../utils";
+import { redirectToHomeOrLoginPage, getLogoImg } from "../utils";
 
 function Login({
     isLoggingUser,
-    isCheckingLoginStatus,
     isSomeoneLoggedIn,
     history,
     dispatch,
@@ -39,12 +37,12 @@ function Login({
 
     return (
         <>
-            {redirectToHomeOrLoginPage(isCheckingLoginStatus, isSomeoneLoggedIn)}
+            {redirectToHomeOrLoginPage(isSomeoneLoggedIn)}
 
             <img
                 className="logoImg"
                 alt="logoImg"
-                src={logoImg}
+                src={getLogoImg()}
             />
             <div className="logoTitle">{PROJECT_NAME}</div>
 
@@ -86,7 +84,6 @@ function Login({
 const mapStateToProps = (state) => {
     return {
         isLoggingUser: state.isLoggingUser,
-        isCheckingLoginStatus: state.isCheckingLoginStatus,
         isSomeoneLoggedIn: state.isSomeoneLoggedIn,
     }
 }

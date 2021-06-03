@@ -1,9 +1,9 @@
 import React from "react";
 
-import logoImg from "../images/logo.png";
 import LoadingAnimation from "../components/LoadingAnimation";
 import PurpleGradientContainer from "../components/PurpleGradientContainer";
 import GreyGradientContainer from "../components/GreyGradientContainer";
+import { getLogoImg } from "../utils";
 
 export default function LandingPageDesign({
     isLoading,
@@ -14,7 +14,7 @@ export default function LandingPageDesign({
                 <img
                     className="logoImg"
                     alt="logoImg"
-                    src={logoImg}
+                    src={getLogoImg()}
                 />
             </GreyGradientContainer>
             <GreyGradientContainer

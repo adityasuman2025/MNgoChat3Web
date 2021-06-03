@@ -1,5 +1,4 @@
 import userIcon from "../../images/user.png";
-import { decryptText } from "../../utils";
 
 const initialState = {
     snackBarCount: 0,
@@ -297,22 +296,9 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
         }
         case 'GET_A_NEW_MESSAGE_OF_A_CHAT_ROOM_SUCCESS': {
             const messageItem = payload.data || {};
-            const newMessage = payload.isANewMessage || false;
-            const message = messageItem.message;
-            messageItem.message = decryptText(message);
-
-            const originalMessage = messageItem.originalMessage;
-            if (originalMessage) {
-                messageItem.originalMessage = decryptText(originalMessage);
-            }
-
-            let isANewMessage = state.isANewMessage;
-            if (newMessage) {
-                isANewMessage++;
-            }
             return {
                 ...state,
-                isANewMessage,
+                isANewMessage: parseInt(state.isANewMessage) + 1,
                 chatRoomMessages: [
                     ...state.chatRoomMessages,
                     messageItem,

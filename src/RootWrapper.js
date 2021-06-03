@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { connect } from 'react-redux';
 
-import SnackBar from "./components/SnackBar";
-import OfflineModal from "./components/OfflineModal";
-import PurpleGradientContainer from "./components/PurpleGradientContainer";
-import LandingPageDesign from "./components/LandingPageDesign";
-
+import LoadingAnimation from "./components/LoadingAnimation";
 import { checkLoginStatusAction } from "./redux/actions/index";
+
+const SnackBar = lazy(() => import('./components/SnackBar'));
+const OfflineModal = lazy(() => import('./components/OfflineModal'));
+const PurpleGradientContainer = lazy(() => import('./components/PurpleGradientContainer'));
+const LandingPageDesign = lazy(() => import('./components/LandingPageDesign'));
 
 function RootWrapper({
     isCheckingLoginStatus,
@@ -127,7 +128,9 @@ function RootWrapper({
     }
 
     return (
-        <>
+        <Suspense fallback={
+            <LoadingAnimation dark loading />
+        }>
             {
                 showOfflineWarning ?
                     <OfflineModal />
@@ -153,8 +156,7 @@ function RootWrapper({
                     />
                     : null
             }
-
-        </>
+        </Suspense>
     )
 }
 

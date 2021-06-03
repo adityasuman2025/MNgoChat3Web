@@ -1,5 +1,4 @@
 import React, { Suspense, lazy } from 'react';
-// import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 // import Landing from './pages/Landing';
@@ -11,7 +10,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 // import NotFound from './pages/NotFound';
 
 //lazy loading split the main bundle into many parts
-import LoadingAnimation from "./components/LoadingAnimation";
+import LoadingAnimation from './components/LoadingAnimation';
 
 const Landing = lazy(() => import('./pages/Landing'));
 const Login = lazy(() => import('./pages/Login'));

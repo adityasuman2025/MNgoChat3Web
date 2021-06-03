@@ -1,21 +1,15 @@
 import React from "react";
 import cx from "classnames";
 
-import loaderImg from '../images/loader.gif';
-
 export default function LoadingAnimation({
     dark,
     loading,
     className,
     loaderClassName,
 }) {
-    return loading ? (
+    return loading ?
         <center className={className}>
-            <img
-                alt="loading"
-                className={cx("loadingAnimation", { ["darkLoader"]: dark }, loaderClassName)}
-                src={loaderImg}
-            />
+            <div className={cx("loadingAnimation", { ["darkLoader"]: dark }, loaderClassName)} />
         </center>
-    ) : null;
+        : null;
 }

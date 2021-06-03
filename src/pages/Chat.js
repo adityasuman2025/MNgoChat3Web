@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 
 import LoadingAnimation from "../components/LoadingAnimation";
 import ChatPageContent from "../components/Chat/ChatPageContent";
-import { redirectToLoginPage, decryptText } from "../utils";
+import { redirectToLoginPage } from "../utils";
+import { decryptText } from "../encryptionUtil";
 
 import { showSnackBarAction } from "../redux/actions/index";
 function Chat({

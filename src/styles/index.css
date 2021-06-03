@@ -18,6 +18,29 @@ code {
     monospace;
 }
 
+.loadingAnimation {
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    border: 4px solid grey;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #f1f1f1 grey grey grey;
+}
+ 
+.lds-ring {
+    animation-delay: -0.45s;
+}
+
+@keyframes lds-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 /*---------snack bar--------*/
 .snackBarContainer {
     z-index: 99;
@@ -106,13 +129,8 @@ code {
 /*------- gradient container-----------*/
 
 /*------- login/signup page and general components-----------*/
-.loadingAnimation {
-    width: 40px;
-    height: 40px;
-}
-
 .darkLoader {
-    filter: invert(13%) sepia(44%) saturate(3773%) hue-rotate(250deg) brightness(75%) contrast(120%);
+    border-color: #8d35ad rgb(192, 189, 189) rgb(192, 189, 189) rgb(192, 189, 189);
 }
 
 .logoImg {

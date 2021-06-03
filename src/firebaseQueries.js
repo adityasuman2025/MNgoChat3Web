@@ -1,9 +1,7 @@
-import imageCompression from 'browser-image-compression';
-
 import firebase from './FirebaseConfig';
 import dayjs from "./dayjs";
-import { PAGINATION_MESSAGE_COUNT, IMAGE_COMPRESSION_OPTIONS } from "./constants";
-import { getLoggedUserToken, encryptText, decryptText, isEmpty } from "./utils";
+import { PAGINATION_MESSAGE_COUNT } from "./constants";
+import { getLoggedUserToken, isEmpty } from "./utils";
 import {
     getUserAllChatsAction,
     getUserAllChatsSuccessAction,
@@ -30,9 +28,6 @@ import {
     startANewChatRoomAction,
     startANewChatRoomSuccessAction,
     startANewChatRoomFailureAction,
-
-    uploadImageInFirebaseAction,
-    uploadImageInFirebaseFailureAction,
 } from "./redux/actions/index";
 
 export async function doFirebaseAuth() {
@@ -212,14 +207,6 @@ export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
             if (chatMessages) {
                 for (const messageId in chatMessages) {
                     const messageItem = chatMessages[messageId];
-                    const message = messageItem.message;
-                    messageItem.message = decryptText(message);
-
-                    const originalMessage = messageItem.originalMessage;
-                    if (originalMessage) {
-                        messageItem.originalMessage = decryptText(originalMessage);
-                    }
-
                     messages.push(messageItem);
                 }
             }
@@ -268,14 +255,6 @@ export async function getPaginatedMessages(dispatch, chatRoomId, messageIdOfTheF
                     if (messageId === messageIdOfTheFirstMessageInList) continue;
 
                     const messageItem = chatMessages[messageId];
-                    const message = messageItem.message;
-                    messageItem.message = decryptText(message);
-
-                    const originalMessage = messageItem.originalMessage;
-                    if (originalMessage) {
-                        messageItem.originalMessage = decryptText(originalMessage);
-                    }
-
                     messages.push(messageItem);
                 }
                 dispatch(getPaginatedMessagesSuccessAction({ data: messages }));
@@ -295,8 +274,7 @@ export async function removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId) {
 
 export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUserToken, originalMessage) {
     const sentByUserToken = getLoggedUserToken();;
-    const encryptedMsg = encryptText(message);
-    if (!chatRoomId || !sentByUserToken || !type || !secondUserToken || !encryptedMsg) {
+    if (!chatRoomId || !sentByUserToken || !type || !secondUserToken || !message) {
         return;
     }
 
@@ -304,15 +282,14 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUs
     const messageId = timeStamp + "_by_" + sentByUserToken.substring(0, 3);
     const toSet = {
         messageId,
-        message: encryptedMsg,
+        message,
         sentByUserToken,
         type,
         time: dayjs().format(),
     };
     if (originalMessage) {
-        const encryptedOrgMessage = encryptText(originalMessage.message);
         toSet.originalMessageId = originalMessage.messageId;
-        toSet.originalMessage = encryptedOrgMessage;
+        toSet.originalMessage = originalMessage.message;
         toSet.originalMessageType = originalMessage.type;
     }
 
@@ -450,28 +427,6 @@ export async function startANewChatRoom(params) {
         });
 
     dispatch(startANewChatRoomSuccessAction({ data: { chatRoomId } }));
-}
-
-export async function uploadImageInFirebase(dispatch, imageFile, uploadImageName, uploadFolder) {
-    const loggedUserToken = getLoggedUserToken();
-    if (!loggedUserToken || !imageFile) return;
-
-    try {
-        dispatch(uploadImageInFirebaseAction());
-
-        const compressedImg = await imageCompression(imageFile, IMAGE_COMPRESSION_OPTIONS);
-        if (!compressedImg) return;
-
-        const timeStamp = Math.floor(Date.now());
-        const imageName = (uploadImageName || (timeStamp + "_" + loggedUserToken.substring(0, 3))) + ".png";
-
-        //putting image in firebase
-        const storageRef = firebase.app().storage().ref().child((uploadFolder || "image/") + imageName);
-        await storageRef.put(compressedImg);
-        return storageRef;
-    } catch {
-        dispatch(uploadImageInFirebaseFailureAction({ msg: "Fail to upload image" }));
-    }
 }
 
 export async function setProfileImageOfAUser(profileImageUrl) {

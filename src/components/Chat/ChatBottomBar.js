@@ -6,28 +6,31 @@ import uploadImgIcon from "../../images/uploadImg.png";
 import LoadingAnimation from "../LoadingAnimation";
 import ImageWithLoader from "../ImageWithLoader";
 import { REPLY_PREVIEW_BOX_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_BAR_GRADIENT, MESSAGE_INPUT_GRADIENT, MSG_TYPE_IMAGE, MSG_TYPE_REPLY, ALLOWED_IMAGE_TYPES } from "../../constants";
-
+import { encryptText, decryptText } from "../../encryptionUtil";
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../../redux/actions/index";
-import { sendMessageInAChatRoom, setUserTypeStatus, uploadImageInFirebase } from "../../firebaseQueries";
+import { sendMessageInAChatRoom, setUserTypeStatus } from "../../firebaseQueries";
+import { uploadImageInFirebase } from "../../firebaseUpload";
 
 export default function ChatBottomBar({
     isUploadingImage,
     chatRoomId,
     selectedUserToken,
     textInputRef,
-    selectedMsgForReply,
+    selectedMsgForReply = {},
     resetSelectedMessageForReply,
     onImageClick,
     dispatch
 }) {
+    const selectedReplyMessage = decryptText((selectedMsgForReply || {}).message);
+    const selectedReplyType = (selectedMsgForReply || {}).type;
     const imageInputRef = useRef();
 
     const [choosedImg, setChoosedImg] = useState(null);
     const [msgText, setMsgText] = useState("");
 
     function handleImageClick(event) {
-        if (selectedMsgForReply.message) {
-            onImageClick(event, selectedMsgForReply.message)
+        if (selectedReplyMessage) {
+            onImageClick(event, selectedReplyMessage)
         }
     }
 
@@ -40,7 +43,7 @@ export default function ChatBottomBar({
                     snapshot.getDownloadURL()
                         .then((downloadURL) => {
                             if (downloadURL) {
-                                sendMessageInAChatRoom(chatRoomId, downloadURL, MSG_TYPE_IMAGE, selectedUserToken);
+                                sendMessageInAChatRoom(chatRoomId, encryptText(downloadURL), MSG_TYPE_IMAGE, selectedUserToken);
                                 setChoosedImg(null);
                             }
                             dispatch(uploadImageInFirebaseSuccessAction());
@@ -52,11 +55,11 @@ export default function ChatBottomBar({
         } else {
             if (msgText.trim() !== "") {
                 setMsgText("");
-                if (selectedMsgForReply) {
+                if (selectedReplyType) {
                     resetSelectedMessageForReply();
-                    await sendMessageInAChatRoom(chatRoomId, msgText, MSG_TYPE_REPLY, selectedUserToken, selectedMsgForReply);
+                    await sendMessageInAChatRoom(chatRoomId, encryptText(msgText), MSG_TYPE_REPLY, selectedUserToken, selectedMsgForReply);
                 } else {
-                    await sendMessageInAChatRoom(chatRoomId, msgText, "text", selectedUserToken);
+                    await sendMessageInAChatRoom(chatRoomId, encryptText(msgText), "text", selectedUserToken);
                 }
             }
         }
@@ -90,17 +93,17 @@ export default function ChatBottomBar({
     return (
         <>
             {
-                selectedMsgForReply ?
+                selectedReplyType ?
                     <div className="replyMsgPreviewContainer" style={{ "--replyBoxHeight": REPLY_PREVIEW_BOX_HEIGHT }} >
                         {
-                            selectedMsgForReply.type === MSG_TYPE_IMAGE ?
+                            selectedReplyType === MSG_TYPE_IMAGE ?
                                 <ImageWithLoader
                                     className="replyMsgPreviewImg"
-                                    src={selectedMsgForReply.message}
+                                    src={selectedReplyMessage}
                                     onClick={handleImageClick}
                                 />
                                 :
-                                <div className="replyMsgPreviewMsg" title={selectedMsgForReply.message}>{selectedMsgForReply.message}</div>
+                                <div className="replyMsgPreviewMsg" title={selectedReplyMessage}>{selectedReplyMessage}</div>
                         }
                     </div>
                     : null
@@ -133,7 +136,7 @@ export default function ChatBottomBar({
                                         />
 
                                         {
-                                            selectedMsgForReply ?
+                                            selectedReplyType ?
                                                 <img className="chatBottomBarCloseImg" src={closeIcon} onClick={resetSelectedMessageForReply} />
                                                 :
                                                 <img alt="uploadImgIcon" className="chatBottomBarImg" src={uploadImgIcon} onClick={handleImageUploadIconClick} />
