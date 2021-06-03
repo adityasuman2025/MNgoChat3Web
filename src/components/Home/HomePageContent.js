@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { connect } from 'react-redux';
 
 import logoutIcon from "../../images/logout.png";
@@ -6,25 +6,12 @@ import LoadingAnimation from "../LoadingAnimation";
 import ImageViewer from "../ImageViewer";
 import HomeBottomNav from "./HomeBottomNav";
 import UserListItem from "./UserListItem";
-import HomeProfileTab from "./HomeProfileTab";
-import { getLoggedUserToken, logout } from "../../utils";
+import { logout } from "../../utils";
 import { encryptText } from "../../encryptionUtil";
-import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, TITLE_BAR_GRADIENT, BOTTOM_NAV_BOTTOM_MARGIN, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE, ALLOWED_IMAGE_TYPES } from "../../constants";
+import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, TITLE_BAR_GRADIENT, BOTTOM_NAV_BOTTOM_MARGIN, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE } from "../../constants";
+import { setUserActiveStatus, getUserChatRooms, getAllUsers, removeGetUserChatRoomsFirebaseQuery } from "../../firebaseQueries";
 
-import {
-    showSnackBarAction,
-    updateUserToProfileImgMappingAction,
-    uploadImageInFirebaseSuccessAction,
-    uploadImageInFirebaseFailureAction,
-} from "../../redux/actions/index";
-import {
-    setUserActiveStatus,
-    getUserChatRooms,
-    getAllUsers,
-    removeGetUserChatRoomsFirebaseQuery,
-    setProfileImageOfAUser,
-} from "../../firebaseQueries";
-import { uploadImageInFirebase } from "../../firebaseUpload";
+const HomeProfileTab = lazy(() => import('./HomeProfileTab'));
 
 function HomePageContent({
     isGettingUserAllChats,
@@ -67,39 +54,6 @@ function HomePageContent({
 
     function handleNavBtnClick(type) {
         setTitle(type);
-    }
-
-    async function handleSelectImage(event) {
-        try {
-            if (event.target.files && event.target.files[0]) {
-                const selectedImg = event.target.files[0];
-                const selectedImgType = selectedImg.type;
-                if (ALLOWED_IMAGE_TYPES.includes(selectedImgType)) {
-                    const imageName = loggedUsername.substring(0, 3) + "_" + getLoggedUserToken().substring(0, 3);
-                    await uploadImageInFirebase(dispatch, selectedImg, imageName, "profileImage/")
-                        .then((snapshot) => {
-                            snapshot.getDownloadURL()
-                                .then(async (downloadURL) => {
-                                    if (downloadURL) {
-                                        await setProfileImageOfAUser(downloadURL);
-                                        dispatch(updateUserToProfileImgMappingAction({
-                                            username: loggedUsername,
-                                            newImageUrl: downloadURL,
-                                        }));
-                                    }
-                                    dispatch(uploadImageInFirebaseSuccessAction());
-                                });
-                        })
-                        .catch((error) => {
-                            dispatch(uploadImageInFirebaseFailureAction({ msg: "Fail to upload image" }));
-                        });
-                } else {
-                    dispatch(showSnackBarAction("Only images are allowed"));
-                }
-            }
-        } catch (e) {
-            dispatch(showSnackBarAction("Fail to select image", e));
-        }
     }
 
     function handleUserItemClick(data) {
@@ -189,15 +143,19 @@ function HomePageContent({
                 return renderUsersList();
             case PROFILE_TITLE:
                 return (
-                    <HomeProfileTab
-                        isUploadingImage={isUploadingImage}
-                        loggedUsername={loggedUsername}
-                        name={name}
-                        email={email}
-                        profileImg={userToProfileImgMapping[loggedUsername]}
-                        onProfileImgClick={handleProfileImgClick}
-                        onImageSelect={handleSelectImage}
-                    />
+                    <Suspense fallback={
+                        <LoadingAnimation dark loading />
+                    }>
+                        <HomeProfileTab
+                            isUploadingImage={isUploadingImage}
+                            loggedUsername={loggedUsername}
+                            name={name}
+                            email={email}
+                            profileImg={userToProfileImgMapping[loggedUsername]}
+                            onProfileImgClick={handleProfileImgClick}
+                            dispatch={dispatch}
+                        />
+                    </Suspense>
                 )
             default:
         }
@@ -230,7 +188,7 @@ function HomePageContent({
 
             <HomeBottomNav selectedTab={title} onNavBtnClick={handleNavBtnClick} />
         </div>
-    );
+    )
 }
 
 const mapStateToProps = (state) => {

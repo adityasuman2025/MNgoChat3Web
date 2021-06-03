@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { connect } from 'react-redux';
 
-import VerifyPasscode from "../components/VerifyPasscode";
-import HomePageContent from "../components/Home/HomePageContent";
-
+import LoadingAnimation from "../components/LoadingAnimation";
 import { redirectToLoginPage } from "../utils";
+
+const VerifyPasscode = lazy(() => import('../components/VerifyPasscode'));
+const HomePageContent = lazy(() => import('../components/Home/HomePageContent'));
 
 function Home({
     isPasscodeVerified,
@@ -14,7 +15,9 @@ function Home({
     isPasscodeVerified = true;
 
     return (
-        <>
+        <Suspense fallback={
+            <LoadingAnimation dark loading />
+        }>
             {!isSomeoneLoggedIn ? redirectToLoginPage() : null}
 
             {
@@ -23,7 +26,7 @@ function Home({
                     :
                     <VerifyPasscode />
             }
-        </>
+        </Suspense>
     );
 }
 

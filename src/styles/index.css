@@ -130,7 +130,7 @@ code {
 
 /*------- login/signup page and general components-----------*/
 .darkLoader {
-    border-color: #8d35ad rgb(192, 189, 189) rgb(192, 189, 189) rgb(192, 189, 189);
+    border-color: transparent #8d35ad #8d35ad #8d35ad;
 }
 
 .logoImg {
