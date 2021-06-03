@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { connect } from 'react-redux';
 
 import LoadingAnimation from "../components/LoadingAnimation";
-import ChatPageContent from "../components/Chat/ChatPageContent";
 import { redirectToLoginPage } from "../utils";
 import { decryptText } from "../encryptionUtil";
-
 import { showSnackBarAction } from "../redux/actions/index";
+
+const VerifyPasscode = lazy(() => import('../components/VerifyPasscode'));
+const ChatPageContent = lazy(() => import('../components/Chat/ChatPageContent'));
+
 function Chat({
+    isPasscodeVerified,
     isSomeoneLoggedIn,
     dispatch,
 }) {
+    isPasscodeVerified = true;
+
     const [isLoading, setIsLoading] = useState(true);
     const [selectedUserDetails, setSelectedUserDetails] = useState({});
 
@@ -31,25 +36,30 @@ function Chat({
     }, []);
 
     return (
-        <>
+        <Suspense fallback={
+            <LoadingAnimation dark loading />
+        }>
             {!isSomeoneLoggedIn ? redirectToLoginPage() : null}
 
             {
                 isLoading ? <LoadingAnimation dark loading />
                     :
-                    <ChatPageContent
-                        chatRoomId={selectedUserDetails.chatRoomId}
-                        selectedUserName={selectedUserDetails.name}
-                        selectedUserToken={selectedUserDetails.token}
-                        selectedUserProfileImg={selectedUserDetails.profileImg}
-                    />
+                    isPasscodeVerified ?
+                        <ChatPageContent
+                            chatRoomId={selectedUserDetails.chatRoomId}
+                            selectedUserName={selectedUserDetails.name}
+                            selectedUserToken={selectedUserDetails.token}
+                            selectedUserProfileImg={selectedUserDetails.profileImg}
+                        />
+                        : <VerifyPasscode />
             }
-        </>
+        </Suspense>
     );
 }
 
 const mapStateToProps = (state) => {
     return {
+        isPasscodeVerified: state.isPasscodeVerified,
         isSomeoneLoggedIn: state.isSomeoneLoggedIn,
     }
 }
