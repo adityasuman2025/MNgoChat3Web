@@ -14,7 +14,8 @@ import {
     getAllUsersSuccessAction,
     getAllUsersFailureAction,
 
-    getActiveStatusOfAUserSuccessAction,
+    setActiveUsersListAction,
+    getLastSeenOfAUserAction,
 
     getMessagesOfAChatRoomAction,
     getMessagesOfAChatRoomSuccessAction,
@@ -33,23 +34,57 @@ import {
     startANewChatRoomFailureAction,
 } from "./redux/actions/index";
 
-// export async function doFirebaseAuth() {
-//     let toReturn = { statusCode: 500, data: false, msg: "" };
+const userListRef = firebase.database().ref("usersOnline")
+const myUserRef = userListRef.push()
 
-//     try {
-//         const auth = await firebase.auth().signInAnonymously();
-//         if (auth) {
-//             if (auth.user.uid) {
-//                 toReturn.statusCode = await 200;
-//                 toReturn.data = await auth.user.uid;
-//             }
-//         }
-//     } catch {
-//         toReturn.msg = "Firebase Authentication failed";
-//     }
+export async function doFirebaseAuth(dispatch, userName) {
+    firebase
+        .database()
+        .ref(".info/connected")
+        .on("value", function(snap) {
+            if (snap.val()) {
+                // if we lose network then remove this user from the list
+                myUserRef.onDisconnect().remove()
+                // set user's online status
+                let presenceObject = { userName }
+                myUserRef.set(presenceObject)
+            } else {
+                // client has lost network
+            }
+        });
 
-//     return toReturn;
-// }
+    userListRef.on("value", function(snap) {
+        const activeUsers = snap.val();
+        if (activeUsers) {
+            const activeUsersList = [];
+            Object.keys(activeUsers).forEach(function(id) {
+                if (activeUsers[id].userName) {
+                    activeUsersList.push(activeUsers[id].userName);
+                }
+            })
+            dispatch(setActiveUsersListAction({ activeUsersList }));
+        }
+    })
+
+    let toReturn = { statusCode: 200, data: false, msg: "" };
+
+    // try {
+    //     const auth = await firebase.auth().signInAnonymously();
+    //     if (auth) {
+    //         if (auth.user.uid) {
+    //             toReturn.statusCode = await 200;
+    //             toReturn.data = await auth.user.uid;
+    //         }
+    //     }
+    // } catch {
+    //     toReturn.msg = "Firebase Authentication failed";
+    // }
+
+    // const userListRef = firebase.database().ref("usersOnline")
+    // const myUserRef = userListRef.push()
+
+    return toReturn;
+}
 
 export async function checkUserExistsInFirebase(loggedUserToken) {
     let toReturn = { statusCode: 500, data: false, msg: "" };
@@ -157,7 +192,7 @@ export async function getAllUsers(dispatch) {
         });
 }
 
-export async function setUserActiveStatus() {
+export async function setLastSeenOfLoggedUser() {
     const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken) {
         return
@@ -168,20 +203,24 @@ export async function setUserActiveStatus() {
         .update({
             "lastActive": dayjs().format(), //iso format
         });
+
+    setInterval(function() {
+        usersRef
+            .child(loggedUserToken)
+            .update({
+                "lastActive": dayjs().format(), //iso format
+            });
+    }, 30 * 1000); //30 seconds
 }
 
-export async function getActiveStatusOfAUser(dispatch, userToken) {
-    if (!userToken) {
-        return;
-    }
-
+export async function getLastSeenOfAUser(dispatch, userToken) {
     usersRef
         .child(userToken + "/lastActive")
         .once('value')
         .then(async resp => {
             const response = resp.val();
             if (response) {
-                dispatch(getActiveStatusOfAUserSuccessAction({ data: response }));
+                dispatch(getLastSeenOfAUserAction({ data: response }));
             }
         })
         .catch(error => { });
@@ -362,6 +401,19 @@ export async function setUserTypeStatus(chatRoomId) {
         .catch(error => { })
 }
 
+export async function resetUserTypeStatus(chatRoomId) {
+    const loggedUserToken = getLoggedUserToken();
+    if (!loggedUserToken || !chatRoomId) {
+        return;
+    }
+
+    chatRoomsRef
+        .child(chatRoomId + "/members/" + loggedUserToken)
+        .child("lastTyped")
+        .set(null)
+        .catch(error => { })
+}
+
 export async function getTypeStatusOfAUser(dispatch, chatRoomId, secondUserToken) {
     if (!secondUserToken || !chatRoomId) {
         return;
@@ -370,14 +422,21 @@ export async function getTypeStatusOfAUser(dispatch, chatRoomId, secondUserToken
     chatRoomsRef
         .child(chatRoomId + "/members/" + secondUserToken)
         .child("lastTyped")
-        .once('value')
-        .then(async resp => {
-            const response = resp.val();
-            if (response) {
-                dispatch(getTypeStatusOfAUserSuccessAction({ data: response }));
-            }
-        })
-        .catch(error => { });
+        .on("value", function(snap) {
+            const response = snap.val();
+            dispatch(getTypeStatusOfAUserSuccessAction({ data: response }));
+        });
+}
+
+export async function removeGetTypeStatusOfAUserFirebaseQuery(chatRoomId, secondUserToken) {
+    if (!secondUserToken || !chatRoomId) {
+        return;
+    }
+
+    chatRoomsRef
+        .child(chatRoomId + "/members/" + secondUserToken)
+        .child("lastTyped")
+        .off();
 }
 
 export async function startANewChatRoom(params) {

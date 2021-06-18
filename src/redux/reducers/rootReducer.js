@@ -30,7 +30,8 @@ const initialState = {
     allUsers: {},
     userToProfileImgMapping: {},
 
-    activeStatusOfAUser: null,
+    lastSeenOfAUser: null,
+    activeUsersList: [],
 
     isGettingChatRoomMessages: false,
     isInitialMessagesFetched: false,
@@ -88,7 +89,7 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
         case 'RESET_DATA_OF_A_CHAT_ROOM': {
             return {
                 ...state,
-                activeStatusOfAUser: null,
+                lastSeenOfAUser: null,
                 chatRoomMessages: [],
             }
         }
@@ -258,21 +259,19 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
             }
         }
 
-        case 'GET_ACTIVE_STATUS_OF_A_USER_SUCCESS': {
-            let activeStatusOfAUser = payload.data || null;
-            if (activeStatusOfAUser) {
-                const currentTimeStamp = Date.parse(new Date()) / 1000; //in seconds
-                const displayNameUserActiveStatusTimeStamp = Date.parse(activeStatusOfAUser) / 1000;
-                const timeDiff = currentTimeStamp - displayNameUserActiveStatusTimeStamp;
-
-                //displaying online in 13s bandwidth
-                if (timeDiff <= 13) {
-                    activeStatusOfAUser = "online";
-                }
-            }
+        case 'GET_LAST_SEEN_OF_A_USER': {
+            let lastSeenOfAUser = payload.data;
             return {
                 ...state,
-                activeStatusOfAUser,
+                lastSeenOfAUser,
+            }
+        }
+
+        case 'SET_ACTIVE_USERS_LIST': {
+            const activeUsersList = payload.activeUsersList || [];
+            return {
+                ...state,
+                activeUsersList,
             }
         }
 

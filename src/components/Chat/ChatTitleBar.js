@@ -1,6 +1,4 @@
 import React from "react";
-import dayjs from "../../dayjs";
-
 import userIcon from "../../images/user.png";
 import { TITLE_BAR_HEIGHT, TITLE_BAR_GRADIENT } from "../../constants";
 
@@ -11,7 +9,6 @@ export default function ChatTitleBar({
     activeStatus,
     onImageClick,
 }) {
-
     function handleImageClick(event) {
         onImageClick(event, profileImg)
     }
@@ -21,16 +18,7 @@ export default function ChatTitleBar({
             <img alt="userIcon" src={profileImg} onClick={handleImageClick} />
             <div>
                 <div className="lightTitle">{name}</div>
-                <div className="onlineStatus">
-                    {
-                        typeStatus
-                            ||
-                            activeStatus ?
-                            activeStatus === "online" ? "online"
-                                : dayjs(activeStatus).format("lll")
-                            : ""
-                    }
-                </div>
+                <div className="onlineStatus">{typeStatus || activeStatus}</div>
             </div>
         </div>
     )

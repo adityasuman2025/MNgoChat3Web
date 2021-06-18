@@ -38,27 +38,27 @@ export const checkLoginStatusAction = () => async (dispatch) => {
                 const userDetails = response.data;
                 const username = userDetails.username;
 
-                // const firebaseAuthResp = await doFirebaseAuth();
-                // if (firebaseAuthResp.statusCode === 200) {
-                const firebaseResponse = await checkUserExistsInFirebase(loggedUserToken);
-                if (firebaseResponse.statusCode === 200) {
-                    dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
-                } else {
-                    const error = firebaseResponse.msg
-                    if (error) {
-                        dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse });
+                const firebaseAuthResp = await doFirebaseAuth(dispatch, username);
+                if (firebaseAuthResp.statusCode === 200) {
+                    const firebaseResponse = await checkUserExistsInFirebase(loggedUserToken);
+                    if (firebaseResponse.statusCode === 200) {
+                        dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
                     } else {
-                        const firebaseResponse2 = await createUserInFirebase(loggedUserToken, username);
-                        if (firebaseResponse2.statusCode === 200) {
-                            dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
+                        const error = firebaseResponse.msg
+                        if (error) {
+                            dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse });
                         } else {
-                            dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse2 });
+                            const firebaseResponse2 = await createUserInFirebase(loggedUserToken, username);
+                            if (firebaseResponse2.statusCode === 200) {
+                                dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
+                            } else {
+                                dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse2 });
+                            }
                         }
                     }
+                } else {
+                    dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseAuthResp });
                 }
-                // } else {
-                //     dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseAuthResp });
-                // }
             } else {
                 logout(dispatch);
                 dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: response });
@@ -154,9 +154,15 @@ export const getAllUsersFailureAction = (payload) => async (dispatch) => {
     }
 }
 
-export const getActiveStatusOfAUserSuccessAction = (payload) => async (dispatch) => {
+export const setActiveUsersListAction = (payload) => async (dispatch) => {
     if (payload) {
-        dispatch({ type: 'GET_ACTIVE_STATUS_OF_A_USER_SUCCESS', payload });
+        dispatch({ type: 'SET_ACTIVE_USERS_LIST', payload });
+    }
+}
+
+export const getLastSeenOfAUserAction = (payload) => async (dispatch) => {
+    if (payload) {
+        dispatch({ type: 'GET_LAST_SEEN_OF_A_USER', payload });
     }
 }
 
@@ -186,9 +192,7 @@ export const getPaginatedMessagesSuccessAction = (payload) => async (dispatch) =
 }
 
 export const getTypeStatusOfAUserSuccessAction = (payload) => async (dispatch) => {
-    if (payload) {
-        dispatch({ type: 'GET_TYPE_STATUS_OF_A_USER_SUCCESS', payload });
-    }
+    dispatch({ type: 'GET_TYPE_STATUS_OF_A_USER_SUCCESS', payload });
 }
 
 export const getUnreadMsgCountOfTheSecondUserAction = () => async (dispatch) => {

@@ -13,8 +13,7 @@ import dayjs from "../../dayjs";
 import { resetDataOfAChatRoomAction } from "../../redux/actions/index";
 import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_NAV_WITH_REPLY_PREVIEW_BOX_HEIGHT, STANDARD_DATE_FORMAT, DEFAULT_DATE } from "../../constants";
 import {
-    setUserActiveStatus,
-    getActiveStatusOfAUser,
+    getLastSeenOfAUser,
     getMessagesOfAChatRoom,
     getPaginatedMessages,
     removeGetMessagesOfAChatRoomFirebaseQuery,
@@ -22,6 +21,7 @@ import {
     getTypeStatusOfAUser,
     getUnreadMsgCountOfTheSecondUser,
     removeGetUnreadMsgCountOfTheSecondUserFirebaseQuery,
+    removeGetTypeStatusOfAUserFirebaseQuery,
 } from "../../firebaseQueries";
 
 const TODAY = dayjs().format(STANDARD_DATE_FORMAT);
@@ -39,9 +39,10 @@ function ChatPageContent({
     selectedUserToken,
     selectedUserProfileImg,
     unreadMsgCountOfTheSecondUser,
-    activeStatusOfAUser,
+    lastSeenOfAUser,
     typeStatusOfAUser,
     chatRoomMessages = [],
+    activeUsersList = [],
     dispatch,
 }) {
     dayjs.extend(localizedFormat);
@@ -54,33 +55,26 @@ function ChatPageContent({
 
     const [msgIdToScrollTo, setMmsgIdToScrollTo] = useState(null);
 
+    useEffect(() => {
+        if (!activeUsersList.includes(selectedUserName)) {
+            getLastSeenOfAUser(dispatch, selectedUserToken);
+        }
+    }, [activeUsersList]);
+
     //to get messages of the room
     //getting active status of the 2nd user and setting active status of the logged user
     useEffect(() => {
         getMessagesOfAChatRoom(dispatch, chatRoomId);
-        getActiveStatusOfAUser(dispatch, selectedUserToken);
         getUnreadMsgCountOfTheSecondUser(dispatch, chatRoomId, selectedUserToken);
-        readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
-        setUserActiveStatus();
         getTypeStatusOfAUser(dispatch, chatRoomId, selectedUserToken);
-
-        const setActiveStatusInterval = setInterval(function() {
-            getActiveStatusOfAUser(dispatch, selectedUserToken);
-            setUserActiveStatus();
-        }, 10000); //setting user lastActive time every 10 seconds
-        // other users need to compare their local time with that user lastActiveTime to get his active status
-
-        const getTypeStatusInterval = setInterval(function() {
-            getTypeStatusOfAUser(dispatch, chatRoomId, selectedUserToken);
-        }, 1000); //getting user typings status in 1 s
-        //other users need to compare their local time with that user lastTypedTime to get his typing status
+        readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
 
         return () => {
             dispatch(resetDataOfAChatRoomAction());
+
             removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId);
             removeGetUnreadMsgCountOfTheSecondUserFirebaseQuery(chatRoomId, selectedUserToken)
-            clearInterval(setActiveStatusInterval);
-            clearInterval(getTypeStatusInterval);
+            removeGetTypeStatusOfAUserFirebaseQuery(chatRoomId, selectedUserToken);
             readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId);
         }
     }, []);
@@ -206,7 +200,13 @@ function ChatPageContent({
                     name={selectedUserName}
                     profileImg={selectedUserProfileImg}
                     typeStatus={typeStatusOfAUser}
-                    activeStatus={activeStatusOfAUser}
+                    activeStatus={
+                        activeUsersList.includes(selectedUserName)
+                            ? "online"
+                            : lastSeenOfAUser
+                                ? dayjs(lastSeenOfAUser).format("lll")
+                                : ""
+                    }
                     onImageClick={handleImageClick}
                 />
 
@@ -250,9 +250,10 @@ const mapStateToProps = (state) => {
         isUploadingImage: state.isUploadingImage,
         isANewMessage: state.isANewMessage,
         unreadMsgCountOfTheSecondUser: state.unreadMsgCountOfTheSecondUser,
-        activeStatusOfAUser: state.activeStatusOfAUser,
+        lastSeenOfAUser: state.lastSeenOfAUser,
         typeStatusOfAUser: state.typeStatusOfAUser,
         chatRoomMessages: state.chatRoomMessages,
+        activeUsersList: state.activeUsersList,
     }
 }
 

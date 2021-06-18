@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import closeIcon from "../../images/close.png";
 import sendIcon from "../../images/send2.png";
@@ -8,7 +8,7 @@ import ImageWithLoader from "../ImageWithLoader";
 import { REPLY_PREVIEW_BOX_HEIGHT, BOTTOM_NAV_HEIGHT, BOTTOM_BAR_GRADIENT, MESSAGE_INPUT_GRADIENT, MSG_TYPE_IMAGE, MSG_TYPE_REPLY, ALLOWED_IMAGE_TYPES } from "../../constants";
 import { encryptText, decryptText } from "../../encryptionUtil";
 import { showSnackBarAction, uploadImageInFirebaseSuccessAction, uploadImageInFirebaseFailureAction } from "../../redux/actions/index";
-import { sendMessageInAChatRoom, setUserTypeStatus } from "../../firebaseQueries";
+import { sendMessageInAChatRoom, setUserTypeStatus, resetUserTypeStatus } from "../../firebaseQueries";
 import { uploadImageInFirebase } from "../../firebaseUpload";
 
 export default function ChatBottomBar({
@@ -27,6 +27,7 @@ export default function ChatBottomBar({
 
     const [choosedImg, setChoosedImg] = useState(null);
     const [msgText, setMsgText] = useState("");
+    const [isTypingStarted, setIsTypingStarted] = useState(false);
 
     function handleImageClick(event) {
         if (selectedReplyMessage) {
@@ -65,9 +66,27 @@ export default function ChatBottomBar({
         }
     }
 
+    //to detect typing started and stopped event
+    useEffect(() => {
+        if (msgText && !isTypingStarted) {
+            setIsTypingStarted(prev => { return true });
+        }
+
+        const delayDebounceFn = setTimeout(() => {
+            resetUserTypeStatus(chatRoomId)
+            setIsTypingStarted(prev => { return false });
+        }, 1500);
+        return () => clearTimeout(delayDebounceFn)
+    }, [msgText]);
+
+    useEffect(() => {
+        if (isTypingStarted) {
+            setUserTypeStatus(chatRoomId);
+        }
+    }, [isTypingStarted])
+
     function handleChangeMsgInput(e) {
         setMsgText(e.target.value)
-        setUserTypeStatus(chatRoomId);
     }
 
     async function handleSelectImage(event) {

@@ -9,7 +9,7 @@ import UserListItem from "./UserListItem";
 import { logout } from "../../utils";
 import { encryptText } from "../../encryptionUtil";
 import { TITLE_BAR_HEIGHT, BOTTOM_NAV_HEIGHT, TITLE_BAR_GRADIENT, BOTTOM_NAV_BOTTOM_MARGIN, CHATS_TITLE, USERS_TITLE, PROFILE_TITLE } from "../../constants";
-import { setUserActiveStatus, getUserChatRooms, getAllUsers, removeGetUserChatRoomsFirebaseQuery } from "../../firebaseQueries";
+import { setLastSeenOfLoggedUser, getUserChatRooms, getAllUsers, removeGetUserChatRoomsFirebaseQuery } from "../../firebaseQueries";
 
 const HomeProfileTab = lazy(() => import('./HomeProfileTab'));
 
@@ -35,16 +35,10 @@ function HomePageContent({
     useEffect(() => {
         getUserChatRooms(dispatch);
         getAllUsers(dispatch);
-        setUserActiveStatus();
-
-        const setActiveStatusInterval = setInterval(function() {
-            setUserActiveStatus();
-        }, 10000); //setting user lastActive time every 10 seconds
-        //other users need to compare their local time with that user lastActiveTime to get his active status
+        setLastSeenOfLoggedUser();
 
         return () => {
             removeGetUserChatRoomsFirebaseQuery();
-            clearInterval(setActiveStatusInterval);
         }
     }, []);
 
