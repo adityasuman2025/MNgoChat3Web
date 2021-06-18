@@ -9,7 +9,7 @@ export default function LoadingAnimation({
 }) {
     return loading ?
         <center className={className}>
-            <div className={cx("loadingAnimation", { ["darkLoader"]: dark }, loaderClassName)} />
+            <div className={cx("loadingAnimation", { "darkLoader": dark }, loaderClassName)} />
         </center>
         : null;
 }

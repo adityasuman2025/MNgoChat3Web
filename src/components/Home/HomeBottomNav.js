@@ -20,21 +20,21 @@ export default function HomeBottomNav({
             }}
         >
             <img
-                className={cx("bottomTabIcons", { ["selectedBottomTabIcon"]: selectedTab === CHATS_TITLE })}
+                className={cx("bottomTabIcons", { "selectedBottomTabIcon": selectedTab === CHATS_TITLE })}
                 alt="allChats"
                 src={allChats}
                 onClick={() => onNavBtnClick(CHATS_TITLE)}
             />
 
             <img
-                className={cx("bottomTabIcons", { ["selectedBottomTabIcon"]: selectedTab === USERS_TITLE })}
+                className={cx("bottomTabIcons", { "selectedBottomTabIcon": selectedTab === USERS_TITLE })}
                 alt="allUsers"
                 src={allUsersIcon}
                 onClick={() => onNavBtnClick(USERS_TITLE)}
             />
 
             <img
-                className={cx("bottomTabIcons", { ["selectedBottomTabIcon"]: selectedTab === PROFILE_TITLE })}
+                className={cx("bottomTabIcons", { "selectedBottomTabIcon": selectedTab === PROFILE_TITLE })}
                 alt="profile"
                 src={ProfileIcon}
                 onClick={() => onNavBtnClick(PROFILE_TITLE)}

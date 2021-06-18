@@ -121,7 +121,7 @@ export default function ChatBottomBar({
                             {
                                 choosedImg ?
                                     <>
-                                        <img className="chatBottomBarCloseImg" src={closeIcon} onClick={() => setChoosedImg(null)} />
+                                        <img alt="close" className="chatBottomBarCloseImg" src={closeIcon} onClick={() => setChoosedImg(null)} />
                                         <img alt="choosenImg" className="sendImgPreview" src={URL.createObjectURL(choosedImg)} />
                                     </>
                                     :
@@ -137,9 +137,9 @@ export default function ChatBottomBar({
 
                                         {
                                             selectedReplyType ?
-                                                <img className="chatBottomBarCloseImg" src={closeIcon} onClick={resetSelectedMessageForReply} />
+                                                <img alt="close" className="chatBottomBarCloseImg" src={closeIcon} onClick={resetSelectedMessageForReply} />
                                                 :
-                                                <img alt="uploadImgIcon" className="chatBottomBarImg" src={uploadImgIcon} onClick={handleImageUploadIconClick} />
+                                                <img alt="upload" className="chatBottomBarImg" src={uploadImgIcon} onClick={handleImageUploadIconClick} />
                                         }
 
                                         <input
@@ -154,7 +154,7 @@ export default function ChatBottomBar({
                                     </>
                             }
 
-                            <img alt="sendIcon" src={sendIcon} onClick={handleSendMsgBtnClick} className="chatBottomBarImg" />
+                            <img alt="send" src={sendIcon} onClick={handleSendMsgBtnClick} className="chatBottomBarImg" />
                         </>
                 }
             </form>

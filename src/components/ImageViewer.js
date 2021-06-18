@@ -13,9 +13,9 @@ export default function ImageViewer({
     return (
         <div className="imageViewer">
             <div className="imageViewerBg" onClick={onClose} />
-            <img src={closeIcon} className="imageViewerCloseIcon" onClick={onClose} />
+            <img alt="close" src={closeIcon} className="imageViewerCloseIcon" onClick={onClose} />
             <LoadingAnimation loading={showLoader} />
-            <img src={src} className="imageViewerImg" onLoad={() => setShowLoader(false)} onError={() => setShowLoader(false)} />
+            <img alt="viewer" src={src} className="imageViewerImg" onLoad={() => setShowLoader(false)} onError={() => setShowLoader(false)} />
         </div>
     );
 }

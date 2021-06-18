@@ -38,27 +38,27 @@ export const checkLoginStatusAction = () => async (dispatch) => {
                 const userDetails = response.data;
                 const username = userDetails.username;
 
-                const firebaseAuthResp = await doFirebaseAuth();
-                if (firebaseAuthResp.statusCode === 200) {
-                    const firebaseResponse = await checkUserExistsInFirebase(loggedUserToken);
-                    if (firebaseResponse.statusCode === 200) {
-                        dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
+                // const firebaseAuthResp = await doFirebaseAuth();
+                // if (firebaseAuthResp.statusCode === 200) {
+                const firebaseResponse = await checkUserExistsInFirebase(loggedUserToken);
+                if (firebaseResponse.statusCode === 200) {
+                    dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
+                } else {
+                    const error = firebaseResponse.msg
+                    if (error) {
+                        dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse });
                     } else {
-                        const error = firebaseResponse.msg
-                        if (error) {
-                            dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse });
+                        const firebaseResponse2 = await createUserInFirebase(loggedUserToken, username);
+                        if (firebaseResponse2.statusCode === 200) {
+                            dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
                         } else {
-                            const firebaseResponse2 = await createUserInFirebase(loggedUserToken, username);
-                            if (firebaseResponse2.statusCode === 200) {
-                                dispatch({ type: 'CHECK_LOGIN_STATUS_SUCCESS', payload: { userDetails } });
-                            } else {
-                                dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse2 });
-                            }
+                            dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseResponse2 });
                         }
                     }
-                } else {
-                    dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseAuthResp });
                 }
+                // } else {
+                //     dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: firebaseAuthResp });
+                // }
             } else {
                 logout(dispatch);
                 dispatch({ type: 'CHECK_LOGIN_STATUS_FAILURE', payload: response });

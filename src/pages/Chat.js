@@ -9,6 +9,7 @@ import { showSnackBarAction } from "../redux/actions/index";
 const VerifyPasscode = lazy(() => import('../components/VerifyPasscode'));
 const ChatPageContent = lazy(() => import('../components/Chat/ChatPageContent'));
 
+/* eslint-disable react-hooks/exhaustive-deps */
 function Chat({
     isPasscodeVerified,
     isSomeoneLoggedIn,

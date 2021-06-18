@@ -1,4 +1,5 @@
-import firebase from './FirebaseConfig';
+import firebase from 'firebase/app';
+import 'firebase/storage';
 import imageCompression from 'browser-image-compression';
 import { getLoggedUserToken } from "./utils";
 import { IMAGE_COMPRESSION_OPTIONS } from "./constants";

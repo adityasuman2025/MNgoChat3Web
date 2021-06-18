@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import cx from "classnames";
 
+/* eslint-disable react-hooks/exhaustive-deps */
 export default function SnackBar({
     open,
     duration = 5000,

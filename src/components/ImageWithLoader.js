@@ -20,7 +20,7 @@ export default function ImageWithLoader({
     return (
         <div className={cx("imageWithLoaderContainer", className)} >
             <LoadingAnimation dark loading={showLoader} loaderClassName={loaderClassName} />
-            <img src={src} className="imageWithLoaderImg" style={{ display: isImageVisible ? "block" : "none" }} onLoad={displayImage} onClick={onClick} onError={() => setShowLoader(false)} />
+            <img alt="viewer" src={src} className="imageWithLoaderImg" style={{ display: isImageVisible ? "block" : "none" }} onLoad={displayImage} onClick={onClick} onError={() => setShowLoader(false)} />
         </div>
     );
 }

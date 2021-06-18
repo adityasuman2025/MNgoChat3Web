@@ -12,6 +12,7 @@ import { startANewChatRoom } from "../firebaseQueries";
 import { redirectToLoginPage } from "../utils";
 import { encryptText, decryptText } from "../encryptionUtil";
 
+/* eslint-disable react-hooks/exhaustive-deps */
 function NewChat({
     isSomeoneLoggedIn,
     isStartingANewChatRoom,
@@ -89,7 +90,7 @@ function NewChat({
                             />
                         </div>
                         <div
-                            className="chatBottomNavContainer"
+                            className="chatBottomBarContainer"
                             style={{ "--actionBoxHeight": BOTTOM_NAV_HEIGHT }}
                         >
                             <ActionButton

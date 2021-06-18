@@ -236,7 +236,7 @@ const rootReducer = (state = initialState, { type, payload = {} }) => {
             const allUsers = payload.data || {};
 
             const userToProfileImgMapping = {};
-            Object.keys(allUsers).map(function(userToken) {
+            Object.keys(allUsers).forEach(function(userToken) {
                 const user = allUsers[userToken];
                 const displayName = user.username;
                 const profileImg = user.profileImg;

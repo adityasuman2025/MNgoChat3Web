@@ -9,6 +9,7 @@ const OfflineModal = lazy(() => import('./components/OfflineModal'));
 const PurpleGradientContainer = lazy(() => import('./components/PurpleGradientContainer'));
 const LandingPageDesign = lazy(() => import('./components/LandingPageDesign'));
 
+/* eslint-disable react-hooks/exhaustive-deps */
 function RootWrapper({
     isCheckingLoginStatus,
 

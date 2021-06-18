@@ -34,7 +34,7 @@ export const APP_DETAILS = {
         },
         {
             key: "latest release",
-            value: "1 June 2021",
+            value: "20 June 2021",
         },
         {
             key: "first release",

@@ -67,7 +67,7 @@ export default function ChatMessageItem({
 
     return (
         <div className="messageContainer" ref={msgRef} onClick={handleMsgItemClick}>
-            <div className={cx("messageContent", { ["myMessageAlignment"]: msg.sentByUserToken === loggedUserToken })} >
+            <div className={cx("messageContent", { "myMessageAlignment": msg.sentByUserToken === loggedUserToken })} >
                 <div
                     className={"message"}
                     style={

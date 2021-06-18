@@ -12,6 +12,9 @@ import {
 } from "../utils";
 import { showSnackBarAction, registerUserAction } from "../redux/actions/index";
 
+/* eslint-disable react-hooks/exhaustive-deps */
+//it disables React's "React Hook useEffect has a missing dependency: 'dispatch'. Either include it or remove the dependency array. If 'dispatch' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps" warning
+
 function Register({
     isRegisteringUser,
     isUserRegistered,

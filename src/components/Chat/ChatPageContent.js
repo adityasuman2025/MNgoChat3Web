@@ -27,6 +27,7 @@ import {
 const TODAY = dayjs().format(STANDARD_DATE_FORMAT);
 const YESTERDAY = dayjs().subtract(1, "day").format(STANDARD_DATE_FORMAT);
 
+/* eslint-disable react-hooks/exhaustive-deps */
 function ChatPageContent({
     isGettingChatRoomMessages,
     isInitialMessagesFetched,
@@ -152,7 +153,7 @@ function ChatPageContent({
             const date = dayjs(msg.time).format(STANDARD_DATE_FORMAT);
             if (lastDividerDate !== date && date !== "Invalid Date") {
                 dateHTML.push(
-                    <div className="dividerDate">
+                    <div key={date + index} className="dividerDate">
                         <div className="dividerLine" />
                         <div className="dividerText">
                             {

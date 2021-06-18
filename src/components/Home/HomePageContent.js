@@ -13,6 +13,7 @@ import { setUserActiveStatus, getUserChatRooms, getAllUsers, removeGetUserChatRo
 
 const HomeProfileTab = lazy(() => import('./HomeProfileTab'));
 
+/* eslint-disable react-hooks/exhaustive-deps */
 function HomePageContent({
     isGettingUserAllChats,
     isGettingAllUsers,
@@ -95,12 +96,11 @@ function HomePageContent({
     function renderUsersList() {
         const unReadChats = [];
         const readChats = [];
-        Object.keys(title === CHATS_TITLE ? userAllChats : allUsers).map(function(chatRoomId, index) {
+        Object.keys(title === CHATS_TITLE ? userAllChats : allUsers).forEach(function(chatRoomId, index) {
             const userToken = chatRoomId;  //chatRoomId is userToken in-case of allUsers (USERS_TITLE)
             const userData = title === CHATS_TITLE ? userAllChats[chatRoomId] : allUsers[userToken];
             const unSeenMsgCount = parseInt(userData.unSeenMsgCount) || 0;
             const displayName = userData.displayName || userData.username;
-            // console.log('userData', userData)
             if (!displayName || displayName === loggedUsername) return;
 
             if (unSeenMsgCount === 0) {
@@ -129,8 +129,8 @@ function HomePageContent({
         // unread msg chatRooms will be listed first
         return (
             <>
-                { unReadChats}
-                { readChats}
+                {unReadChats}
+                {readChats}
             </>
         );
     }

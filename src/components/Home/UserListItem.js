@@ -31,7 +31,7 @@ export default function HomeBottomNav({
 
     return (
         <div
-            className={cx("listUserItem", { ["unSeenMsgUser"]: unSeenMsgCount > 0 })}
+            className={cx("listUserItem", { "unSeenMsgUser": unSeenMsgCount > 0 })}
             onClick={handleOnClick}
         >
             <img alt="userIcon" src={userProfileImg || userIcon} onClick={handleProfileImgClick} />

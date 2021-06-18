@@ -1,4 +1,7 @@
-import firebase from './FirebaseConfig';
+import firebase from 'firebase/app';
+import 'firebase/database';
+// import 'firebase/auth';
+import { usersRef, chatRoomsRef } from './FirebaseConfig';
 import dayjs from "./dayjs";
 import { PAGINATION_MESSAGE_COUNT } from "./constants";
 import { getLoggedUserToken, isEmpty } from "./utils";
@@ -30,29 +33,29 @@ import {
     startANewChatRoomFailureAction,
 } from "./redux/actions/index";
 
-export async function doFirebaseAuth() {
-    let toReturn = { statusCode: 500, data: false, msg: "" };
+// export async function doFirebaseAuth() {
+//     let toReturn = { statusCode: 500, data: false, msg: "" };
 
-    try {
-        const auth = await firebase.auth().signInAnonymously();
-        if (auth) {
-            if (auth.user.uid) {
-                toReturn.statusCode = await 200;
-                toReturn.data = await auth.user.uid;
-            }
-        }
-    } catch {
-        toReturn.msg = "Firebase Authentication failed";
-    }
+//     try {
+//         const auth = await firebase.auth().signInAnonymously();
+//         if (auth) {
+//             if (auth.user.uid) {
+//                 toReturn.statusCode = await 200;
+//                 toReturn.data = await auth.user.uid;
+//             }
+//         }
+//     } catch {
+//         toReturn.msg = "Firebase Authentication failed";
+//     }
 
-    return toReturn;
-}
+//     return toReturn;
+// }
 
 export async function checkUserExistsInFirebase(loggedUserToken) {
     let toReturn = { statusCode: 500, data: false, msg: "" };
 
-    const usersDbRef = firebase.app().database().ref('users/' + loggedUserToken + "/userToken");
-    await usersDbRef
+    await usersRef
+        .child(loggedUserToken + "/userToken")
         .once('value')
         .then(async resp => {
             const response = resp.val();
@@ -71,8 +74,7 @@ export async function checkUserExistsInFirebase(loggedUserToken) {
 export async function createUserInFirebase(loggedUserToken, username) {
     let toReturn = { statusCode: 500, data: false, msg: "" };
 
-    const usersDbRef = firebase.app().database().ref('users/');
-    await usersDbRef
+    await usersRef
         .child(loggedUserToken)
         .set({
             "userToken": loggedUserToken,
@@ -105,8 +107,8 @@ export async function getUserChatRooms(dispatch) {
 
     dispatch(getUserAllChatsAction());
 
-    const usersDbRef = firebase.app().database().ref('users/' + loggedUserToken + "/userChatRooms");
-    usersDbRef
+    usersRef
+        .child(loggedUserToken + "/userChatRooms")
         .on('value',
             function(snap) {
                 const response = snap.val();
@@ -127,8 +129,9 @@ export async function removeGetUserChatRoomsFirebaseQuery() {
         return
     }
 
-    const usersDbRef = firebase.app().database().ref('users/' + loggedUserToken + "/userChatRooms");
-    usersDbRef.off();
+    usersRef
+        .child(loggedUserToken + "/userChatRooms")
+        .off();
 }
 
 export async function getAllUsers(dispatch) {
@@ -139,8 +142,7 @@ export async function getAllUsers(dispatch) {
 
     dispatch(getAllUsersAction());
 
-    const usersDbRef = firebase.app().database().ref('users/');
-    usersDbRef
+    usersRef
         .once('value')
         .then(async resp => {
             const response = resp.val();
@@ -161,8 +163,7 @@ export async function setUserActiveStatus() {
         return
     }
 
-    const usersDbRef = firebase.app().database().ref('users/');
-    usersDbRef
+    usersRef
         .child(loggedUserToken)
         .update({
             "lastActive": dayjs().format(), //iso format
@@ -174,8 +175,8 @@ export async function getActiveStatusOfAUser(dispatch, userToken) {
         return;
     }
 
-    const activeStatusDbRef = firebase.app().database().ref('users/' + userToken + "/lastActive");
-    activeStatusDbRef
+    usersRef
+        .child(userToken + "/lastActive")
         .once('value')
         .then(async resp => {
             const response = resp.val();
@@ -194,7 +195,7 @@ export async function getMessagesOfAChatRoom(dispatch, chatRoomId) {
 
     dispatch(getMessagesOfAChatRoomAction({ chatRoomId }));
 
-    const chatRoomMessagesDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages");
+    const chatRoomMessagesDbRef = chatRoomsRef.child(chatRoomId + "/messages");
     chatRoomMessagesDbRef.off();
     chatRoomMessagesDbRef
         .orderByChild('messageId')
@@ -241,8 +242,8 @@ export async function getPaginatedMessages(dispatch, chatRoomId, messageIdOfTheF
 
     dispatch(getPaginatedMessagesAction());
 
-    const chatRoomMessagesDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages");
-    chatRoomMessagesDbRef
+    chatRoomsRef
+        .child(chatRoomId + "/messages")
         .orderByChild('messageId')
         .endAt(messageIdOfTheFirstMessageInList)
         .limitToLast(PAGINATION_MESSAGE_COUNT)
@@ -268,8 +269,9 @@ export async function removeGetMessagesOfAChatRoomFirebaseQuery(chatRoomId) {
         return;
     }
 
-    const chatRoomMessagesDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages");
-    chatRoomMessagesDbRef.off();
+    chatRoomsRef
+        .child(chatRoomId + "/messages")
+        .off();
 }
 
 export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUserToken, originalMessage) {
@@ -293,11 +295,12 @@ export async function sendMessageInAChatRoom(chatRoomId, message, type, secondUs
         toSet.originalMessageType = originalMessage.type;
     }
 
-    const chatRoomMsgDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/messages/" + messageId);
-    await chatRoomMsgDbRef.set(toSet);
+    chatRoomsRef
+        .child(chatRoomId + "/messages/" + messageId)
+        .set(toSet);
 
-    const userChatRoomRef = firebase.app().database().ref('users/' + secondUserToken + "/userChatRooms/" + chatRoomId);
-    userChatRoomRef
+    usersRef
+        .child(secondUserToken + "/userChatRooms/" + chatRoomId)
         .child("unSeenMsgCount")
         .set(firebase.database.ServerValue.increment(1))
         .catch(error => { })
@@ -310,8 +313,9 @@ export async function getUnreadMsgCountOfTheSecondUser(dispatch, chatRoomId, sec
     }
 
     dispatch(getUnreadMsgCountOfTheSecondUserAction());
-    const sencondUserChatRoomRef = firebase.app().database().ref('users/' + secondUserToken + "/userChatRooms/" + chatRoomId);
-    sencondUserChatRoomRef
+
+    usersRef
+        .child(secondUserToken + "/userChatRooms/" + chatRoomId)
         .child("unSeenMsgCount")
         .on('value',
             resp => {
@@ -326,8 +330,10 @@ export async function removeGetUnreadMsgCountOfTheSecondUserFirebaseQuery(chatRo
         return;
     }
 
-    const sencondUserChatRoomRef = firebase.app().database().ref('users/' + secondUserToken + "/userChatRooms/" + chatRoomId);
-    sencondUserChatRoomRef.off();
+    usersRef
+        .child(secondUserToken + "/userChatRooms/" + chatRoomId)
+        .child("unSeenMsgCount")
+        .off();
 }
 
 export async function readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomId) {
@@ -336,8 +342,8 @@ export async function readingNewMessagesOfTheLoggedUserForThatChatRoom(chatRoomI
         return;
     }
 
-    const userChatRoomRef = firebase.app().database().ref('users/' + loggedUserToken + "/userChatRooms/" + chatRoomId);
-    userChatRoomRef
+    usersRef
+        .child(loggedUserToken + "/userChatRooms/" + chatRoomId)
         .child("unSeenMsgCount")
         .set(0)
         .catch(error => { })
@@ -349,8 +355,8 @@ export async function setUserTypeStatus(chatRoomId) {
         return;
     }
 
-    const userChatRoomRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/members/" + loggedUserToken);
-    userChatRoomRef
+    chatRoomsRef
+        .child(chatRoomId + "/members/" + loggedUserToken)
         .child("lastTyped")
         .set(dayjs().format())
         .catch(error => { })
@@ -361,8 +367,8 @@ export async function getTypeStatusOfAUser(dispatch, chatRoomId, secondUserToken
         return;
     }
 
-    const userChatRoomLastTypeRef = firebase.app().database().ref('chatRooms/' + chatRoomId + "/members/" + secondUserToken);
-    userChatRoomLastTypeRef
+    chatRoomsRef
+        .child(chatRoomId + "/members/" + secondUserToken)
         .child("lastTyped")
         .once('value')
         .then(async resp => {
@@ -385,8 +391,8 @@ export async function startANewChatRoom(params) {
     const timeStamp = Math.floor(Date.now());
     const chatRoomId = timeStamp + "_" + loggedUserToken.substring(0, 3) + "_" + secondUserToken.substring(0, 3);
 
-    const createChatRoomDbRef = firebase.app().database().ref('chatRooms/' + chatRoomId);
-    await createChatRoomDbRef
+    await chatRoomsRef
+        .child(chatRoomId)
         .set({
             chatRoomId,
             members: {
@@ -400,8 +406,8 @@ export async function startANewChatRoom(params) {
             return;
         });
 
-    const loggedUserChatRoomsDbRef = firebase.app().database().ref('users/' + loggedUserToken + "/userChatRooms/" + chatRoomId);
-    await loggedUserChatRoomsDbRef
+    await usersRef
+        .child(loggedUserToken + "/userChatRooms/" + chatRoomId)
         .set({
             chatRoomId,
             displayName: secondUsername,
@@ -413,8 +419,8 @@ export async function startANewChatRoom(params) {
             return;
         });
 
-    const secondUserChatRoomsDbRef = firebase.app().database().ref('users/' + secondUserToken + "/userChatRooms/" + chatRoomId);
-    await secondUserChatRoomsDbRef
+    await usersRef
+        .child(secondUserToken + "/userChatRooms/" + chatRoomId)
         .set({
             chatRoomId,
             displayName: loggedUsername,
@@ -433,8 +439,8 @@ export async function setProfileImageOfAUser(profileImageUrl) {
     const loggedUserToken = getLoggedUserToken();
     if (!loggedUserToken || !profileImageUrl) return;
 
-    const userRef = firebase.app().database().ref('users/' + loggedUserToken + "/profileImg");
-    await userRef
+    await usersRef
+        .child(loggedUserToken + "/profileImg")
         .set(profileImageUrl)
         .catch(error => { });
 }
